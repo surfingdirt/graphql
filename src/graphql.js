@@ -1,16 +1,34 @@
 const { ApolloServer } = require("apollo-server-express");
 
-const { Query, BaseQueryResolvers } = require("./modules/base");
-const typeDefs = [Query];
+const { BaseTypes, BaseQueryResolvers } = require("./modules/base");
+const {
+  Auth,
+  AuthAPI,
+  AuthMutationResolvers,
+} = require("./modules/auth");
 
-// A map of functions which return data for the schema.
+/******************************************************************************
+ * TYPEDEFS
+ *****************************************************************************/
+const typeDefs = [BaseTypes, Auth];
+
+/******************************************************************************
+ * RESOLVERS
+ *****************************************************************************/
 const resolvers = {
   Query: {
-    ...BaseQueryResolvers
+    ...BaseQueryResolvers,
   },
+  Mutation: {
+    ...AuthMutationResolvers,
+  }
 };
 
+/******************************************************************************
+ * DATA SOURCES
+ *****************************************************************************/
 const dataSources = () => ({
+  authAPI: new AuthAPI()
 });
 
 const buildGraphQLServer = () =>

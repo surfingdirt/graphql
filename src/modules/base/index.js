@@ -1,7 +1,9 @@
-const { Query } = require('./base.type');
+const BaseAPI = require('./base.api');
+const { BaseTypes } = require('./base.types');
 const { hello } = require('./base.resolvers');
 
 module.exports = {
-  Query,
+  BaseAPI,
+  BaseTypes,
   BaseQueryResolvers: { hello },
 };

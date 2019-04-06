@@ -1,4 +1,4 @@
-const hello = () => 'HellO WOrld !';
+const hello = () => 'Hello World !';
 
 module.exports = {
   hello,
