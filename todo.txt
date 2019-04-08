@@ -1,0 +1,4 @@
+Set NODE_ENV and use it accordingly
+Hide errors and log them: https://www.apollographql.com/docs/apollo-server/features/errors#Masking-and-logging-errors
+
+Use AuthenticationError, ForbiddenError, UserInputError and generic ApolloError in responses

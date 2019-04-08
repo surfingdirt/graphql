@@ -1,0 +1,17 @@
+ERROR REPORTING
+    GraphQL:
+        Dev mode => stacktrace rempli
+        Prod mode => stacktrace pas defini
+    Backend (API):
+        Dev mode => exception.backendStacktrace et exception.type remplis
+        Production mode => exception.backendStacktrace et exception.type pas definis
+
+    Dans les resolvers, faire un catch autour du code qui fetche les reponse, et y mettre:
+          const {
+            message,
+            code,
+            trace,
+            type
+          } = e.extensions.response.body.errors.topLevelError;
+          // Throw an error that GraphQL clients will understand
+          throw new ApolloError(message, code, { trace, type });
