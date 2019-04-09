@@ -2,10 +2,28 @@ const { ApolloServer } = require("apollo-server-express");
 
 const { BaseTypes, BaseQueryResolvers } = require("./modules/base");
 const {
+  Album,
+  AlbumAPI,
+  AlbumQueryResolvers,
+} = require("./modules/album");
+
+const {
   Auth,
   AuthAPI,
   AuthMutationResolvers,
 } = require("./modules/auth");
+
+// const {
+//   Image,
+//   ImageAPI,
+//   ImageMutationResolvers,
+// } = require("./modules/image");
+
+const {
+  Media,
+  MediaAPI,
+  MediaQueryResolvers,
+} = require("./modules/media");
 
 const {
   User,
@@ -16,7 +34,7 @@ const {
 /******************************************************************************
  * TYPEDEFS
  *****************************************************************************/
-const typeDefs = [BaseTypes, Auth, User];
+const typeDefs = [BaseTypes, Album, Auth /*, Image*/, Media, User];
 
 /******************************************************************************
  * RESOLVERS
@@ -24,10 +42,13 @@ const typeDefs = [BaseTypes, Auth, User];
 const resolvers = {
   Query: {
     ...BaseQueryResolvers,
+    ...AlbumQueryResolvers,
+    ...MediaQueryResolvers,
     ...UserQueryResolvers,
   },
   Mutation: {
     ...AuthMutationResolvers,
+    // ...ImageMutationResolvers,
   }
 };
 
@@ -35,10 +56,16 @@ const resolvers = {
  * DATA SOURCES
  *****************************************************************************/
 const dataSources = () => ({
+  albumAPI: new AlbumAPI(),
   authAPI: new AuthAPI(),
+  // imageAPI: new ImageAPI(),
+  mediaAPI: new MediaAPI(),
   userAPI: new UserAPI(),
 });
 
+/******************************************************************************
+ * SERVER
+ *****************************************************************************/
 const buildGraphQLServer = () =>
   new ApolloServer({
     typeDefs,
