@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const { ApolloError } = require("apollo-server-express");
 
 const { BaseAPI } = require("../base");
 const { TOKEN } = require("../../controllers");

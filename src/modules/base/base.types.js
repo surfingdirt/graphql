@@ -6,7 +6,7 @@ const BaseTypes = gql`
     hello: String
   }
   type Mutation {
-        toto: String
+    toto: String
   }
 `;
 

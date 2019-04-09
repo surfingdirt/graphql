@@ -7,10 +7,16 @@ const {
   AuthMutationResolvers,
 } = require("./modules/auth");
 
+const {
+  User,
+  UserAPI,
+  UserQueryResolvers,
+} = require("./modules/user");
+
 /******************************************************************************
  * TYPEDEFS
  *****************************************************************************/
-const typeDefs = [BaseTypes, Auth];
+const typeDefs = [BaseTypes, Auth, User];
 
 /******************************************************************************
  * RESOLVERS
@@ -18,6 +24,7 @@ const typeDefs = [BaseTypes, Auth];
 const resolvers = {
   Query: {
     ...BaseQueryResolvers,
+    ...UserQueryResolvers,
   },
   Mutation: {
     ...AuthMutationResolvers,
@@ -28,7 +35,8 @@ const resolvers = {
  * DATA SOURCES
  *****************************************************************************/
 const dataSources = () => ({
-  authAPI: new AuthAPI()
+  authAPI: new AuthAPI(),
+  userAPI: new UserAPI(),
 });
 
 const buildGraphQLServer = () =>
