@@ -24,5 +24,10 @@ module.exports = class AuthAPI extends BaseAPI {
     };
   }
 
-  logout() {}
+  async logout(token) {
+    const response = await this.delete(this.path, {}, {
+      headers: { Authorization: token }
+    });
+    return response;
+  }
 };

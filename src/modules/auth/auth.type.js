@@ -13,7 +13,7 @@ const Auth = gql`
   }
   extend type Mutation {
     login(input: LoginInput!): AccessToken!
-    logout: String!
+    logout: String
   }
 `;
 
