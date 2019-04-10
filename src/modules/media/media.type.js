@@ -9,7 +9,7 @@ const Media = gql`
       id: ID
       imageId: String
       lastEditionDate: String
-      lastEditor: String
+      lastEditor: User
       mediaSubType: String
       mediaType: String
       status: String
