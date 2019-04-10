@@ -1,9 +1,9 @@
 const UserAPI = require('./user.api');
-const { User } = require('./user.type');
-const { getUser } = require('./user.resolvers');
+const User = require('./user.type');
+const UserQueryResolvers = require('./user.resolvers');
 
 module.exports = {
   User,
   UserAPI,
-  UserQueryResolvers: { getUser },
+  UserQueryResolvers,
 };

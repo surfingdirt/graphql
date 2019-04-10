@@ -49,7 +49,56 @@ const resolvers = {
   Mutation: {
     ...AuthMutationResolvers,
     // ...ImageMutationResolvers,
+  },
+  Album: {
+    async lastEditor(parent, args, { token, dataSources: { userAPI } }) {
+      if (!parent.lastEditor.id) {
+        return null;
+      }
+      return await userAPI.getUser(parent.lastEditor.id, token);
+    },
+
+    async submitter(parent, args, { token, dataSources: { userAPI } }) {
+      if (!parent.submitter.id) {
+        return null;
+      }
+      return await userAPI.getUser(parent.submitter.id, token);
+    },
+  },
+
+  Media: {
+    async album(parent, args, { token, dataSources: { albumAPI } }) {
+      if (!parent.album.id) {
+        return null;
+      }
+      return await albumAPI.getAlbum(parent.album.id, token);
+    },
+
+    async lastEditor(parent, args, { token, dataSources: { userAPI } }) {
+      if (!parent.lastEditor.id) {
+        return null;
+      }
+      return await userAPI.getUser(parent.lastEditor.id, token);
+    },
+
+    async users(parent, args, { token, dataSources: { userAPI } }) {
+      const users = [];
+      for (let userId of parent.users) {
+        users.push(await userAPI.getUser(userId, token));
+      }
+      return users;
+    },
+  },
+
+  User: {
+    async album(parent, args, { token, dataSources: { albumAPI } }) {
+      if (!parent.album.id) {
+        return null;
+      }
+      return await albumAPI.getAlbum(parent.album.id, token);
+    },
   }
+
 };
 
 /******************************************************************************

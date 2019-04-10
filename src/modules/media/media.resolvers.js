@@ -1,4 +1,4 @@
-const getMedia = async (
+const media = async (
   parent,
   args,
   { token, dataSources: { mediaAPI, userAPI } }
@@ -10,5 +10,5 @@ const getMedia = async (
 };
 
 module.exports = {
-  getMedia
+  media
 };

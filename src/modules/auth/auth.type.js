@@ -1,6 +1,6 @@
 const { gql } = require("apollo-server-express");
 
-const Auth = gql`
+module.exports = gql`
   type AccessToken {
     uid: ID!
     accessToken: String!
@@ -16,5 +16,3 @@ const Auth = gql`
     logout: String
   }
 `;
-
-module.exports = { Auth };

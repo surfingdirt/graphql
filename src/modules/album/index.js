@@ -1,9 +1,9 @@
 const AlbumAPI = require('./album.api');
-const { Album } = require('./album.type');
-const { getAlbum } = require('./album.resolvers');
+const Album = require('./album.type');
+const AlbumQueryResolvers = require('./album.resolvers');
 
 module.exports = {
   Album,
   AlbumAPI,
-  AlbumQueryResolvers: { getAlbum },
+  AlbumQueryResolvers,
 };

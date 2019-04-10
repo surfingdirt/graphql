@@ -1,5 +1,5 @@
-const hello = () => 'Hello World !';
+const alive = () => 'Server is alive';
 
 module.exports = {
-  hello,
+  alive,
 };

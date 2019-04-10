@@ -1,6 +1,6 @@
 const { gql } = require("apollo-server-express");
 
-const Album = gql`
+module.exports = gql`
   type Album {
       id: ID
       title: String
@@ -16,8 +16,6 @@ const Album = gql`
       media: [Media]
   }
   extend type Query {
-      getAlbum(id: String!): Album!
+      album(id: String!): Album!
   }
 `;
-
-module.exports = { Album };
