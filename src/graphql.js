@@ -10,12 +10,6 @@ const {
 
 const { Auth, AuthAPI, AuthMutationResolvers } = require("./modules/auth");
 
-// const {
-//   Image,
-//   ImageAPI,
-//   ImageMutationResolvers,
-// } = require("./modules/image");
-
 const {
   Media,
   MediaAPI,
@@ -43,7 +37,6 @@ const resolvers = {
 
   Mutation: {
     ...AuthMutationResolvers
-    // ...ImageMutationResolvers,
   },
 
   Album: { ...AlbumFieldResolvers },
@@ -59,7 +52,6 @@ const resolvers = {
 const dataSources = () => ({
   albumAPI: new AlbumAPI(),
   authAPI: new AuthAPI(),
-  // imageAPI: new ImageAPI(),
   mediaAPI: new MediaAPI(),
   userAPI: new UserAPI()
 });
