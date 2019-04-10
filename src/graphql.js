@@ -4,14 +4,11 @@ const { BaseTypes, BaseQueryResolvers } = require("./modules/base");
 const {
   Album,
   AlbumAPI,
-  AlbumQueryResolvers,
+  AlbumFieldResolvers,
+  AlbumQueryResolvers
 } = require("./modules/album");
 
-const {
-  Auth,
-  AuthAPI,
-  AuthMutationResolvers,
-} = require("./modules/auth");
+const { Auth, AuthAPI, AuthMutationResolvers } = require("./modules/auth");
 
 // const {
 //   Image,
@@ -23,13 +20,10 @@ const {
   Media,
   MediaAPI,
   MediaQueryResolvers,
+  MediaFieldResolvers
 } = require("./modules/media");
 
-const {
-  User,
-  UserAPI,
-  UserQueryResolvers,
-} = require("./modules/user");
+const { User, UserAPI, UserFieldResolvers, UserQueryResolvers } = require("./modules/user");
 
 /******************************************************************************
  * TYPEDEFS
@@ -44,61 +38,19 @@ const resolvers = {
     ...BaseQueryResolvers,
     ...AlbumQueryResolvers,
     ...MediaQueryResolvers,
-    ...UserQueryResolvers,
+    ...UserQueryResolvers
   },
+
   Mutation: {
-    ...AuthMutationResolvers,
+    ...AuthMutationResolvers
     // ...ImageMutationResolvers,
   },
-  Album: {
-    async lastEditor(parent, args, { token, dataSources: { userAPI } }) {
-      if (!parent.lastEditor.id) {
-        return null;
-      }
-      return await userAPI.getUser(parent.lastEditor.id, token);
-    },
 
-    async submitter(parent, args, { token, dataSources: { userAPI } }) {
-      if (!parent.submitter.id) {
-        return null;
-      }
-      return await userAPI.getUser(parent.submitter.id, token);
-    },
-  },
+  Album: { ...AlbumFieldResolvers },
 
-  Media: {
-    async album(parent, args, { token, dataSources: { albumAPI } }) {
-      if (!parent.album.id) {
-        return null;
-      }
-      return await albumAPI.getAlbum(parent.album.id, token);
-    },
+  Media: { ...MediaFieldResolvers },
 
-    async lastEditor(parent, args, { token, dataSources: { userAPI } }) {
-      if (!parent.lastEditor.id) {
-        return null;
-      }
-      return await userAPI.getUser(parent.lastEditor.id, token);
-    },
-
-    async users(parent, args, { token, dataSources: { userAPI } }) {
-      const users = [];
-      for (let userId of parent.users) {
-        users.push(await userAPI.getUser(userId, token));
-      }
-      return users;
-    },
-  },
-
-  User: {
-    async album(parent, args, { token, dataSources: { albumAPI } }) {
-      if (!parent.album.id) {
-        return null;
-      }
-      return await albumAPI.getAlbum(parent.album.id, token);
-    },
-  }
-
+  User: { ...UserFieldResolvers },
 };
 
 /******************************************************************************
@@ -109,7 +61,7 @@ const dataSources = () => ({
   authAPI: new AuthAPI(),
   // imageAPI: new ImageAPI(),
   mediaAPI: new MediaAPI(),
-  userAPI: new UserAPI(),
+  userAPI: new UserAPI()
 });
 
 /******************************************************************************
@@ -121,9 +73,9 @@ const buildGraphQLServer = () =>
     resolvers,
     dataSources,
     context: ({ req }) => {
-      const token = req.headers.authorization || '';
+      const token = req.headers.authorization || "";
       return { token };
-    },
+    }
   });
 
 module.exports = {
