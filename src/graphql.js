@@ -17,7 +17,13 @@ const {
   MediaFieldResolvers
 } = require("./modules/media");
 
-const { User, UserAPI, UserFieldResolvers, UserQueryResolvers } = require("./modules/user");
+const {
+  User,
+  UserAPI,
+  UserFieldResolvers,
+  UserMutationResolvers,
+  UserQueryResolvers
+} = require("./modules/user");
 
 /******************************************************************************
  * TYPEDEFS
@@ -36,14 +42,15 @@ const resolvers = {
   },
 
   Mutation: {
-    ...AuthMutationResolvers
+    ...AuthMutationResolvers,
+    ...UserMutationResolvers,
   },
 
   Album: { ...AlbumFieldResolvers },
 
   Media: { ...MediaFieldResolvers },
 
-  User: { ...UserFieldResolvers },
+  User: { ...UserFieldResolvers }
 };
 
 /******************************************************************************

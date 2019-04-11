@@ -55,22 +55,29 @@ module.exports = class BaseAPI extends RESTDataSource {
 
   async post(path, body, init) {
     try {
-      const urlParams = new URLSearchParams(this.getParams());
+      const params = this.getParams();
+      const urlParams = new URLSearchParams(params).toString();
+      const fullPath = urlParams ? `${path}?${urlParams}` : path;
       const response = await super.post(
-        `${path}?${urlParams.toString()}`,
+        fullPath,
         body,
         init
       );
       return response;
     } catch (e) {
-      const {
-        message,
-        code,
-        backendStacktrace,
-        type
-      } = e.extensions.response.body.errors.topLevelError;
-      // Throw an error that GraphQL clients will understand
-      throw new ApolloError(message, code, { backendStacktrace, type });
+      console.log('baseAPI - POST exception', e);
+      if (e.extensions) {
+        const {
+          message,
+          code,
+          backendStacktrace,
+          type
+        } = e.extensions.response.body.errors.topLevelError;
+        // Throw an error that GraphQL clients will understand
+        throw new ApolloError(message, code, { backendStacktrace, type });
+      } else {
+        debugger;
+      }
     }
   }
 
