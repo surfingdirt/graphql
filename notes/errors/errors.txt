@@ -1,0 +1,3 @@
+Two forms of error responses:
+- form errors: they contain a list individual errors in form data (base on errors in the API response output)
+- request errors: they contain one error (based on errors.topLevelError in the API response output)

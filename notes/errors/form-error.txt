@@ -1,0 +1,54 @@
+Request
+mutation {
+  createUser(
+  input: {
+    username: "mynewuser"
+    email: ""
+    userP: "12345678"
+    userPC: "123456789"
+  }
+  ) {
+  userId
+  username
+  status
+  email
+}
+}
+
+Response
+{
+  "errors": [
+    {
+      "message": "badInput",
+      "locations": [
+        {
+          "line": 2,
+          "column": 3
+        }
+      ],
+      "path": [
+        "createUser"
+      ],
+      "extensions": {
+        "code": 16001,
+        "exception": {
+          "errors": {
+            "userPC": [
+              "notSame"
+            ],
+            "email": [
+              "isEmpty"
+            ]
+          },
+          "stacktrace": [
+            "Error: badInput",
+            "    at UserApi.parseError (/Library/WebServer/Documents/www.local.wrk/SurfingDirt-graphql/src/modules/base/base.api.js:49:12)",
+            "    at UserApi.post (/Library/WebServer/Documents/www.local.wrk/SurfingDirt-graphql/src/modules/base/base.api.js:76:32)",
+            "    at process._tickCallback (internal/process/next_tick.js:178:7)"
+          ]
+        }
+      }
+    }
+  ],
+  "data": null
+}

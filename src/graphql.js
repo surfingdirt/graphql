@@ -74,7 +74,7 @@ const buildGraphQLServer = () =>
     context: ({ req }) => {
       const token = req.headers.authorization || "";
       return { token };
-    }
+    },
   });
 
 module.exports = {

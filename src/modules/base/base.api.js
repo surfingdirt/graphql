@@ -1,10 +1,12 @@
 const { RESTDataSource } = require("apollo-datasource-rest");
-const { ApolloError } = require("apollo-server-express");
+const { ApolloError, UserInputError } = require("apollo-server-express");
 
 const { apiUrl } = require("../../../env");
 
 const BACKEND_DEBUG_KEY = "XDEBUG_SESSION_START";
 const BACKEND_DEBUG_VALUE = "PHP_STORM";
+
+const BAD_INPUT_MESSAGE = 'badInput';
 
 module.exports = class BaseAPI extends RESTDataSource {
   constructor() {
@@ -30,6 +32,23 @@ module.exports = class BaseAPI extends RESTDataSource {
     return Object.assign({}, params, additionalParams);
   }
 
+  parseError(e) {
+    if (!e.extensions) {
+      // This should never happen
+      console.log("baseAPI parseError - unhandled error", e);
+      return new ApolloError('Unhandled error', 0);
+      return e;
+    }
+
+    const { errors, code } = e.extensions.response.body;
+    if (errors.topLevelError) {
+      const { message, code, backendStacktrace, type } = errors.topLevelError;
+      return new ApolloError(message, code, { backendStacktrace, type });
+    }
+
+    return new ApolloError(BAD_INPUT_MESSAGE, code, { errors });
+  }
+
   async get(path, params, init) {
     try {
       const actualParams = this.getParams(params);
@@ -41,15 +60,8 @@ module.exports = class BaseAPI extends RESTDataSource {
       const response = await super.get(path, actualParams, init);
       return response;
     } catch (e) {
-      let toto = 1;
-      const {
-        message,
-        code,
-        backendStacktrace,
-        type
-      } = e.extensions.response.body.errors.topLevelError;
-      // Throw an error that GraphQL clients will understand
-      throw new ApolloError(message, code, { backendStacktrace, type });
+      const parsedError = this.parseError(e);
+      throw parsedError;
     }
   }
 
@@ -58,26 +70,11 @@ module.exports = class BaseAPI extends RESTDataSource {
       const params = this.getParams();
       const urlParams = new URLSearchParams(params).toString();
       const fullPath = urlParams ? `${path}?${urlParams}` : path;
-      const response = await super.post(
-        fullPath,
-        body,
-        init
-      );
+      const response = await super.post(fullPath, body, init);
       return response;
     } catch (e) {
-      console.log('baseAPI - POST exception', e);
-      if (e.extensions) {
-        const {
-          message,
-          code,
-          backendStacktrace,
-          type
-        } = e.extensions.response.body.errors.topLevelError;
-        // Throw an error that GraphQL clients will understand
-        throw new ApolloError(message, code, { backendStacktrace, type });
-      } else {
-        debugger;
-      }
+      const parsedError = this.parseError(e);
+      throw parsedError;
     }
   }
 
