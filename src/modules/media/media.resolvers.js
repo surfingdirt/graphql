@@ -1,4 +1,7 @@
-const { apiUrl, storageLocalPath } = require("../../../env");
+const { apiUrl, storageLocalDomain, storageLocalPath } = require("../../../env");
+
+const MEDIA_TYPE_VIDEO = 'video';
+const MEDIA_TYPE_PHOTO = 'photo';
 
 const StorageType = {
   LOCAL: "0"
@@ -22,26 +25,29 @@ const ImageType = {
   WEBP: "webp"
 };
 
-const buildThumbsAndImages = ({ id, storageType }) => {
+const buildThumbsAndImages = ({ imageId, mediaType, storageType }) => {
   switch (storageType) {
     case StorageType.LOCAL:
       const thumbs = [];
       const images = [];
+      const path = `${storageLocalDomain}/${storageLocalPath}`
 
       for (let sizeKey in ImageSize) {
         const size = ImageSize[sizeKey];
         for (let type of [ImageType.JPG, ImageType.WEBP]) {
           const suffix = `_${ImageSizeSuffixes[size]}`;
           const thumbSuffix = `_t${ImageSizeSuffixes[size]}`;
-          images.push({
-            size,
-            type,
-            url: `${apiUrl}/${storageLocalPath}/${id}/img${suffix}.${type}`
-          });
+          if (mediaType === MEDIA_TYPE_PHOTO) {
+            images.push({
+              size,
+              type,
+              url: `${path}/${imageId}/img${suffix}.${type}`
+            });
+          }
           thumbs.push({
             size,
             type,
-            url: `${apiUrl}/${storageLocalPath}/${id}/img${thumbSuffix}.${type}`
+            url: `${path}/${imageId}/img${thumbSuffix}.${type}`
           });
         }
       }
