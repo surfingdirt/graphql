@@ -1,7 +1,7 @@
 const { RESTDataSource } = require("apollo-datasource-rest");
 const { ApolloError, UserInputError } = require("apollo-server-express");
 
-const { apiUrl } = require("../../../env");
+const { apiUrl } = require("../../../config");
 
 const BACKEND_DEBUG_KEY = "XDEBUG_SESSION_START";
 const BACKEND_DEBUG_VALUE = "PHP_STORM";

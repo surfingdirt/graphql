@@ -20,6 +20,24 @@ const {
 } = require("./modules/media");
 
 const {
+  Photo,
+  PhotoAPI,
+  PhotoTypeResolvers,
+  PhotoQueryResolvers,
+  PhotoMutationResolvers,
+  PhotoFieldResolvers
+} = require("./modules/photo");
+
+const {
+  Video,
+  VideoAPI,
+  VideoTypeResolvers,
+  VideoQueryResolvers,
+  VideoMutationResolvers,
+  VideoFieldResolvers
+} = require("./modules/video");
+
+const {
   User,
   UserAPI,
   UserFieldResolvers,
@@ -30,7 +48,7 @@ const {
 /******************************************************************************
  * TYPEDEFS
  *****************************************************************************/
-const typeDefs = [BaseTypes, Album, Auth /*, Image*/, Media, User];
+const typeDefs = [BaseTypes, Album, Auth /*, Image*/, Media, Photo, Video, User];
 
 /******************************************************************************
  * RESOLVERS
@@ -40,19 +58,28 @@ const resolvers = {
     ...BaseQueryResolvers,
     ...AlbumQueryResolvers,
     ...MediaQueryResolvers,
+    ...PhotoQueryResolvers,
+    ...VideoQueryResolvers,
     ...UserQueryResolvers
   },
 
   Mutation: {
     ...AuthMutationResolvers,
     ...MediaMutationResolvers,
+    ...PhotoMutationResolvers,
+    ...VideoMutationResolvers,
     ...UserMutationResolvers,
   },
 
   Album: { ...AlbumFieldResolvers },
 
   ...MediaTypeResolvers,
+  ...PhotoTypeResolvers,
+  ...VideoTypeResolvers,
+
   Media: { ...MediaFieldResolvers },
+  Photo: { ...PhotoFieldResolvers },
+  Video: { ...VideoFieldResolvers },
 
   User: { ...UserFieldResolvers }
 };
@@ -64,6 +91,8 @@ const dataSources = () => ({
   albumAPI: new AlbumAPI(),
   authAPI: new AuthAPI(),
   mediaAPI: new MediaAPI(),
+  photoAPI: new PhotoAPI(),
+  videoAPI: new VideoAPI(),
   userAPI: new UserAPI()
 });
 

@@ -1,7 +1,9 @@
-const { apiUrl, storageLocalDomain, storageLocalPath } = require("../../../config");
+const {
+  storageLocalDomain,
+  storageLocalPath
+} = require("../../../config");
 
-const MEDIA_TYPE_VIDEO = 'video';
-const MEDIA_TYPE_PHOTO = 'photo';
+const MEDIA_TYPE_PHOTO = "photo";
 
 const StorageType = {
   LOCAL: "0"
@@ -9,13 +11,13 @@ const StorageType = {
 const ImageSize = {
   SMALL: "small",
   MEDIUM: "medium",
-  LARGE: "large",
+  LARGE: "large"
 };
 
 const ImageSizeSuffixes = {
   [ImageSize.SMALL]: "s",
   [ImageSize.MEDIUM]: "m",
-  [ImageSize.LARGE]: "m",
+  [ImageSize.LARGE]: "m"
 };
 
 const ImageType = {
@@ -30,7 +32,7 @@ const buildThumbsAndImages = ({ imageId, mediaType, storageType }) => {
     case StorageType.LOCAL:
       const thumbs = [];
       const images = [];
-      const path = `${storageLocalDomain}/${storageLocalPath}`
+      const path = `${storageLocalDomain}/${storageLocalPath}`;
 
       for (let sizeKey in ImageSize) {
         const size = ImageSize[sizeKey];
@@ -54,66 +56,47 @@ const buildThumbsAndImages = ({ imageId, mediaType, storageType }) => {
       return { images, thumbs };
     default:
       throw new Error(
-        `Unsupported storage type: '${storageType}' for media '${id}'`
+        `Unsupported storage type: '${storageType}' for video '${id}'`
       );
   }
 };
 
 module.exports = {
-  MediaTypeResolvers: {
-    MediaType: {
-      PHOTO: "photo",
-      VIDEO: "video"
-    },
-    MediaSubType: {
-      DAILYMOTION: "dailymotion",
-      FACEBOOK: "facebook",
-      INSTAGRAM: "instagram",
-      VIMEO: "vimeo",
-      YOUTUBE: "youtube",
-      IMG: "img",
-      JPG: "jpg",
-      PNG: "png",
-      GIF: "gif",
-      WEBP: "webp"
-    },
-    StorageType,
-    ImageSize,
-    ImageType
+  PhotoTypeResolvers: {
   },
-  MediaQueryResolvers: {
-    media: async (
+  PhotoQueryResolvers: {
+    photo: async (
       parent,
       args,
-      { token, dataSources: { mediaAPI, userAPI } }
+      { token, dataSources: { photoAPI, userAPI } }
     ) => {
-      const media = await mediaAPI.getMedia(args.id, token);
-      const submitter = media.submitter.id
-        ? await userAPI.getUser(media.submitter.id, token)
+      const photo = await photoAPI.getPhoto(args.id, token);
+      const submitter = photo.submitter.id
+        ? await userAPI.getUser(photo.submitter.id, token)
         : null;
 
       return Object.assign(
         {},
-        media,
+        photo,
         { submitter },
-        buildThumbsAndImages(media)
+        buildThumbsAndImages(photo)
       );
     }
   },
-  MediaMutationResolvers: {
-    createMedia: async (parent, args, { token, dataSources: { mediaAPI } }) => {
+  PhotoMutationResolvers: {
+    createPhoto: async (parent, args, { token, dataSources: { photoAPI } }) => {
       const { input } = args;
-      const media = await mediaAPI.createMedia(input, token);
-      return Object.assign({}, media, buildThumbsAndImages(media));
+      const photo = await photoAPI.createPhoto(input, token);
+      return Object.assign({}, photo, buildThumbsAndImages(photo));
     },
 
-    updateMedia: async (parent, args, { token, dataSources: { mediaAPI } }) => {
+    updatePhoto: async (parent, args, { token, dataSources: { photoAPI } }) => {
       const { id, input } = args;
-      const media = await mediaAPI.updateMedia(id, input, token);
-      return Object.assign({}, media, buildThumbsAndImages(media));
+      const photo = await photoAPI.updatePhoto(id, input, token);
+      return Object.assign({}, photo, buildThumbsAndImages(photo));
     }
   },
-  MediaFieldResolvers: {
+  PhotoFieldResolvers: {
     async album(
       parent,
       args,

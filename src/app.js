@@ -1,7 +1,6 @@
 const express = require('express');
 
 const aliveRoute = require('./alive/alive.route');
-
 const { buildGraphQLServer } = require('./graphql');
 
 const app = express();
