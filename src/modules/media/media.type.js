@@ -71,12 +71,4 @@ module.exports = gql`
       description: String
       status: String
   }
-  extend type Query {
-      media(id: String!): Media!
-  }
-  extend type Mutation {
-      createMedia(input: MediaCreationInput!): Media!
-      updateMedia(id: ID, input: MediaUpdateInput!): Media!
-  }
-  
 `;

@@ -6,7 +6,7 @@ module.exports = {
       { token, dataSources: { albumAPI, userAPI } }
     ) => {
       const album = await albumAPI.getAlbum(args.id, token);
-      return album;
+      // return album;
       const fullMedia = album.media.map(async m => {
         const submitter = m.submitter.id
           ? await userAPI.getUser(m.submitter.id, token)

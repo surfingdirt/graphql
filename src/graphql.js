@@ -12,10 +12,7 @@ const { Auth, AuthAPI, AuthMutationResolvers } = require("./modules/auth");
 
 const {
   Media,
-  MediaAPI,
   MediaTypeResolvers,
-  MediaQueryResolvers,
-  MediaMutationResolvers,
   MediaFieldResolvers
 } = require("./modules/media");
 
@@ -57,7 +54,6 @@ const resolvers = {
   Query: {
     ...BaseQueryResolvers,
     ...AlbumQueryResolvers,
-    ...MediaQueryResolvers,
     ...PhotoQueryResolvers,
     ...VideoQueryResolvers,
     ...UserQueryResolvers
@@ -65,7 +61,6 @@ const resolvers = {
 
   Mutation: {
     ...AuthMutationResolvers,
-    ...MediaMutationResolvers,
     ...PhotoMutationResolvers,
     ...VideoMutationResolvers,
     ...UserMutationResolvers,
@@ -90,7 +85,6 @@ const resolvers = {
 const dataSources = () => ({
   albumAPI: new AlbumAPI(),
   authAPI: new AuthAPI(),
-  mediaAPI: new MediaAPI(),
   photoAPI: new PhotoAPI(),
   videoAPI: new VideoAPI(),
   userAPI: new UserAPI()
