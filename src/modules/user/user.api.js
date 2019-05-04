@@ -18,7 +18,6 @@ module.exports = class UserApi extends BaseAPI {
   async createUser(input, token) {
     // Should not be necessary, but the presence of a token indicates a problem, so keep it.
     this.setToken(token);
-    // this.setDebugBackend(true);
     // node-fetch or apollo is a little picky, so need to do this, in order
     // to have body.constructor === Object:
     const body = {...input};

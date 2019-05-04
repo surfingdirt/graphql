@@ -6,6 +6,9 @@ const { apiUrl } = require("../../../env");
 const BACKEND_DEBUG_KEY = "XDEBUG_SESSION_START";
 const BACKEND_DEBUG_VALUE = "PHP_STORM";
 
+const CONNECTION_REFUSED = 'ECONNREFUSED';
+const CONNECTION_REFUSED_CODE = 17001;
+
 const BAD_INPUT_MESSAGE = 'badInput';
 
 module.exports = class BaseAPI extends RESTDataSource {
@@ -34,10 +37,14 @@ module.exports = class BaseAPI extends RESTDataSource {
 
   parseError(e) {
     if (!e.extensions) {
+      if (e.code === CONNECTION_REFUSED) {
+        console.log("Could not connect to API", e);
+        return new ApolloError('Could not connect to API', CONNECTION_REFUSED_CODE);
+      }
+
       // This should never happen
       console.log("baseAPI parseError - unhandled error", e);
       return new ApolloError('Unhandled error', 0);
-      return e;
     }
 
     const { errors, code } = e.extensions.response.body;
@@ -70,7 +77,30 @@ module.exports = class BaseAPI extends RESTDataSource {
       const params = this.getParams();
       const urlParams = new URLSearchParams(params).toString();
       const fullPath = urlParams ? `${path}?${urlParams}` : path;
+      if (this.token) {
+        init = Object.assign({}, init, {
+          headers: { Authorization: this.token }
+        });
+      }
       const response = await super.post(fullPath, body, init);
+      return response;
+    } catch (e) {
+      const parsedError = this.parseError(e);
+      throw parsedError;
+    }
+  }
+
+  async put(path, body, init) {
+    try {
+      const params = this.getParams();
+      const urlParams = new URLSearchParams(params).toString();
+      const fullPath = urlParams ? `${path}?${urlParams}` : path;
+      if (this.token) {
+        init = Object.assign({}, init, {
+          headers: { Authorization: this.token }
+        });
+      }
+      const response = await super.put(fullPath, body, init);
       return response;
     } catch (e) {
       const parsedError = this.parseError(e);
@@ -81,6 +111,11 @@ module.exports = class BaseAPI extends RESTDataSource {
   async delete(path, params, init) {
     try {
       const actualParams = this.getParams(params);
+      if (this.token) {
+        init = Object.assign({}, init, {
+          headers: { Authorization: this.token }
+        });
+      }
       const response = await super.delete(path, actualParams, init);
       return response;
     } catch (e) {

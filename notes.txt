@@ -15,3 +15,16 @@ ERROR REPORTING
           } = e.extensions.response.body.errors.topLevelError;
           // Throw an error that GraphQL clients will understand
           throw new ApolloError(message, code, { trace, type });
+
+
+FILE UPLOADS
+    https://www.youtube.com/watch?v=KQ_ty4A6Nsc
+    https://github.com/benawad/apollo-upload-example
+    https://github.com/benawad/graphql-yoga-upload-example
+
+    Use https://github.com/jaydenseric/graphql-upload (formerly known as apollo-upload server)
+
+
+
+
+Probleme: des fois un objet user_row finit dans le cache, et on ne peut plus faire les requetes GET dessus

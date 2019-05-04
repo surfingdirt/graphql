@@ -26,7 +26,7 @@ module.exports = {
         dataSources: { albumAPI }
       }
     ) {
-      if (!parent.album.id) {
+      if (!parent.album || !parent.album.id) {
         return null;
       }
       return await albumAPI.getAlbum(parent.album.id, token);
