@@ -22,7 +22,6 @@ module.exports = gql`
       title: String
       description: String
       albumId: ID!
-      mediaType: MediaType!
       vendorKey: String
       imageId: String
       mediaSubType: MediaSubType!

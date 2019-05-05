@@ -19,6 +19,7 @@ ERROR REPORTING
 
 FILE UPLOADS
     https://blog.apollographql.com/file-uploads-with-apollo-server-2-0-5db2f3f60675
+    Upload via curl: https://github.com/jaydenseric/graphql-multipart-request-spec#curl-request
 
     https://www.youtube.com/watch?v=KQ_ty4A6Nsc
     https://github.com/benawad/apollo-upload-example
