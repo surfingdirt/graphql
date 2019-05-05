@@ -3,4 +3,5 @@ module.exports = {
   storageLocalDomain: 'http://www.local.wrk/RideDB/public',
   storageLocalPath: 'files',
   port: 4000,
+  tmpFolder: '/tmp',
 };

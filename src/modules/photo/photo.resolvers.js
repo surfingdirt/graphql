@@ -1,10 +1,12 @@
 const rp = require("request-promise");
 const fs = require("fs");
+const uuid = require("uuid");
 
 const {
   apiUrl,
   storageLocalDomain,
-  storageLocalPath
+  storageLocalPath,
+  tmpFolder
 } = require("../../../config");
 
 const API_IMAGE_PATH = "image";
@@ -80,13 +82,23 @@ const getFullUri = ({ path, urlParams = null, debugBackend = false }) => {
   return fullUri;
 };
 
-const waitForStreamToFinish = (readableStream, writableStream) =>
-  new Promise((resolve, reject) =>
-    readableStream
-      .pipe(writableStream)
-      .on("finish", resolve)
-      .on("error", reject)
+const storeTempFile = stream => {
+  const filename = uuid.v4();
+  const path = `${tmpFolder}/${filename}`;
+  return new Promise((resolve, reject) =>
+    stream
+      .on("error", error => {
+        if (stream.truncated) {
+          // Delete the truncated file.
+          fs.unlinkSync(path);
+        }
+        reject(error);
+      })
+      .pipe(fs.createWriteStream(path))
+      .on("error", error => reject(error))
+      .on("finish", () => resolve(path))
   );
+};
 
 const postImage = async (file, token, data, debugBackend = false) => {
   const uri = getFullUri({ path: API_IMAGE_PATH, debugBackend });
@@ -99,21 +111,12 @@ const postImage = async (file, token, data, debugBackend = false) => {
 
   const { createReadStream, filename, mimetype } = await file;
   const readableStream = await createReadStream();
-  const writeStream = fs.createWriteStream("/tmp/toto7.jpg");
-  await waitForStreamToFinish(readableStream, writeStream);
-  const value = fs.readFileSync("/tmp/toto7.jpg");
 
-  const fileData = [
-    {
-      value,
-      options: {
-        filename,
-        contentType: mimetype
-      }
-    }
-  ];
+  // Store file to disk fully, then restream to API:
+  const tmpFilePath = await storeTempFile(readableStream);
+  const value = fs.createReadStream(tmpFilePath);
 
-  const options = {
+  const response = await rp({
     method: "POST",
     json: true,
     uri,
@@ -121,10 +124,23 @@ const postImage = async (file, token, data, debugBackend = false) => {
     simple: false,
     resolveWithFullResponse: true,
     // 'files' is the name of the variable holding upload info on the backend
-    formData: Object.assign({}, data, { "files[]": fileData })
-  };
-
-  const response = await rp(options);
+    formData: Object.assign({}, data, {
+      "files[]": [
+        {
+          value,
+          options: {
+            filename,
+            contentType: mimetype
+          }
+        }
+      ]
+    })
+  });
+  try {
+    fs.unlinkSync(tmpFilePath);
+  } catch (e) {
+    console.log(`Could not delete tmp file '${tmpFilePath}'`);
+  }
   return response;
 };
 
@@ -154,7 +170,7 @@ module.exports = {
       const { input, file } = args;
       let imageResponse;
       try {
-        const debugBackend = true;
+        const debugBackend = false;
         imageResponse = await postImage(
           file,
           token,
@@ -162,12 +178,18 @@ module.exports = {
           debugBackend
         );
       } catch (e) {
-        console.log('Failed to post image to API');
+        console.log("Failed to post image to API");
         console.log(e);
         throw e;
       }
 
       // The REST API handles multiple images but this only handles one:
+      const { body } = imageResponse;
+      if (body.errors) {
+        // TODO: how to report a proper error?
+        throw new Error();
+      }
+
       input.imageId = imageResponse.body[0].key;
       input.mediaType = "photo";
 
@@ -175,8 +197,9 @@ module.exports = {
         const photo = await photoAPI.createPhoto(input, token);
         return Object.assign({}, photo, buildThumbsAndImages(photo));
       } catch (e) {
-        console.log('Failed to create photo with previously uploaded image');
+        console.log("Failed to create photo with previously uploaded image");
         console.log(e);
+        // TODO: how to report a proper error?
         throw e;
       }
     },

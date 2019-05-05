@@ -1,5 +1,5 @@
-curl localhost:4000 \
-    --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NTcwNjgzNTgsInVpZCI6IjYwYmZiOGE3LTU3NTQtNDE4Ni1hY2QyLTQ0YjIwZWYzMjM5OSJ9.xJPskPKken-YsfDgI-oEqoAWoZtjc-U434bYwE7v-xY" \
+clear; curl localhost:4000 \
+    --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NTcxNTM2NTIsInVpZCI6IjYwYmZiOGE3LTU3NTQtNDE4Ni1hY2QyLTQ0YjIwZWYzMjM5OSJ9.PyP_WqFh2unUFfCbIro6vTt47Puywrd2diEwsNStnTE" \
   	-F operations='{ "query": "mutation ($input: PhotoCreationInput!, $file: Upload!) { createPhoto(input: $input, file: $file) { id } }", "variables": { "input": {"albumId": "a3833b1c-1db0-4a93-9efc-b6659400ce9f", "mediaSubType": "IMG", "imageId": "db958a40-d8e6-4dda-baa5-166da2f24892", "storageType": "LOCAL", "title": "toto", "description": "desc"}, "file": null } }' \
   	-F map='{ "0": ["variables.file"] }' \
   	-F 0=@image.jpg
