@@ -1,4 +1,5 @@
-const rp = require('request-promise');
+const rp = require("request-promise");
+const fs = require("fs");
 
 const {
   apiUrl,
@@ -69,7 +70,7 @@ const getFullUri = ({ path, urlParams = null, debugBackend = false }) => {
     }
   }
   if (debugBackend) {
-    usp.append('XDEBUG_SESSION_START', 'PHP_STORM');
+    usp.append("XDEBUG_SESSION_START", "PHP_STORM");
   }
   const argString = usp.toString();
   if (argString) {
@@ -79,43 +80,53 @@ const getFullUri = ({ path, urlParams = null, debugBackend = false }) => {
   return fullUri;
 };
 
+const waitForStreamToFinish = (readableStream, writableStream) =>
+  new Promise((resolve, reject) =>
+    readableStream
+      .pipe(writableStream)
+      .on("finish", resolve)
+      .on("error", reject)
+  );
+
 const postImage = async (file, token, data, debugBackend = false) => {
   const uri = getFullUri({ path: API_IMAGE_PATH, debugBackend });
   const headers = {
-    Accept: 'application/json',
+    Accept: "application/json",
     // Token already contains 'Bearer'
     Authorization: token,
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json"
   };
 
-  const { createReadStream, filename, mimetype, encoding } = await file;
-  const value = await createReadStream();
-  console.log("File uploaded:");
-  console.log({ value, filename, mimetype, encoding });
+  const { createReadStream, filename, mimetype } = await file;
+  const readableStream = await createReadStream();
+  const writeStream = fs.createWriteStream("/tmp/toto7.jpg");
+  await waitForStreamToFinish(readableStream, writeStream);
+  const value = fs.readFileSync("/tmp/toto7.jpg");
 
-  const fileData = [{
-    value,
-    options: {
-      filename,
-      contentType: mimetype,
-    },
-  }];
+  const fileData = [
+    {
+      value,
+      options: {
+        filename,
+        contentType: mimetype
+      }
+    }
+  ];
 
   const options = {
-    method: 'POST',
+    method: "POST",
     json: true,
     uri,
     headers,
     simple: false,
     resolveWithFullResponse: true,
     // 'files' is the name of the variable holding upload info on the backend
-    formData: Object.assign({}, data, { 'files[]': fileData }),
+    formData: Object.assign({}, data, { "files[]": fileData })
   };
 
   const response = await rp(options);
   return response;
 };
-
 
 module.exports = {
   PhotoTypeResolvers: {},
@@ -141,18 +152,33 @@ module.exports = {
   PhotoMutationResolvers: {
     createPhoto: async (parent, args, { token, dataSources: { photoAPI } }) => {
       const { input, file } = args;
+      let imageResponse;
       try {
         const debugBackend = true;
-        const imageResponse = await postImage(file, token, {type: input.storageType}, debugBackend);
-        console.log("imageResponse:", JSON.stringify(imageResponse, null, 2));
+        imageResponse = await postImage(
+          file,
+          token,
+          { type: input.storageType },
+          debugBackend
+        );
       } catch (e) {
+        console.log('Failed to post image to API');
         console.log(e);
+        throw e;
       }
-      input.imageId = imageResponse.body.id;
+
+      // The REST API handles multiple images but this only handles one:
+      input.imageId = imageResponse.body[0].key;
       input.mediaType = "photo";
 
-      const photo = await photoAPI.createPhoto(input, token);
-      return Object.assign({}, photo, buildThumbsAndImages(photo));
+      try {
+        const photo = await photoAPI.createPhoto(input, token);
+        return Object.assign({}, photo, buildThumbsAndImages(photo));
+      } catch (e) {
+        console.log('Failed to create photo with previously uploaded image');
+        console.log(e);
+        throw e;
+      }
     },
 
     updatePhoto: async (parent, args, { token, dataSources: { photoAPI } }) => {
