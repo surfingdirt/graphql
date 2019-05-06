@@ -27,6 +27,8 @@ module.exports = class PhotoApi extends BaseAPI {
 
   async updatePhoto(id, input, token) {
     this.setToken(token);
+    // node-fetch or apollo is a little picky, so need to do this, in order
+    // to have body.constructor === Object:
     const body = { ...input };
     const response = await this.put(`${this.path}/${id}`, body);
     return response;

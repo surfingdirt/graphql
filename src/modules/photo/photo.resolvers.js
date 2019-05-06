@@ -2,66 +2,11 @@ const rp = require("request-promise");
 const fs = require("fs");
 const uuid = require("uuid");
 
-const {
-  apiUrl,
-  storageLocalDomain,
-  storageLocalPath,
-  tmpFolder
-} = require("../../../config");
+const { apiUrl, tmpFolder } = require("../../../config");
+
+const { buildThumbsAndImages } = require("../../utils/thumbs");
 
 const API_IMAGE_PATH = "image";
-
-const StorageType = {
-  LOCAL: "0"
-};
-const ImageSize = {
-  SMALL: "small",
-  MEDIUM: "medium",
-  LARGE: "large"
-};
-const ImageSizeSuffixes = {
-  [ImageSize.SMALL]: "s",
-  [ImageSize.MEDIUM]: "m",
-  [ImageSize.LARGE]: "m"
-};
-const ImageType = {
-  JPG: "jpg",
-  PNG: "png",
-  GIF: "gif",
-  WEBP: "webp"
-};
-
-const buildThumbsAndImages = ({ imageId, mediaType, storageType }) => {
-  switch (storageType) {
-    case StorageType.LOCAL:
-      const thumbs = [];
-      const images = [];
-      const path = `${storageLocalDomain}/${storageLocalPath}`;
-
-      for (let sizeKey in ImageSize) {
-        const size = ImageSize[sizeKey];
-        for (let type of [ImageType.JPG, ImageType.WEBP]) {
-          const suffix = `_${ImageSizeSuffixes[size]}`;
-          const thumbSuffix = `_t${ImageSizeSuffixes[size]}`;
-          images.push({
-            size,
-            type,
-            url: `${path}/${imageId}/img${suffix}.${type}`
-          });
-          thumbs.push({
-            size,
-            type,
-            url: `${path}/${imageId}/img${thumbSuffix}.${type}`
-          });
-        }
-      }
-      return { images, thumbs };
-    default:
-      throw new Error(
-        `Unsupported storage type: '${storageType}' for video '${id}'`
-      );
-  }
-};
 
 const getFullUri = ({ path, urlParams = null, debugBackend = false }) => {
   let fullUri = `${apiUrl}/${path}`;
@@ -150,7 +95,7 @@ module.exports = {
     photo: async (
       parent,
       args,
-      { token, dataSources: { photoAPI, userAPI } }
+      { token, supportsWebP, dataSources: { photoAPI, userAPI } }
     ) => {
       const photo = await photoAPI.getPhoto(args.id, token);
       const submitter = photo.submitter.id
@@ -161,7 +106,7 @@ module.exports = {
         {},
         photo,
         { submitter },
-        buildThumbsAndImages(photo)
+        buildThumbsAndImages(photo, true, supportsWebP)
       );
     }
   },

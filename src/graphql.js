@@ -45,7 +45,15 @@ const {
 /******************************************************************************
  * TYPEDEFS
  *****************************************************************************/
-const typeDefs = [BaseTypes, Album, Auth /*, Image*/, Media, Photo, Video, User];
+const typeDefs = [
+  BaseTypes,
+  Album,
+  Auth /*, Image*/,
+  Media,
+  Photo,
+  Video,
+  User
+];
 
 /******************************************************************************
  * RESOLVERS
@@ -63,7 +71,7 @@ const resolvers = {
     ...AuthMutationResolvers,
     ...PhotoMutationResolvers,
     ...VideoMutationResolvers,
-    ...UserMutationResolvers,
+    ...UserMutationResolvers
   },
 
   Album: { ...AlbumFieldResolvers },
@@ -100,8 +108,9 @@ const buildGraphQLServer = () =>
     dataSources,
     context: ({ req }) => {
       const token = req.headers.authorization || "";
-      return { token };
-    },
+      const supportsWebP = req.headers.accept.indexOf("image/webp") !== -1;
+      return { token, supportsWebP };
+    }
   });
 
 module.exports = {
