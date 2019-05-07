@@ -121,7 +121,7 @@ module.exports = {
     }
   },
   PhotoMutationResolvers: {
-    createPhoto: async (parent, args, { token, dataSources: { photoAPI } }) => {
+    createPhoto: async (parent, args, { token, supportsWebP, dataSources: { photoAPI } }) => {
       const { input, file } = args;
 
       const imageData = await storeImageOnLocalAPI(file, token);
@@ -132,10 +132,10 @@ module.exports = {
       }) ;
 
       const photo = await photoAPI.createPhoto(creationPayload, token);
-      return Object.assign({}, photo, buildThumbsAndImages(photo));
+      return Object.assign({}, photo, buildThumbsAndImages(photo, true, supportsWebP));
     },
 
-    updatePhoto: async (parent, args, { token, dataSources: { photoAPI } }) => {
+    updatePhoto: async (parent, args, { token, supportsWebP, dataSources: { photoAPI } }) => {
       const { id, input, file } = args;
 
       let updatePayload = Object.assign({}, input);
@@ -147,7 +147,7 @@ module.exports = {
       }
 
       const photo = await photoAPI.updatePhoto(id, updatePayload, token);
-      return Object.assign({}, photo, buildThumbsAndImages(photo));
+      return Object.assign({}, photo, buildThumbsAndImages(photo, true, supportsWebP));
     }
   },
   PhotoFieldResolvers: {

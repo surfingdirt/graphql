@@ -26,6 +26,8 @@ module.exports = class VideoApi extends BaseAPI {
   }
 
   async updateVideo(id, input, token) {
+    // node-fetch or apollo is a little picky, so need to do this, in order
+    // to have body.constructor === Object:
     this.setToken(token);
     const body = { ...input };
     const response = await this.put(`${this.path}/${id}`, body);

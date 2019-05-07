@@ -1,64 +1,13 @@
-const {
-  storageLocalDomain,
-  storageLocalPath
-} = require("../../../config");
-
-const StorageType = {
-  LOCAL: "0"
-};
-const ImageSize = {
-  SMALL: "small",
-  MEDIUM: "medium",
-  LARGE: "large"
-};
-
-const ImageSizeSuffixes = {
-  [ImageSize.SMALL]: "s",
-  [ImageSize.MEDIUM]: "m",
-  [ImageSize.LARGE]: "m"
-};
-
-const ImageType = {
-  JPG: "jpg",
-  PNG: "png",
-  GIF: "gif",
-  WEBP: "webp"
-};
-
-const buildThumbs = ({ imageId, mediaType, storageType }) => {
-  switch (storageType) {
-    case StorageType.LOCAL:
-      const thumbs = [];
-      const path = `${storageLocalDomain}/${storageLocalPath}`;
-
-      for (let sizeKey in ImageSize) {
-        const size = ImageSize[sizeKey];
-        for (let type of [ImageType.JPG, ImageType.WEBP]) {
-          const suffix = `_${ImageSizeSuffixes[size]}`;
-          const thumbSuffix = `_t${ImageSizeSuffixes[size]}`;
-          thumbs.push({
-            size,
-            type,
-            url: `${path}/${imageId}/img${thumbSuffix}.${type}`
-          });
-        }
-      }
-      return { thumbs };
-    default:
-      throw new Error(
-        `Unsupported storage type: '${storageType}' for video '${id}'`
-      );
-  }
-};
+const { MediaType, StorageType } = require("../../constants");
+const { buildThumbsAndImages } = require("../../utils/thumbs");
 
 module.exports = {
-  VideoTypeResolvers: {
-  },
+  VideoTypeResolvers: {},
   VideoQueryResolvers: {
     video: async (
       parent,
       args,
-      { token, dataSources: { videoAPI, userAPI } }
+      { token, supportsWebP, dataSources: { videoAPI, userAPI } }
     ) => {
       const video = await videoAPI.getVideo(args.id, token);
       const submitter = video.submitter.id
@@ -69,21 +18,30 @@ module.exports = {
         {},
         video,
         { submitter },
-        buildThumbs(video)
+        buildThumbsAndImages(video, false, supportsWebP)
       );
     }
   },
   VideoMutationResolvers: {
-    createVideo: async (parent, args, { token, dataSources: { videoAPI } }) => {
+    createVideo: async (parent, args, { token, supportsWebP, dataSources: { videoAPI } }) => {
       const { input } = args;
-      const video = await videoAPI.createVideo(input, token);
-      return Object.assign({}, video, buildThumbs(video));
+
+      const creationPayload = Object.assign({}, input, {
+        mediaType: MediaType.VIDEO,
+        storageType: StorageType.LOCAL,
+      }) ;
+
+      const video = await videoAPI.createVideo(creationPayload, token);
+      return Object.assign({}, video, buildThumbsAndImages(video, false, supportsWebP));
     },
 
-    updateVideo: async (parent, args, { token, dataSources: { videoAPI } }) => {
+    updateVideo: async (parent, args, { token, supportsWebP, dataSources: { videoAPI } }) => {
       const { id, input } = args;
-      const video = await videoAPI.updateVideo(id, input, token);
-      return Object.assign({}, video, buildThumbs(video));
+
+      const updatePayload = Object.assign({}, input);
+
+      const video = await videoAPI.updateVideo(id, updatePayload, token);
+      return Object.assign({}, video, buildThumbsAndImages(video, false, supportsWebP));
     }
   },
   VideoFieldResolvers: {
