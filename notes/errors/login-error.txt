@@ -26,8 +26,8 @@ Response
           "type": "Api_Exception_Unauthorised",
           "stacktrace": [
             "Error",
-            "    at UserApi.parseError (/Library/WebServer/Documents/www.local.wrk/SurfingDirt-graphql/src/modules/base/base.api.js:46:14)",
-            "    at UserApi.get (/Library/WebServer/Documents/www.local.wrk/SurfingDirt-graphql/src/modules/base/base.api.js:63:32)",
+            "    at UserApi.parseError (/Library/WebServer/Documents/www.local.wrk/SurfingDirt-graphql/src/modules/base/base.RestAPIi.js:46:14)",
+            "    at UserApi.get (/Library/WebServer/Documents/www.local.wrk/SurfingDirt-graphql/src/modules/base/base.RestAPIi.js:63:32)",
             "    at process._tickCallback (internal/process/next_tick.js:178:7)"
           ]
         }

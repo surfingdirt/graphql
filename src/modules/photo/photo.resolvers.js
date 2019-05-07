@@ -1,31 +1,14 @@
 const rp = require("request-promise");
 const fs = require("fs");
 const uuid = require("uuid");
+const { ApolloError, UserInputError } = require("apollo-server-express");
 
-const { apiUrl, tmpFolder } = require("../../../config");
+const { tmpFolder } = require("../../../config");
 
+const { getFullUri } = require("../../utils/RestAPI");
 const { buildThumbsAndImages } = require("../../utils/thumbs");
 
 const API_IMAGE_PATH = "image";
-
-const getFullUri = ({ path, urlParams = null, debugBackend = false }) => {
-  let fullUri = `${apiUrl}/${path}`;
-  const usp = new URLSearchParams();
-  if (urlParams) {
-    for (let arg in urlParams) {
-      usp.append(arg, urlParams[arg]);
-    }
-  }
-  if (debugBackend) {
-    usp.append("XDEBUG_SESSION_START", "PHP_STORM");
-  }
-  const argString = usp.toString();
-  if (argString) {
-    fullUri = `${fullUri}?${argString}`;
-  }
-
-  return fullUri;
-};
 
 const storeTempFile = stream => {
   const filename = uuid.v4();
@@ -123,30 +106,24 @@ module.exports = {
           debugBackend
         );
       } catch (e) {
-        console.log("Failed to post image to API");
-        console.log(e);
+        console.log("Failed to post image - GraphQL server exception:", e);
         throw e;
       }
 
-      // The REST API handles multiple images but this only handles one:
       const { body } = imageResponse;
-      if (body.errors) {
-        // TODO: how to report a proper error?
-        throw new Error();
+      // The REST API handles multiple images but this only handles one:
+      const imageData = body[0];
+
+      if (imageData.error) {
+        console.log('Failed to post image to API - error code:', imageData.error);
+        throw new ApolloError("Failed to post image to API", imageData.error);
       }
 
-      input.imageId = imageResponse.body[0].key;
+      input.imageId = imageData.key;
       input.mediaType = "photo";
 
-      try {
-        const photo = await photoAPI.createPhoto(input, token);
-        return Object.assign({}, photo, buildThumbsAndImages(photo));
-      } catch (e) {
-        console.log("Failed to create photo with previously uploaded image");
-        console.log(e);
-        // TODO: how to report a proper error?
-        throw e;
-      }
+      const photo = await photoAPI.createPhoto(input, token);
+      return Object.assign({}, photo, buildThumbsAndImages(photo));
     },
 
     updatePhoto: async (parent, args, { token, dataSources: { photoAPI } }) => {
