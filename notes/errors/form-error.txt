@@ -42,8 +42,8 @@ Response
           },
           "stacktrace": [
             "Error: badInput",
-            "    at UserApi.parseError (/Library/WebServer/Documents/www.local.wrk/SurfingDirt-graphql/src/modules/base/base.RestAPIi.js:49:12)",
-            "    at UserApi.post (/Library/WebServer/Documents/www.local.wrk/SurfingDirt-graphql/src/modules/base/base.RestAPIi.js:76:32)",
+            "    at UserApi.parseError (/Library/WebServer/Documents/www.local.wrk/SurfingDirt-graphql/src/modules/base/base.RestAPI.js:49:12)",
+            "    at UserApi.post (/Library/WebServer/Documents/www.local.wrk/SurfingDirt-graphql/src/modules/base/base.RestAPI.js:76:32)",
             "    at process._tickCallback (internal/process/next_tick.js:178:7)"
           ]
         }

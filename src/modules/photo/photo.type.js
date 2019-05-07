@@ -22,9 +22,7 @@ module.exports = gql`
       title: String
       description: String
       albumId: ID!
-      imageId: String
       mediaSubType: MediaSubType!
-      storageType: StorageType
       status: String
   }
   input PhotoUpdateInput {
@@ -37,7 +35,7 @@ module.exports = gql`
   }
   extend type Mutation {
       createPhoto(input: PhotoCreationInput!, file: Upload!): Photo!
-      updatePhoto(id: ID, input: PhotoUpdateInput!): Photo!
+      updatePhoto(id: ID, input: PhotoUpdateInput!, file: Upload): Photo!
   }
   
 `;

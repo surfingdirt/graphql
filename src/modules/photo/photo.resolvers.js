@@ -1,75 +1,102 @@
 const rp = require("request-promise");
 const fs = require("fs");
 const uuid = require("uuid");
-const { ApolloError, UserInputError } = require("apollo-server-express");
+const { ApolloError } = require("apollo-server-express");
 
 const { tmpFolder } = require("../../../config");
 
+const { MediaType, StorageType } = require("../../constants");
 const { getFullUri } = require("../../utils/RestAPI");
 const { buildThumbsAndImages } = require("../../utils/thumbs");
 
 const API_IMAGE_PATH = "image";
 
-const storeTempFile = stream => {
-  const filename = uuid.v4();
-  const path = `${tmpFolder}/${filename}`;
-  return new Promise((resolve, reject) =>
-    stream
-      .on("error", error => {
-        if (stream.truncated) {
-          // Delete the truncated file.
-          fs.unlinkSync(path);
-        }
-        reject(error);
-      })
-      .pipe(fs.createWriteStream(path))
-      .on("error", error => reject(error))
-      .on("finish", () => resolve(path))
-  );
-};
-
-const postImage = async (file, token, data, debugBackend = false) => {
-  const uri = getFullUri({ path: API_IMAGE_PATH, debugBackend });
-  const headers = {
-    Accept: "application/json",
-    // Token already contains 'Bearer'
-    Authorization: token,
-    "Content-Type": "application/json"
+const storeImageOnLocalAPI = async (file, token, debugBackend=false) => {
+  const storeTempFile = stream => {
+    const filename = uuid.v4();
+    const path = `${tmpFolder}/${filename}`;
+    return new Promise((resolve, reject) =>
+      stream
+        .on("error", error => {
+          if (stream.truncated) {
+            // Delete the truncated file.
+            fs.unlinkSync(path);
+          }
+          reject(error);
+        })
+        .pipe(fs.createWriteStream(path))
+        .on("error", error => reject(error))
+        .on("finish", () => resolve(path))
+    );
   };
 
-  const { createReadStream, filename, mimetype } = await file;
-  const readableStream = await createReadStream();
+  const postImage = async (file, token, data, debugBackend = false) => {
+    const uri = getFullUri({ path: API_IMAGE_PATH, debugBackend });
+    const headers = {
+      Accept: "application/json",
+      // Token already contains 'Bearer'
+      Authorization: token,
+      "Content-Type": "application/json"
+    };
 
-  // Store file to disk fully, then restream to API:
-  const tmpFilePath = await storeTempFile(readableStream);
-  const value = fs.createReadStream(tmpFilePath);
+    const { createReadStream, filename, mimetype } = await file;
+    const readableStream = await createReadStream();
 
-  const response = await rp({
-    method: "POST",
-    json: true,
-    uri,
-    headers,
-    simple: false,
-    resolveWithFullResponse: true,
-    // 'files' is the name of the variable holding upload info on the backend
-    formData: Object.assign({}, data, {
-      "files[]": [
-        {
-          value,
-          options: {
-            filename,
-            contentType: mimetype
+    // Store file to disk fully, then restream to API:
+    const tmpFilePath = await storeTempFile(readableStream);
+    const value = fs.createReadStream(tmpFilePath);
+
+    const response = await rp({
+      method: "POST",
+      json: true,
+      uri,
+      headers,
+      simple: false,
+      resolveWithFullResponse: true,
+      // 'files' is the name of the variable holding upload info on the backend
+      formData: Object.assign({}, data, {
+        "files[]": [
+          {
+            value,
+            options: {
+              filename,
+              contentType: mimetype
+            }
           }
-        }
-      ]
-    })
-  });
+        ]
+      })
+    });
+    try {
+      fs.unlinkSync(tmpFilePath);
+    } catch (e) {
+      console.log(`Could not delete tmp file '${tmpFilePath}'`);
+    }
+    return response;
+  };
+
+  let imageResponse;
   try {
-    fs.unlinkSync(tmpFilePath);
+    imageResponse = await postImage(
+      file,
+      token,
+      { type: StorageType.LOCAL },
+      debugBackend
+    );
   } catch (e) {
-    console.log(`Could not delete tmp file '${tmpFilePath}'`);
+    console.log("Failed to post image - GraphQL server exception:", e);
+    throw e;
   }
-  return response;
+
+  const { body } = imageResponse;
+  // The REST API handles multiple images but this only handles one:
+  const imageData = body[0];
+
+  if (imageData.error) {
+    console.log('Failed to post image to API - error code:', imageData.error);
+    throw new ApolloError("Failed to post image to API", imageData.error);
+  }
+
+  return imageData;
 };
 
 module.exports = {
@@ -96,39 +123,30 @@ module.exports = {
   PhotoMutationResolvers: {
     createPhoto: async (parent, args, { token, dataSources: { photoAPI } }) => {
       const { input, file } = args;
-      let imageResponse;
-      try {
-        const debugBackend = false;
-        imageResponse = await postImage(
-          file,
-          token,
-          { type: input.storageType },
-          debugBackend
-        );
-      } catch (e) {
-        console.log("Failed to post image - GraphQL server exception:", e);
-        throw e;
-      }
 
-      const { body } = imageResponse;
-      // The REST API handles multiple images but this only handles one:
-      const imageData = body[0];
+      const imageData = await storeImageOnLocalAPI(file, token);
 
-      if (imageData.error) {
-        console.log('Failed to post image to API - error code:', imageData.error);
-        throw new ApolloError("Failed to post image to API", imageData.error);
-      }
+      const creationPayload = Object.assign({}, input, {
+        imageId: imageData.key,
+        mediaType: MediaType.PHOTO,
+      }) ;
 
-      input.imageId = imageData.key;
-      input.mediaType = "photo";
-
-      const photo = await photoAPI.createPhoto(input, token);
+      const photo = await photoAPI.createPhoto(creationPayload, token);
       return Object.assign({}, photo, buildThumbsAndImages(photo));
     },
 
     updatePhoto: async (parent, args, { token, dataSources: { photoAPI } }) => {
-      const { id, input } = args;
-      const photo = await photoAPI.updatePhoto(id, input, token);
+      const { id, input, file } = args;
+
+      let updatePayload = Object.assign({}, input);
+      if (file) {
+        const imageData = await storeImageOnLocalAPI(file, token);
+        updatePayload = Object.assign({}, input, {
+          imageId: imageData.key,
+        });
+      }
+
+      const photo = await photoAPI.updatePhoto(id, updatePayload, token);
       return Object.assign({}, photo, buildThumbsAndImages(photo));
     }
   },

@@ -1,5 +1,5 @@
 const { RESTDataSource } = require("apollo-datasource-rest");
-const { ApolloError, UserInputError } = require("apollo-server-express");
+const { ApolloError } = require("apollo-server-express");
 
 const { apiUrl } = require("../../../config");
 

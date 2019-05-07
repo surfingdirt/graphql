@@ -1,4 +1,9 @@
 module.exports = {
+  MediaType: {
+    PHOTO: 'photo',
+    VIDEO: 'video',
+  },
+
   StorageType: {
     LOCAL: "0"
   },
