@@ -1,7 +1,15 @@
 module.exports = {
   MediaType: {
-    PHOTO: 'photo',
-    VIDEO: 'video',
+    PHOTO: "photo",
+    VIDEO: "video"
+  },
+
+  VideoType: {
+    DAILYMOTION: "dailymotion",
+    FACEBOOK: "facebook",
+    INSTAGRAM: "instagram",
+    VIMEO: "vimeo",
+    YOUTUBE: "youtube"
   },
 
   StorageType: {
@@ -19,5 +27,9 @@ module.exports = {
     PNG: "png",
     GIF: "gif",
     WEBP: "webp"
-  }
+  },
+
+  ErrorCodes: {
+    MEDIA_BAD_MEDIA_SUBTYPE: 11003,
+  },
 };

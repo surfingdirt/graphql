@@ -1,4 +1,11 @@
-const { MediaType, StorageType } = require("../../constants");
+const { ApolloError } = require("apollo-server-express");
+
+const {
+  MediaType,
+  VideoType,
+  StorageType,
+  ErrorCodes
+} = require("../../constants");
 const { buildThumbsAndImages } = require("../../utils/thumbs");
 
 module.exports = {
@@ -23,25 +30,41 @@ module.exports = {
     }
   },
   VideoMutationResolvers: {
-    createVideo: async (parent, args, { token, supportsWebP, dataSources: { mediaAPI } }) => {
+    createVideo: async (
+      parent,
+      args,
+      { token, supportsWebP, dataSources: { mediaAPI } }
+    ) => {
       const { input } = args;
 
       const creationPayload = Object.assign({}, input, {
         mediaType: MediaType.VIDEO,
-        storageType: StorageType.LOCAL,
-      }) ;
+        storageType: StorageType.LOCAL
+      });
 
       const video = await mediaAPI.createMedia(creationPayload, token);
-      return Object.assign({}, video, buildThumbsAndImages(video, false, supportsWebP));
+      return Object.assign(
+        {},
+        video,
+        buildThumbsAndImages(video, false, supportsWebP)
+      );
     },
 
-    updateVideo: async (parent, args, { token, supportsWebP, dataSources: { mediaAPI } }) => {
+    updateVideo: async (
+      parent,
+      args,
+      { token, supportsWebP, dataSources: { mediaAPI } }
+    ) => {
       const { id, input } = args;
 
       const updatePayload = Object.assign({}, input);
 
       const video = await mediaAPI.updateMedia(id, updatePayload, token);
-      return Object.assign({}, video, buildThumbsAndImages(video, false, supportsWebP));
+      return Object.assign(
+        {},
+        video,
+        buildThumbsAndImages(video, false, supportsWebP)
+      );
     }
   },
   VideoFieldResolvers: {
@@ -86,6 +109,27 @@ module.exports = {
         users.push(await userAPI.getUser(userId, token));
       }
       return users;
-    }
+    },
+
+    vendorUrl(parent) {
+      const { vendorKey, mediaSubType } = parent;
+      switch (mediaSubType) {
+        case VideoType.DAILYMOTION:
+          return `https://www.dailymotion.com/video/${vendorKey}`;
+        case VideoType.FACEBOOK:
+          return `https://www.facebook.com/watch/?v=${vendorKey}`;
+        case VideoType.INSTAGRAM:
+          return `https://www.instagram.com/p/${vendorKey}`;
+        case VideoType.VIMEO:
+          return `https://vimeo.com/${vendorKey}`;
+        case VideoType.YOUTUBE:
+          return `https://www.youtube.com/watch?v=${vendorKey}`;
+        default:
+          throw new ApolloError(
+            `Unsupported video type '${mediaSubType}'`,
+            ErrorCodes.MEDIA_BAD_MEDIA_SUBTYPE
+          );
+      }
+    },
   }
 };

@@ -16,6 +16,7 @@ module.exports = gql`
       thumbs: [Image]
       users: [User]
       vendorKey: String
+      vendorUrl: String
       width: Int
   }
   input VideoCreationInput {
@@ -25,16 +26,18 @@ module.exports = gql`
       vendorKey: String
       imageId: String
       mediaSubType: MediaSubType!
-      storageType: StorageType
       status: String
   }
   input VideoUpdateInput {
       title: String
       description: String
       status: String
+      vendorKey: String
+      imageId: String
+      mediaSubType: MediaSubType
   }
   extend type Query {
-      video(id: String!): Media!
+      video(id: String!): Video!
   }
   extend type Mutation {
       createVideo(input: VideoCreationInput!): Video!

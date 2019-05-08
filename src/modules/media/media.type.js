@@ -55,20 +55,4 @@ module.exports = gql`
       vendorKey: String
       width: Int
   }
-  input MediaCreationInput {
-      title: String
-      description: String
-      albumId: ID!
-      mediaType: MediaType!
-      vendorKey: String
-      imageId: String
-      mediaSubType: MediaSubType!
-      storageType: StorageType
-      status: String
-  }
-  input MediaUpdateInput {
-      title: String
-      description: String
-      status: String
-  }
 `;

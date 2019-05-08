@@ -31,7 +31,7 @@ module.exports = gql`
       status: String
   }
   extend type Query {
-      photo(id: String!): Media!
+      photo(id: String!): Photo!
   }
   extend type Mutation {
       createPhoto(input: PhotoCreationInput!, file: Upload!): Photo!
