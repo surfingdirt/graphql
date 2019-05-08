@@ -7,9 +7,9 @@ module.exports = {
     video: async (
       parent,
       args,
-      { token, supportsWebP, dataSources: { videoAPI, userAPI } }
+      { token, supportsWebP, dataSources: { mediaAPI, userAPI } }
     ) => {
-      const video = await videoAPI.getVideo(args.id, token);
+      const video = await mediaAPI.getMedia(args.id, token);
       const submitter = video.submitter.id
         ? await userAPI.getUser(video.submitter.id, token)
         : null;
@@ -23,7 +23,7 @@ module.exports = {
     }
   },
   VideoMutationResolvers: {
-    createVideo: async (parent, args, { token, supportsWebP, dataSources: { videoAPI } }) => {
+    createVideo: async (parent, args, { token, supportsWebP, dataSources: { mediaAPI } }) => {
       const { input } = args;
 
       const creationPayload = Object.assign({}, input, {
@@ -31,16 +31,16 @@ module.exports = {
         storageType: StorageType.LOCAL,
       }) ;
 
-      const video = await videoAPI.createVideo(creationPayload, token);
+      const video = await mediaAPI.createMedia(creationPayload, token);
       return Object.assign({}, video, buildThumbsAndImages(video, false, supportsWebP));
     },
 
-    updateVideo: async (parent, args, { token, supportsWebP, dataSources: { videoAPI } }) => {
+    updateVideo: async (parent, args, { token, supportsWebP, dataSources: { mediaAPI } }) => {
       const { id, input } = args;
 
       const updatePayload = Object.assign({}, input);
 
-      const video = await videoAPI.updateVideo(id, updatePayload, token);
+      const video = await mediaAPI.updateMedia(id, updatePayload, token);
       return Object.assign({}, video, buildThumbsAndImages(video, false, supportsWebP));
     }
   },

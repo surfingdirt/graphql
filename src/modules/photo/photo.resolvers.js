@@ -105,9 +105,9 @@ module.exports = {
     photo: async (
       parent,
       args,
-      { token, supportsWebP, dataSources: { photoAPI, userAPI } }
+      { token, supportsWebP, dataSources: { mediaAPI, userAPI } }
     ) => {
-      const photo = await photoAPI.getPhoto(args.id, token);
+      const photo = await mediaAPI.getMedia(args.id, token);
       const submitter = photo.submitter.id
         ? await userAPI.getUser(photo.submitter.id, token)
         : null;
@@ -121,7 +121,7 @@ module.exports = {
     }
   },
   PhotoMutationResolvers: {
-    createPhoto: async (parent, args, { token, supportsWebP, dataSources: { photoAPI } }) => {
+    createPhoto: async (parent, args, { token, supportsWebP, dataSources: { mediaAPI } }) => {
       const { input, file } = args;
 
       const imageData = await storeImageOnLocalAPI(file, token);
@@ -131,11 +131,11 @@ module.exports = {
         mediaType: MediaType.PHOTO,
       }) ;
 
-      const photo = await photoAPI.createPhoto(creationPayload, token);
+      const photo = await mediaAPI.createMedia(creationPayload, token);
       return Object.assign({}, photo, buildThumbsAndImages(photo, true, supportsWebP));
     },
 
-    updatePhoto: async (parent, args, { token, supportsWebP, dataSources: { photoAPI } }) => {
+    updatePhoto: async (parent, args, { token, supportsWebP, dataSources: { mediaAPI } }) => {
       const { id, input, file } = args;
 
       let updatePayload = Object.assign({}, input);
@@ -146,7 +146,7 @@ module.exports = {
         });
       }
 
-      const photo = await photoAPI.updatePhoto(id, updatePayload, token);
+      const photo = await mediaAPI.updateMedia(id, updatePayload, token);
       return Object.assign({}, photo, buildThumbsAndImages(photo, true, supportsWebP));
     }
   },

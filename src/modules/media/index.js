@@ -1,4 +1,5 @@
 const Media = require("./media.type");
+const MediaAPI = require("./media.api");
 const {
   MediaTypeResolvers,
   MediaFieldResolvers
@@ -6,6 +7,7 @@ const {
 
 module.exports = {
   Media,
+  MediaAPI,
   MediaTypeResolvers,
   MediaFieldResolvers
 };

@@ -1,4 +1,3 @@
-const VideoAPI = require("./video.api");
 const Video = require("./video.type");
 const {
   VideoTypeResolvers,
@@ -9,7 +8,6 @@ const {
 
 module.exports = {
   Video,
-  VideoAPI,
   VideoTypeResolvers,
   VideoFieldResolvers,
   VideoMutationResolvers,

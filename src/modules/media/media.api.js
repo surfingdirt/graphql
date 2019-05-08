@@ -1,22 +1,22 @@
 const { BaseAPI } = require("../base");
 const { MEDIA } = require("../../controllers");
 
-module.exports = class PhotoApi extends BaseAPI {
+module.exports = class MediaApi extends BaseAPI {
   constructor() {
     super();
 
     this.path = MEDIA;
-    this.getPhoto = this.getPhoto.bind(this);
+    this.getMedia = this.getMedia.bind(this);
   }
 
-  async getPhoto(id, token) {
+  async getMedia(id, token) {
     // this.setDebugBackend(true);
     this.setToken(token);
     const response = await this.get(`${this.path}/${id}`);
     return response;
   }
 
-  async createPhoto(input, token) {
+  async createMedia(input, token) {
     this.setToken(token);
     // node-fetch or apollo is a little picky, so need to do this, in order
     // to have body.constructor === Object:
@@ -25,7 +25,7 @@ module.exports = class PhotoApi extends BaseAPI {
     return response;
   }
 
-  async updatePhoto(id, input, token) {
+  async updateMedia(id, input, token) {
     this.setToken(token);
     // node-fetch or apollo is a little picky, so need to do this, in order
     // to have body.constructor === Object:

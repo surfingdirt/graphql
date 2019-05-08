@@ -1,4 +1,3 @@
-const PhotoAPI = require("./photo.api");
 const Photo = require("./photo.type");
 const {
   PhotoTypeResolvers,
@@ -9,7 +8,6 @@ const {
 
 module.exports = {
   Photo,
-  PhotoAPI,
   PhotoTypeResolvers,
   PhotoFieldResolvers,
   PhotoMutationResolvers,

@@ -12,13 +12,13 @@ const { Auth, AuthAPI, AuthMutationResolvers } = require("./modules/auth");
 
 const {
   Media,
+  MediaAPI,
   MediaTypeResolvers,
   MediaFieldResolvers
 } = require("./modules/media");
 
 const {
   Photo,
-  PhotoAPI,
   PhotoTypeResolvers,
   PhotoQueryResolvers,
   PhotoMutationResolvers,
@@ -27,7 +27,6 @@ const {
 
 const {
   Video,
-  VideoAPI,
   VideoTypeResolvers,
   VideoQueryResolvers,
   VideoMutationResolvers,
@@ -93,8 +92,7 @@ const resolvers = {
 const dataSources = () => ({
   albumAPI: new AlbumAPI(),
   authAPI: new AuthAPI(),
-  photoAPI: new PhotoAPI(),
-  videoAPI: new VideoAPI(),
+  mediaAPI: new MediaAPI(),
   userAPI: new UserAPI()
 });
 
