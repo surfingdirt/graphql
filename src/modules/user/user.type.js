@@ -1,5 +1,14 @@
 const { gql } = require("apollo-server-express");
 module.exports = gql`
+  type Me {
+      avatar: String
+      email: String
+      firstName: String
+      lang: String
+      status: String
+      userId: ID
+      username: String
+  }
   type User {
       album: Album
       avatar: String
@@ -42,6 +51,7 @@ module.exports = gql`
   }
   extend type Query {
       user(userId: String!): User!
+      me: Me!
   }
   extend type Mutation {
       createUser(input: UserCreationInput!): User!

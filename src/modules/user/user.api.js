@@ -15,6 +15,12 @@ module.exports = class UserApi extends BaseAPI {
     return response;
   }
 
+  async getMe(token) {
+    this.setToken(token);
+    const response = await this.get(`${this.path}/me`);
+    return response;
+  }
+
   async createUser(input, token) {
     // Should not be necessary, but the presence of a token indicates a problem, so keep it.
     this.setToken(token);

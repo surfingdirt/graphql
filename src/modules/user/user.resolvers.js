@@ -1,8 +1,11 @@
 module.exports = {
   UserQueryResolvers: {
+    me: async (parent, args, { token, dataSources: { userAPI } }) => {
+      return userAPI.getMe(token);
+    },
     user: (parent, args, { token, dataSources: { userAPI } }) => {
       return userAPI.getUser(args.userId, token);
-    }
+    },
   },
   UserMutationResolvers: {
     createUser: async (parent, args, { token, dataSources: { userAPI } }) => {
