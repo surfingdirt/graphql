@@ -37,7 +37,7 @@ module.exports = gql`
       mediaSubType: MediaSubType
   }
   extend type Query {
-      video(id: String!): Video!
+      video(id: ID!): Video!
   }
   extend type Mutation {
       createVideo(input: VideoCreationInput!): Video!

@@ -1,5 +1,5 @@
 clear; curl localhost:4000 \
-    --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NTczMTE2MTIsInVpZCI6IjYwYmZiOGE3LTU3NTQtNDE4Ni1hY2QyLTQ0YjIwZWYzMjM5OSJ9.toim0g7dliEymZEHe8wm7aV-OJWGODTizrQB2WxzQX8" \
-  	-F operations='{ "query": "mutation ($input: PhotoCreationInput!, $file: Upload!) { createPhoto(input: $input, file: $file) { id } }", "variables": { "input": {"albumId": "a3833b1c-1db0-4a93-9efc-b6659400ce9f", "mediaSubType": "IMG", "imageId": "db958a40-d8e6-4dda-baa5-166da2f24892", "storageType": "LOCAL", "title": "toto", "description": "desc"}, "file": null } }' \
+    --header "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NTc0MTQ3MjgsInVpZCI6IjYwYmZiOGE3LTU3NTQtNDE4Ni1hY2QyLTQ0YjIwZWYzMjM5OSJ9.fqkftSelR8vUewqMJRK3-j-dPSbqABZpjqwY2AelXEU" \
+  	-F operations='{ "query": "mutation ($input: PhotoCreationInput!, $file: Upload!) { createPhoto(input: $input, file: $file) { id } }", "variables": { "input": {"albumId": "a3833b1c-1db0-4a93-9efc-b6659400ce9f", "mediaSubType": "IMG", "title": "toto", "description": "desc"}, "file": null } }' \
   	-F map='{ "0": ["variables.file"] }' \
-  	-F 0=@image.jpg
+  	-F 0=@ouverture.jpg

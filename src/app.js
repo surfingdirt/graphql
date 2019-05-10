@@ -1,7 +1,7 @@
 const express = require('express');
 
 const aliveRoute = require('./alive/alive.route');
-const { buildGraphQLServer } = require('./graphql');
+const graphql = require('./graphql');
 
 const app = express();
 app.disable('x-powered-by');
@@ -18,10 +18,10 @@ app.get('/*', (req, res, next) => {
 
 aliveRoute(app);
 
-const graphQLServer = buildGraphQLServer();
+const graphQLServer = graphql.buildServer();
 graphQLServer.applyMiddleware({ app, path: '/' });
 
 module.exports = {
   app,
-  graphQLServer,
+  graphql: graphQLServer,
 };

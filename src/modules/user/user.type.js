@@ -50,7 +50,7 @@ module.exports = gql`
       status: String
   }
   extend type Query {
-      user(userId: String!): User!
+      user(userId: ID!): User!
       me: Me!
   }
   extend type Mutation {

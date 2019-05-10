@@ -16,6 +16,6 @@ module.exports = gql`
       media: [Media]
   }
   extend type Query {
-      album(id: String!): Album!
+      album(id: ID!): Album!
   }
 `;

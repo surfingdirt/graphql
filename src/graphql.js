@@ -99,11 +99,15 @@ const dataSources = () => ({
 /******************************************************************************
  * SERVER
  *****************************************************************************/
-const buildGraphQLServer = () =>
+const buildServer = () =>
   new ApolloServer({
     typeDefs,
     resolvers,
     dataSources,
+    formatError: (err) => {
+      console.log(JSON.stringify(err, null, 2));
+      return err;
+    },
     context: ({ req }) => {
       const token = req.headers.authorization || "";
       const supportsWebP = req.headers.accept.indexOf("image/webp") !== -1;
@@ -112,5 +116,5 @@ const buildGraphQLServer = () =>
   });
 
 module.exports = {
-  buildGraphQLServer
+  buildServer
 };
