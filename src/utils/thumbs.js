@@ -5,7 +5,7 @@ const { StorageType, ImageType, ImageSize } = require("../constants");
 const ImageSizeSuffixes = {
   [ImageSize.SMALL]: "s",
   [ImageSize.MEDIUM]: "m",
-  [ImageSize.LARGE]: "m"
+  [ImageSize.LARGE]: "l"
 };
 
 const buildThumbsAndImages = (

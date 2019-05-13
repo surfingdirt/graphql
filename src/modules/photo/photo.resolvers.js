@@ -1,23 +1,23 @@
-const rp = require("request-promise");
-const fs = require("fs");
-const uuid = require("uuid");
-const { ApolloError } = require("apollo-server-express");
+const rp = require('request-promise');
+const fs = require('fs');
+const uuid = require('uuid');
+const { ApolloError } = require('apollo-server-express');
 
-const { tmpFolder } = require("../../../config");
+const { tmpFolder } = require('../../../config');
 
-const { MediaType, StorageType } = require("../../constants");
-const { getFullUri } = require("../../utils/RestAPI");
-const { buildThumbsAndImages } = require("../../utils/thumbs");
+const { MediaType, StorageType } = require('../../constants');
+const { getFullUri } = require('../../utils/RestAPI');
+const { buildThumbsAndImages } = require('../../utils/thumbs');
 
-const API_IMAGE_PATH = "image";
+const API_IMAGE_PATH = 'image';
 
-const storeImageOnLocalAPI = async (file, token, debugBackend=false) => {
-  const storeTempFile = stream => {
+const storeImageOnLocalAPI = async (file, token, debugBackend = false) => {
+  const storeTempFile = (stream) => {
     const filename = uuid.v4();
     const path = `${tmpFolder}/${filename}`;
     return new Promise((resolve, reject) =>
       stream
-        .on("error", error => {
+        .on('error', (error) => {
           if (stream.truncated) {
             // Delete the truncated file.
             fs.unlinkSync(path);
@@ -25,18 +25,18 @@ const storeImageOnLocalAPI = async (file, token, debugBackend=false) => {
           reject(error);
         })
         .pipe(fs.createWriteStream(path))
-        .on("error", error => reject(error))
-        .on("finish", () => resolve(path))
+        .on('error', (error) => reject(error))
+        .on('finish', () => resolve(path)),
     );
   };
 
   const postImage = async (file, token, data, debugBackend = false) => {
     const uri = getFullUri({ path: API_IMAGE_PATH, debugBackend });
     const headers = {
-      Accept: "application/json",
+      Accept: 'application/json',
       // Token already contains 'Bearer'
       Authorization: token,
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json',
     };
 
     const { createReadStream, filename, mimetype } = await file;
@@ -47,7 +47,7 @@ const storeImageOnLocalAPI = async (file, token, debugBackend=false) => {
     const value = fs.createReadStream(tmpFilePath);
 
     const response = await rp({
-      method: "POST",
+      method: 'POST',
       json: true,
       uri,
       headers,
@@ -55,16 +55,16 @@ const storeImageOnLocalAPI = async (file, token, debugBackend=false) => {
       resolveWithFullResponse: true,
       // 'files' is the name of the variable holding upload info on the backend
       formData: Object.assign({}, data, {
-        "files[]": [
+        'files[]': [
           {
             value,
             options: {
               filename,
-              contentType: mimetype
-            }
-          }
-        ]
-      })
+              contentType: mimetype,
+            },
+          },
+        ],
+      }),
     });
     try {
       fs.unlinkSync(tmpFilePath);
@@ -76,24 +76,24 @@ const storeImageOnLocalAPI = async (file, token, debugBackend=false) => {
 
   let imageResponse;
   try {
-    imageResponse = await postImage(
-      file,
-      token,
-      { type: StorageType.LOCAL },
-      debugBackend
-    );
+    imageResponse = await postImage(file, token, { type: StorageType.LOCAL }, debugBackend);
   } catch (e) {
-    console.log("Failed to post image - GraphQL server exception:", e);
+    console.log('Failed to post image - GraphQL server exception:', e);
     throw e;
   }
 
   const { body } = imageResponse;
   // The REST API handles multiple images but this only handles one:
-  const imageData = body[0];
 
+  if (body.errors && body.errors.topLevelError) {
+    const { code } = body.errors.topLevelError;
+    throw new ApolloError('Failed to post image to API', code);
+  }
+
+  const imageData = body[0];
   if (imageData.error) {
     console.log('Failed to post image to API - error code:', imageData.error);
-    throw new ApolloError("Failed to post image to API", imageData.error);
+    throw new ApolloError('Failed to post image to API', imageData.error);
   }
 
   return imageData;
@@ -102,11 +102,7 @@ const storeImageOnLocalAPI = async (file, token, debugBackend=false) => {
 module.exports = {
   PhotoTypeResolvers: {},
   PhotoQueryResolvers: {
-    photo: async (
-      parent,
-      args,
-      { token, supportsWebP, dataSources: { mediaAPI, userAPI } }
-    ) => {
+    photo: async (parent, args, { token, supportsWebP, dataSources: { mediaAPI, userAPI } }) => {
       const photo = await mediaAPI.getMedia(args.id, token);
       const submitter = photo.submitter.id
         ? await userAPI.getUser(photo.submitter.id, token)
@@ -116,21 +112,21 @@ module.exports = {
         {},
         photo,
         { submitter },
-        buildThumbsAndImages(photo, true, supportsWebP)
+        buildThumbsAndImages(photo, true, supportsWebP),
       );
-    }
+    },
   },
   PhotoMutationResolvers: {
     createPhoto: async (parent, args, { token, supportsWebP, dataSources: { mediaAPI } }) => {
       const { input, file } = args;
 
-      const imageData = await storeImageOnLocalAPI(file, token);
+      const imageData = await storeImageOnLocalAPI(file, token, true);
 
       const creationPayload = Object.assign({}, input, {
         imageId: imageData.key,
         mediaType: MediaType.PHOTO,
         storageType: StorageType.LOCAL,
-      }) ;
+      });
 
       const photo = await mediaAPI.createMedia(creationPayload, token);
       return Object.assign({}, photo, buildThumbsAndImages(photo, true, supportsWebP));
@@ -149,50 +145,29 @@ module.exports = {
 
       const photo = await mediaAPI.updateMedia(id, updatePayload, token);
       return Object.assign({}, photo, buildThumbsAndImages(photo, true, supportsWebP));
-    }
+    },
   },
   PhotoFieldResolvers: {
-    async album(
-      parent,
-      args,
-      {
-        token,
-        dataSources: { albumAPI }
-      }
-    ) {
+    async album(parent, args, { token, dataSources: { albumAPI } }) {
       if (!parent.album.id) {
         return null;
       }
       return await albumAPI.getAlbum(parent.album.id, token);
     },
 
-    async lastEditor(
-      parent,
-      args,
-      {
-        token,
-        dataSources: { userAPI }
-      }
-    ) {
+    async lastEditor(parent, args, { token, dataSources: { userAPI } }) {
       if (!parent.lastEditor.id) {
         return null;
       }
       return await userAPI.getUser(parent.lastEditor.id, token);
     },
 
-    async users(
-      parent,
-      args,
-      {
-        token,
-        dataSources: { userAPI }
-      }
-    ) {
+    async users(parent, args, { token, dataSources: { userAPI } }) {
       const users = [];
       for (let userId of parent.users) {
         users.push(await userAPI.getUser(userId, token));
       }
       return users;
-    }
-  }
+    },
+  },
 };

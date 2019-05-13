@@ -105,10 +105,15 @@ const buildServer = () =>
     resolvers,
     dataSources,
     formatError: (err) => {
+      console.log("==================================");
       console.log(JSON.stringify(err, null, 2));
+      console.log("==================================");
       return err;
     },
     context: ({ req }) => {
+      console.log("++++++++++++++++++++++++++++++++++");
+      console.log(JSON.stringify(req.body, null, 2));
+      console.log("++++++++++++++++++++++++++++++++++");
       const token = req.headers.authorization || "";
       const supportsWebP = req.headers.accept.indexOf("image/webp") !== -1;
       return { token, supportsWebP };
