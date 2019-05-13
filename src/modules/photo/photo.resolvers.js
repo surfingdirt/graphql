@@ -129,6 +129,7 @@ module.exports = {
       const creationPayload = Object.assign({}, input, {
         imageId: imageData.key,
         mediaType: MediaType.PHOTO,
+        storageType: StorageType.LOCAL,
       }) ;
 
       const photo = await mediaAPI.createMedia(creationPayload, token);
