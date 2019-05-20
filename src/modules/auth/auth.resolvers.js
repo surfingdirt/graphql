@@ -1,18 +1,19 @@
 const login = (parent, args, context) => {
   const {
-    input: { username, userP }
+    input: { username, userP },
   } = args;
   const {
-    dataSources: { authAPI }
+    dataSources: { authAPI },
   } = context;
   return authAPI.login(username, userP);
 };
 
-const logout = (parent, args, { token, dataSources: { authAPI } }) => {
-  return authAPI.logout(token);
+const logout = async (parent, args, { token, dataSources: { authAPI } }) => {
+  const result = await authAPI.logout(token);
+  return { status: result.logout };
 };
 
 module.exports = {
   login,
-  logout
+  logout,
 };
