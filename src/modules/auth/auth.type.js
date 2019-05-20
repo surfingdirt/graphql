@@ -5,7 +5,7 @@ module.exports = gql`
     uid: ID!
     accessToken: String!
     tokenType: String!
-    exp: Int!
+    expiresIn: Int!
   }
   input LoginInput {
     username: String

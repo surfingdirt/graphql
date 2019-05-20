@@ -19,7 +19,7 @@ module.exports = class AuthAPI extends BaseAPI {
       uid,
       accessToken: response.token,
       tokenType: "Bearer",
-      exp
+      expiresIn: exp,
     };
   }
 
