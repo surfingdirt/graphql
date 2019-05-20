@@ -7,15 +7,12 @@ module.exports = gql`
     tokenType: String!
     expiresIn: Int!
   }
-  type LogoutResult {
-    status: String
-  }
   input LoginInput {
     username: String
     userP: String
   }
   extend type Mutation {
     login(input: LoginInput!): AccessToken!
-    logout: LogoutResult!
+    logout: Boolean
   }
 `;

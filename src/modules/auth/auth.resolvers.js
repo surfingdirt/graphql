@@ -9,8 +9,8 @@ const login = (parent, args, context) => {
 };
 
 const logout = async (parent, args, { token, dataSources: { authAPI } }) => {
-  const result = await authAPI.logout(token);
-  return { status: result.logout };
+  await authAPI.logout(token);
+  return true;
 };
 
 module.exports = {
