@@ -35,6 +35,8 @@ module.exports = gql`
       size: ImageSize!
       type: ImageType!
       url: String!
+      height: Int!
+      width: Int!
   }
   type Media {
       album: Album
