@@ -9,6 +9,7 @@ const BACKEND_DEBUG_VALUE = "PHP_STORM";
 const CONNECTION_REFUSED = 'ECONNREFUSED';
 const CONNECTION_REFUSED_CODE = 17001;
 
+const API_ERROR = 'apiError';
 const BAD_INPUT_MESSAGE = 'badInput';
 
 module.exports = class BaseAPI extends RESTDataSource {
@@ -48,9 +49,13 @@ module.exports = class BaseAPI extends RESTDataSource {
     }
 
     const { errors, code } = e.extensions.response.body;
+    if (!errors) {
+      return new ApolloError(API_ERROR);
+    }
+
     if (errors.topLevelError) {
-      const { message, code, backendStacktrace, type } = errors.topLevelError;
-      return new ApolloError(message, code, { backendStacktrace, type });
+      const {message, code, backendStacktrace, type} = errors.topLevelError;
+      return new ApolloError(message, code, {backendStacktrace, type});
     }
 
     return new ApolloError(BAD_INPUT_MESSAGE, code, { errors });
