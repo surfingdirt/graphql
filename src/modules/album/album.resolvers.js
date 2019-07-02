@@ -3,7 +3,7 @@ const { buildThumbsAndImages } = require('../../utils/thumbs');
 
 module.exports = {
   AlbumQueryResolvers: {
-    album: async (parent, args, { token, supportsWebP, dataSources: { albumAPI, userAPI } }) => {
+    album: async (parent, args, { token, dataSources: { albumAPI, userAPI } }) => {
       const album = await albumAPI.getAlbum(args.id, token);
       // return album;
       const fullMedia = album.media.map(async (m) => {
@@ -13,7 +13,7 @@ module.exports = {
           {},
           m,
           { submitter, lastEditor },
-          buildThumbsAndImages(m, m.mediaType == MediaType.PHOTO, supportsWebP),
+          buildThumbsAndImages(m, m.mediaType == MediaType.PHOTO),
         );
       });
 

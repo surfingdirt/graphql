@@ -14,7 +14,7 @@ module.exports = {
     video: async (
       parent,
       args,
-      { token, supportsWebP, dataSources: { mediaAPI, userAPI } }
+      { token, dataSources: { mediaAPI, userAPI } }
     ) => {
       const video = await mediaAPI.getMedia(args.id, token);
       const submitter = video.submitter.id
@@ -25,7 +25,7 @@ module.exports = {
         {},
         video,
         { submitter },
-        buildThumbsAndImages(video, false, supportsWebP)
+        buildThumbsAndImages(video, false)
       );
     }
   },
@@ -33,7 +33,7 @@ module.exports = {
     createVideo: async (
       parent,
       args,
-      { token, supportsWebP, dataSources: { mediaAPI } }
+      { token, dataSources: { mediaAPI } }
     ) => {
       const { input } = args;
 
@@ -46,14 +46,14 @@ module.exports = {
       return Object.assign(
         {},
         video,
-        buildThumbsAndImages(video, false, supportsWebP)
+        buildThumbsAndImages(video, false)
       );
     },
 
     updateVideo: async (
       parent,
       args,
-      { token, supportsWebP, dataSources: { mediaAPI } }
+      { token, dataSources: { mediaAPI } }
     ) => {
       const { id, input } = args;
 
@@ -63,7 +63,7 @@ module.exports = {
       return Object.assign(
         {},
         video,
-        buildThumbsAndImages(video, false, supportsWebP)
+        buildThumbsAndImages(video, false)
       );
     }
   },

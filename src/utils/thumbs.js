@@ -61,7 +61,6 @@ const calculateWidthAndHeight = (standardDimensions, size, imageWidth, imageHeig
 const buildThumbsAndImages = (
   { height: stringHeight, imageId, mediaType, storageType, width: stringWidth },
   buildImages = false,
-  supportsWebP = false,
 ) => {
   const height = parseInt(stringHeight, 10);
   const width = parseInt(stringWidth, 10);
@@ -71,7 +70,7 @@ const buildThumbsAndImages = (
       const thumbs = [];
       const images = [];
       const path = `${storageLocalDomain}/${storageLocalPath}`;
-      const types = supportsWebP ? [ImageType.WEBP] : [ImageType.JPG];
+      const types = [ImageType.WEBP, ImageType.JPG];
 
       for (let sizeKey in ImageSize) {
         const size = ImageSize[sizeKey];
