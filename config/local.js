@@ -4,4 +4,5 @@ module.exports = {
   storageLocalPath: 'files',
   port: 4000,
   tmpFolder: '/tmp',
+  backendSupportsWebP: false,
 };

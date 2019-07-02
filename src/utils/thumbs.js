@@ -1,4 +1,4 @@
-const { storageLocalDomain, storageLocalPath } = require('../../config');
+const { storageLocalDomain, storageLocalPath, backendSupportsWebP } = require('../../config');
 
 const { StorageType, ImageType, ImageSize } = require('../constants');
 
@@ -70,7 +70,10 @@ const buildThumbsAndImages = (
       const thumbs = [];
       const images = [];
       const path = `${storageLocalDomain}/${storageLocalPath}`;
-      const types = [ImageType.WEBP, ImageType.JPG];
+      const types = [ImageType.JPG];
+      if (backendSupportsWebP) {
+        types.push(ImageType.WEBP);
+      }
 
       for (let sizeKey in ImageSize) {
         const size = ImageSize[sizeKey];
