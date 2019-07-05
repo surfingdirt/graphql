@@ -1,0 +1,16 @@
+# ./docker-compose.yml
+
+version: '3'
+
+services:
+  graphql:
+    environment:
+            - NODE_ENV=beta
+    image: surfingdirt/graphql:1
+    container_name: graphql
+    volumes:
+      - /home/mikael/www/beta/graphql/:/var/www/html/
+    ports:
+      - "8004:4000"
+    stdin_open: true
+    tty: true
