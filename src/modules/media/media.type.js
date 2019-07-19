@@ -20,24 +20,6 @@ module.exports = gql`
   enum StorageType {
       LOCAL
   }
-  enum ImageSize {
-      SMALL
-      MEDIUM
-      LARGE
-  }
-  enum ImageType {
-      JPG
-      PNG
-      GIF
-      WEBP
-  }
-  type Image {
-      size: ImageSize!
-      type: ImageType!
-      url: String!
-      height: Int!
-      width: Int!
-  }
   type Media {
       album: Album
       date: String

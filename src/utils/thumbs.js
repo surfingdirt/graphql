@@ -59,7 +59,7 @@ const calculateWidthAndHeight = (standardDimensions, size, imageWidth, imageHeig
 };
 
 const buildThumbsAndImages = (
-  { height: stringHeight, imageId, mediaType, storageType, width: stringWidth },
+  { height: stringHeight, imageId, storageType, width: stringWidth },
   buildImages = false,
 ) => {
   const height = parseInt(stringHeight, 10);

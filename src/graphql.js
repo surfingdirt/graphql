@@ -1,58 +1,42 @@
-const { ApolloServer } = require("apollo-server-express");
+const { ApolloServer } = require('apollo-server-express');
 
-const { BaseTypes, BaseQueryResolvers } = require("./modules/base");
-const {
-  Album,
-  AlbumAPI,
-  AlbumFieldResolvers,
-  AlbumQueryResolvers
-} = require("./modules/album");
+const { BaseTypes, BaseQueryResolvers } = require('./modules/base');
+const { Album, AlbumAPI, AlbumFieldResolvers, AlbumQueryResolvers } = require('./modules/album');
 
-const { Auth, AuthAPI, AuthMutationResolvers } = require("./modules/auth");
+const { Auth, AuthAPI, AuthMutationResolvers } = require('./modules/auth');
 
-const {
-  Media,
-  MediaAPI,
-  MediaTypeResolvers,
-  MediaFieldResolvers
-} = require("./modules/media");
+const { Image, ImageAPI } = require('./modules/image');
+
+const { Media, MediaAPI, MediaTypeResolvers, MediaFieldResolvers } = require('./modules/media');
 
 const {
   Photo,
   PhotoTypeResolvers,
   PhotoQueryResolvers,
   PhotoMutationResolvers,
-  PhotoFieldResolvers
-} = require("./modules/photo");
+  PhotoFieldResolvers,
+} = require('./modules/photo');
 
 const {
   Video,
   VideoTypeResolvers,
   VideoQueryResolvers,
   VideoMutationResolvers,
-  VideoFieldResolvers
-} = require("./modules/video");
+  VideoFieldResolvers,
+} = require('./modules/video');
 
 const {
   User,
   UserAPI,
   UserFieldResolvers,
   UserMutationResolvers,
-  UserQueryResolvers
-} = require("./modules/user");
+  UserQueryResolvers,
+} = require('./modules/user');
 
 /******************************************************************************
  * TYPEDEFS
  *****************************************************************************/
-const typeDefs = [
-  BaseTypes,
-  Album,
-  Auth /*, Image*/,
-  Media,
-  Photo,
-  Video,
-  User
-];
+const typeDefs = [BaseTypes, Album, Auth, Image, Media, Photo, Video, User];
 
 /******************************************************************************
  * RESOLVERS
@@ -63,14 +47,14 @@ const resolvers = {
     ...AlbumQueryResolvers,
     ...PhotoQueryResolvers,
     ...VideoQueryResolvers,
-    ...UserQueryResolvers
+    ...UserQueryResolvers,
   },
 
   Mutation: {
     ...AuthMutationResolvers,
     ...PhotoMutationResolvers,
     ...VideoMutationResolvers,
-    ...UserMutationResolvers
+    ...UserMutationResolvers,
   },
 
   Album: { ...AlbumFieldResolvers },
@@ -83,7 +67,7 @@ const resolvers = {
   Photo: { ...PhotoFieldResolvers },
   Video: { ...VideoFieldResolvers },
 
-  User: { ...UserFieldResolvers }
+  User: { ...UserFieldResolvers },
 };
 
 /******************************************************************************
@@ -92,8 +76,9 @@ const resolvers = {
 const dataSources = () => ({
   albumAPI: new AlbumAPI(),
   authAPI: new AuthAPI(),
+  imageAPI: new ImageAPI(),
   mediaAPI: new MediaAPI(),
-  userAPI: new UserAPI()
+  userAPI: new UserAPI(),
 });
 
 /******************************************************************************
@@ -105,22 +90,22 @@ const buildServer = () =>
     resolvers,
     dataSources,
     formatError: (err) => {
-      console.log("==================================");
-      console.log("Error:");
+      console.log('==================================');
+      console.log('Error:');
       console.log(JSON.stringify(err, null, 2));
-      console.log("==================================");
+      console.log('==================================');
       return err;
     },
     context: ({ req }) => {
-      console.log("++++++++++++++++++++++++++++++++++");
-      console.log("Request body:");
+      console.log('++++++++++++++++++++++++++++++++++');
+      console.log('Request body:');
       console.log(JSON.stringify(req.body, null, 2));
-      console.log("++++++++++++++++++++++++++++++++++");
-      const token = req.headers.authorization || "";
+      console.log('++++++++++++++++++++++++++++++++++');
+      const token = req.headers.authorization || '';
       return { token };
-    }
+    },
   });
 
 module.exports = {
-  buildServer
+  buildServer,
 };

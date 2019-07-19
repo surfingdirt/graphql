@@ -1,7 +1,8 @@
 const { gql } = require("apollo-server-express");
 module.exports = gql`
   type Me {
-      avatar: String
+      avatar: [Image]
+      cover: [Image]
       email: String
       firstName: String
       lang: String
@@ -11,8 +12,9 @@ module.exports = gql`
   }
   type User {
       album: Album
-      avatar: String
+      avatar: [Image]
       city: String
+      cover: [Image]
       date: String
       email: String
       firstName: String
@@ -24,7 +26,6 @@ module.exports = gql`
       username: String
   }
   input UserCreationInput {
-      avatar: String
       city: String
       userPC: String!
       date: String
@@ -37,7 +38,6 @@ module.exports = gql`
       username: String!
   }
   input UserUpdateInput {
-      avatar: String
       city: String
       confirmPassword: String
       date: String
@@ -54,6 +54,7 @@ module.exports = gql`
       me: Me!
   }
   extend type Mutation {
+      # TODO: insert files for avatar and cover in these two mutations:
       createUser(input: UserCreationInput!): User!
       updateUser(userId: ID, input: UserUpdateInput!): User!
   }
