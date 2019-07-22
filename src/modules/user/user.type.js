@@ -54,8 +54,9 @@ module.exports = gql`
       me: Me!
   }
   extend type Mutation {
-      # TODO: insert files for avatar and cover in these two mutations:
       createUser(input: UserCreationInput!): User!
       updateUser(userId: ID, input: UserUpdateInput!): User!
+      updateAvatar(file: Upload!): [Image]
+      updateCover(file: Upload!): [Image]
   }
 `;
