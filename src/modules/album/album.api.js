@@ -16,11 +16,19 @@ module.exports = class AlbumApi extends BaseAPI {
     return response;
   }
 
-  async listAlbums(token) {
+  async listAlbums(userId, token) {
     this.setToken(token);
-    const response = await this.get(`${this.path}`);
+    let response;
+    if (userId) {
+      response = await this.get(`/user/${userId}/albums`);
+    } else {
+      response = await this.get(`${this.path}`);
+    }
 
-    const filtered = response.filter(({id}) => id !== config.galleryAlbumId);
-    return filtered;
+    const filteredAlbums = response.filter(({id}) => id !== config.galleryAlbumId);
+
+    // TODO: only keep the first 5 items in each album
+
+    return filteredAlbums;
   }
 };
