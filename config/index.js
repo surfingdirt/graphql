@@ -8,6 +8,7 @@ const conf = {
     port: 4000,
     tmpFolder: '/tmp',
     backendSupportsWebP: false,
+    galleryAlbumId: 'a3833b1c-1db0-4a93-9efc-b6659400ce9f',
   },
   beta: {
     apiUrl: 'https://beta-api.surfingdirt.com',
@@ -16,6 +17,7 @@ const conf = {
     port: 4000,
     tmpFolder: '/tmp',
     backendSupportsWebP: false,
+    galleryAlbumId: 'a3833b1c-1db0-4a93-9efc-b6659400ce9f',
   },
   production: {
     apiUrl: 'https://api.surfingdirt.com',
@@ -24,6 +26,7 @@ const conf = {
     port: 4000,
     tmpFolder: '/tmp',
     backendSupportsWebP: false,
+    galleryAlbumId: 'a3833b1c-1db0-4a93-9efc-b6659400ce9f',
   },
 };
 

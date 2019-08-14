@@ -17,5 +17,6 @@ module.exports = gql`
   }
   extend type Query {
       album(id: ID!): Album!
+      listAlbums(userId: ID): [Album]
   }
 `;

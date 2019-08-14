@@ -1,3 +1,4 @@
+const config = require("../../../config");
 const { BaseAPI } = require("../base");
 const { ALBUM } = require("../../controllers");
 
@@ -13,5 +14,13 @@ module.exports = class AlbumApi extends BaseAPI {
     this.setToken(token);
     const response = await this.get(`${this.path}/${id}`);
     return response;
+  }
+
+  async listAlbums(token) {
+    this.setToken(token);
+    const response = await this.get(`${this.path}`);
+
+    const filtered = response.filter(({id}) => id !== config.galleryAlbumId);
+    return filtered;
   }
 };

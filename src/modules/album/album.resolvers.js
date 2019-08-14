@@ -19,6 +19,10 @@ module.exports = {
 
       return Object.assign({}, album, { media: fullMedia });
     },
+
+    listAlbums: async (parent, args, { token, dataSources: { albumAPI } }) => {
+      return albumAPI.listAlbums(token);
+    },
   },
   AlbumFieldResolvers: {
     async lastEditor(parent, args, { token, dataSources: { userAPI } }) {
