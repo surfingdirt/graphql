@@ -56,7 +56,7 @@ module.exports = gql`
   extend type Mutation {
       createUser(input: UserCreationInput!): User!
       updateUser(userId: ID, input: UserUpdateInput!): User!
-      updateAvatar(file: Upload!): [Image]
-      updateCover(file: Upload!): [Image]
+      updateAvatar(file: Upload!): Me
+      updateCover(file: Upload!): Me
   }
 `;

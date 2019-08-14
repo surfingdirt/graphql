@@ -44,29 +44,49 @@ module.exports = {
     updateAvatar: async (parent, args, {token, dataSources: {imageAPI, userAPI }}) => {
       const { userId } = await userAPI.getMe(token);
 
-      const imageData = await storeImageOnLocalAPI(args.file, token, true);
+      const { file } = args;
+
+      if (!file) {
+        throw new Error('No file specified');
+      }
+
+      const imageData = await storeImageOnLocalAPI(file, token, true);
 
       const user = await userAPI.updateUser(userId, {avatar: imageData.key}, token);
 
-      const thumbs = user.avatar
+      const avatarThumbs = user.avatar
         ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
         : null;
 
-      return thumbs;
+      const coverThumbs = user.cover
+        ? buildThumbsAndImages(await imageAPI.getImage(user.cover, token), true).images
+        : null;
+
+      return Object.assign({}, user, { avatar: avatarThumbs, cover: coverThumbs });
     },
 
     updateCover: async (parent, args, {token, dataSources: {imageAPI, userAPI }}) => {
       const { userId } = await userAPI.getMe(token);
 
-      const imageData = await storeImageOnLocalAPI(args.file, token, true);
+      const { file } = args;
+
+      if (!file) {
+        throw new Error('No file specified');
+      }
+
+      const imageData = await storeImageOnLocalAPI(file, token, true);
 
       const user = await userAPI.updateUser(userId, {cover: imageData.key}, token);
 
-      const thumbs = user.cover
-        ? buildThumbsAndImages(await imageAPI.getImage(user.cover, token), true).thumbs
+      const avatarThumbs = user.avatar
+        ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
         : null;
 
-      return thumbs;
+      const coverThumbs = user.cover
+        ? buildThumbsAndImages(await imageAPI.getImage(user.cover, token), true).images
+        : null;
+
+      return Object.assign({}, user, { avatar: avatarThumbs, cover: coverThumbs });
     },
   },
 
