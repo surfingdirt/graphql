@@ -37,5 +37,4 @@ module.exports = gql`
       createPhoto(input: PhotoCreationInput!, file: Upload!): Photo!
       updatePhoto(id: ID, input: PhotoUpdateInput!, file: Upload): Photo!
   }
-  
 `;

@@ -1,7 +1,7 @@
 const { ApolloServer } = require('apollo-server-express');
 
 const { BaseTypes, BaseQueryResolvers } = require('./modules/base');
-const { Album, AlbumAPI, AlbumFieldResolvers, AlbumQueryResolvers } = require('./modules/album');
+const { Album, AlbumAPI, AlbumFieldResolvers, AlbumMutationResolvers, AlbumQueryResolvers } = require('./modules/album');
 
 const { Auth, AuthAPI, AuthMutationResolvers } = require('./modules/auth');
 
@@ -51,6 +51,7 @@ const resolvers = {
   },
 
   Mutation: {
+    ...AlbumMutationResolvers,
     ...AuthMutationResolvers,
     ...PhotoMutationResolvers,
     ...VideoMutationResolvers,

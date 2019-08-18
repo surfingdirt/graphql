@@ -7,4 +7,8 @@ module.exports = gql`
   type Mutation {
     toto: String
   }
+  enum Status {
+      VALID
+      INVALID
+  }
 `;

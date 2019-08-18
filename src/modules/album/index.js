@@ -2,12 +2,14 @@ const AlbumAPI = require("./album.api");
 const Album = require("./album.type");
 const {
   AlbumQueryResolvers,
-  AlbumFieldResolvers
+  AlbumFieldResolvers,
+  AlbumMutationResolvers,
 } = require("./album.resolvers");
 
 module.exports = {
   Album,
   AlbumAPI,
   AlbumQueryResolvers,
-  AlbumFieldResolvers
+  AlbumFieldResolvers,
+  AlbumMutationResolvers,
 };
