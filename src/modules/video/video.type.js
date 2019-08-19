@@ -5,6 +5,7 @@ module.exports = gql`
       album: Album
       date: String
       description: String
+      embedUrl: String
       height: Int
       id: ID!
       lastEditionDate: String
