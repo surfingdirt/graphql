@@ -28,10 +28,12 @@ module.exports = class AlbumApi extends BaseAPI {
   async listAlbums(userId, token) {
     this.setToken(token);
     let response;
+    // TODO: take this in from the graphql request, pass it on to the backend to enforce limits
+    const params = '?limitMedia=2';
     if (userId) {
-      response = await this.get(`/user/${userId}/albums`);
+      response = await this.get(`/user/${userId}/albums${params}`);
     } else {
-      response = await this.get(`${this.path}?XDEBUG_SESSION_START=PHPSTORM`);
+      response = await this.get(`${this.path}${params}`);
     }
 
     const filteredAlbums = response.filter(({id}) => id !== config.galleryAlbumId);
