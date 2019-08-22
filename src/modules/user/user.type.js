@@ -12,6 +12,7 @@ module.exports = gql`
       username: String
   }
   type User {
+      actions: ActionsList
       album: Album
       avatar: [Image]
       bio: String

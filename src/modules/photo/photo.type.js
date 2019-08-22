@@ -3,6 +3,7 @@ const { gql } = require("apollo-server-express");
 module.exports = gql`
   type Photo {
       album: Album
+      actions: ActionsList
       date: String
       description: String
       height: Int

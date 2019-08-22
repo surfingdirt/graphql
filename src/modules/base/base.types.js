@@ -11,4 +11,9 @@ module.exports = gql`
       VALID
       INVALID
   }
+  type ActionsList {
+      add: Boolean
+      delete: Boolean
+      edit: Boolean
+  }
 `;

@@ -3,6 +3,7 @@ const { gql } = require("apollo-server-express");
 module.exports = gql`
   type Video {
       album: Album
+      actions: ActionsList
       date: String
       description: String
       embedUrl: String

@@ -22,6 +22,7 @@ module.exports = gql`
   }
   type Media {
       album: Album
+      actions: ActionsList
       date: String
       description: String
       height: Int

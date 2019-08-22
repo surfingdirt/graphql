@@ -27,6 +27,7 @@ module.exports = gql`
       albumAccess: AlbumAccess
       albumCreation: AlbumCreation
       media: [Media]
+      actions: ActionsList
   }
   
   input AlbumCreationInput {
