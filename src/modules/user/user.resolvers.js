@@ -26,6 +26,22 @@ module.exports = {
 
       return Object.assign({}, user, { avatar: avatarThumbs, cover: coverThumbs });
     },
+
+    listUsers: async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
+      const users = await userAPI.listUsers( token);
+      const fullUsers = users.map( async (user) => {
+        const avatarThumbs = user.avatar
+          ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
+          : null;
+        const coverThumbs = user.cover
+          ? buildThumbsAndImages(await imageAPI.getImage(user.cover, token), true).images
+          : null;
+
+        return Object.assign({}, user, { avatar: avatarThumbs, cover: coverThumbs });
+      });
+
+      return fullUsers;
+    },
   },
 
   UserMutationResolvers: {

@@ -56,6 +56,7 @@ module.exports = gql`
   extend type Query {
       user(userId: ID!): User!
       me: Me!
+      listUsers: [User]
   }
   extend type Mutation {
       createUser(input: UserCreationInput!): User!

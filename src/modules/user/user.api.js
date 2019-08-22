@@ -36,4 +36,10 @@ module.exports = class UserApi extends BaseAPI {
     const response = await this.put(`${this.path}/${userId}`, input);
     return response;
   }
+
+  async listUsers(token) {
+    this.setToken(token);
+    const response = await this.get(`${this.path}`);
+    return response;
+  }
 };
