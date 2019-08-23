@@ -10,9 +10,12 @@ module.exports = class AlbumApi extends BaseAPI {
     this.getAlbum = this.getAlbum.bind(this);
   }
 
-  async getAlbum(id, token) {
+  async getAlbum(id, token, countItems) {
     this.setToken(token);
-    const response = await this.get(`${this.path}/${id}`);
+    const params = {
+      countItems,
+    }
+    const response = await this.get(`${this.path}/${id}`, params);
     return response;
   }
 
@@ -25,21 +28,19 @@ module.exports = class AlbumApi extends BaseAPI {
     return response;
   }
 
-  async listAlbums(userId, token) {
+  async listAlbums(userId, token, countItems) {
     this.setToken(token);
+    const params = {
+      countItems,
+    }
     let response;
-    // TODO: take this in from the graphql request, pass it on to the backend to enforce limits
-    const params = '?limitMedia=2';
     if (userId) {
-      response = await this.get(`/user/${userId}/albums${params}`);
+      response = await this.get(`/user/${userId}/albums`, params);
     } else {
-      response = await this.get(`${this.path}${params}`);
+      response = await this.get(`${this.path}`, params);
     }
 
     const filteredAlbums = response.filter(({id}) => id !== config.galleryAlbumId);
-
-    // TODO: only keep the first 5 items in each album
-
     return filteredAlbums;
   }
 };

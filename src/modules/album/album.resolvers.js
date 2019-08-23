@@ -5,10 +5,13 @@ const getFullMedia = async (m) => {
   return Object.assign({}, m, buildThumbsAndImages(m, m.mediaType == MediaType.PHOTO));
 };
 
+const DEFAULT_ALBUM_ITEM_COUNT = 5;
+
 module.exports = {
   AlbumQueryResolvers: {
     album: async (parent, args, { token, dataSources: { albumAPI } }) => {
-      const album = await albumAPI.getAlbum(args.id, token);
+      const countItems = args.countItems || DEFAULT_ALBUM_ITEM_COUNT;
+      const album = await albumAPI.getAlbum(args.id, token, countItems);
       const fullMedia = album.media.map((m) => {
         return getFullMedia(m);
       });
@@ -19,7 +22,8 @@ module.exports = {
     listAlbums: async (parent, args, { token, dataSources: { albumAPI } }) => {
       const fullAlbums = [];
 
-      const albums = await albumAPI.listAlbums(args.userId, token);
+      const countItems = args.countItems || DEFAULT_ALBUM_ITEM_COUNT;
+      const albums = await albumAPI.listAlbums(args.userId, token, countItems);
       albums.forEach((album) => {
         const fullMediaList = album.media.map(async (m) => {
           const fullMedia = await getFullMedia(m);

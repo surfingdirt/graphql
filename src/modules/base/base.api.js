@@ -69,6 +69,7 @@ module.exports = class BaseAPI extends RESTDataSource {
           headers: { Authorization: this.token }
         });
       }
+
       const response = await super.get(path, actualParams, init);
       return response;
     } catch (e) {
