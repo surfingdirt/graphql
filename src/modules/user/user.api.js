@@ -1,5 +1,5 @@
-const { BaseAPI } = require("../base");
-const { USER } = require("../../controllers");
+const { BaseAPI } = require('../base');
+const { USER } = require('../../controllers');
 
 module.exports = class UserApi extends BaseAPI {
   constructor() {
@@ -26,7 +26,7 @@ module.exports = class UserApi extends BaseAPI {
     this.setToken(token);
     // node-fetch or apollo is a little picky, so need to do this, in order
     // to have body.constructor === Object:
-    const body = {...input};
+    const body = { ...input };
     const response = await this.post(this.path, body);
     return response;
   }
@@ -40,6 +40,14 @@ module.exports = class UserApi extends BaseAPI {
   async listUsers(token) {
     this.setToken(token);
     const response = await this.get(`${this.path}`);
+    return response;
+  }
+
+  async confirmEmail(userId, input) {
+    const response = await this.put(
+      `${this.path}/${userId}/confirmation`,
+      Object.assign({}, input),
+    );
     return response;
   }
 };

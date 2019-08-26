@@ -28,8 +28,8 @@ module.exports = {
     },
 
     listUsers: async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
-      const users = await userAPI.listUsers( token);
-      const fullUsers = users.map( async (user) => {
+      const users = await userAPI.listUsers(token);
+      const fullUsers = users.map(async (user) => {
         const avatarThumbs = user.avatar
           ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
           : null;
@@ -57,7 +57,7 @@ module.exports = {
       return user;
     },
 
-    updateAvatar: async (parent, args, {token, dataSources: {imageAPI, userAPI }}) => {
+    updateAvatar: async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
       const { userId } = await userAPI.getMe(token);
 
       const { file } = args;
@@ -68,7 +68,7 @@ module.exports = {
 
       const imageData = await storeImageOnLocalAPI(file, token, true);
 
-      const user = await userAPI.updateUser(userId, {avatar: imageData.key}, token);
+      const user = await userAPI.updateUser(userId, { avatar: imageData.key }, token);
 
       const avatarThumbs = user.avatar
         ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
@@ -81,7 +81,7 @@ module.exports = {
       return Object.assign({}, user, { avatar: avatarThumbs, cover: coverThumbs });
     },
 
-    updateCover: async (parent, args, {token, dataSources: {imageAPI, userAPI }}) => {
+    updateCover: async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
       const { userId } = await userAPI.getMe(token);
 
       const { file } = args;
@@ -92,7 +92,7 @@ module.exports = {
 
       const imageData = await storeImageOnLocalAPI(file, token, true);
 
-      const user = await userAPI.updateUser(userId, {cover: imageData.key}, token);
+      const user = await userAPI.updateUser(userId, { cover: imageData.key }, token);
 
       const avatarThumbs = user.avatar
         ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
@@ -103,6 +103,12 @@ module.exports = {
         : null;
 
       return Object.assign({}, user, { avatar: avatarThumbs, cover: coverThumbs });
+    },
+
+    confirmEmail: async (parent, args, { dataSources: { userAPI } }) => {
+      const { userId, input } = args;
+      const status = await userAPI.confirmEmail(userId, input);
+      return status;
     },
   },
 

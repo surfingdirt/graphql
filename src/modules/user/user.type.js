@@ -54,6 +54,13 @@ module.exports = gql`
       site: String
       status: String
   }
+  input UserConfirmationInput {
+      aK: String
+  }
+  type userConfirmationStatus {
+      status: Boolean
+      alreadyDone: Boolean
+  }
   extend type Query {
       user(userId: ID!): User!
       me: Me!
@@ -64,5 +71,6 @@ module.exports = gql`
       updateUser(userId: ID, input: UserUpdateInput!): User!
       updateAvatar(file: Upload!): Me
       updateCover(file: Upload!): Me
+      confirmEmail(userId: ID, input: UserConfirmationInput!): userConfirmationStatus!
   }
 `;
