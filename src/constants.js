@@ -1,4 +1,15 @@
 module.exports = {
+  AlbumContributions: {
+    PUBLIC: "public",
+    PRIVATE: "private",
+  },
+
+  AlbumVisibility: {
+    PRIVATE: "private",
+    UNLISTED: "unlisted",
+    VISIBLE: "visible",
+  },
+
   MediaType: {
     PHOTO: "photo",
     VIDEO: "video"

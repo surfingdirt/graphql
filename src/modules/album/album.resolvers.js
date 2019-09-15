@@ -1,4 +1,4 @@
-const { MediaType } = require('../../constants');
+const { AlbumContributions, AlbumVisibility, MediaType } = require('../../constants');
 const { buildThumbsAndImages } = require('../../utils/thumbs');
 
 const getFullMedia = async (m) => {
@@ -37,6 +37,30 @@ module.exports = {
     },
   },
   AlbumFieldResolvers: {
+    albumContributions(parent) {
+      switch (parent.albumContributions) {
+        case AlbumContributions.PUBLIC:
+          return 'PUBLIC';
+        case AlbumContributions.PRIVATE:
+          return 'PRIVATE';
+        default:
+          throw new Error(`Unhandled albumContributions '${parent.albumContributions}'`);
+      }
+    },
+
+    albumVisibility(parent) {
+      switch (parent.albumVisibility) {
+        case AlbumVisibility.PRIVATE:
+          return 'PRIVATE';
+        case AlbumVisibility.VISIBLE:
+          return 'VISIBLE';
+        case AlbumVisibility.UNLISTED:
+          return 'UNLISTED';
+        default:
+          throw new Error(`Unhandled albumVisibility '${parent.albumVisibility}'`);
+      }
+    },
+
     async lastEditor(parent, args, { token, dataSources: { userAPI } }) {
       if (!parent.lastEditor.id) {
         return null;
@@ -44,11 +68,16 @@ module.exports = {
       return await userAPI.getUser(parent.lastEditor.id, token);
     },
 
-    async submitter(parent, args, { token, dataSources: { userAPI } }) {
+    async submitter(parent, args, { token, dataSources: { imageAPI, userAPI } }) {
       if (!parent.submitter.id) {
         return null;
       }
-      return await userAPI.getUser(parent.submitter.id, token);
+      const user = await userAPI.getUser(parent.submitter.id, token);
+      const avatarThumbs = user.avatar
+        ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
+        : null;
+
+      return Object.assign({}, user, { avatar: avatarThumbs, });
     },
   },
   AlbumMutationResolvers: {

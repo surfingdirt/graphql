@@ -1,18 +1,23 @@
 const { gql } = require("apollo-server-express");
 
 module.exports = gql`
-  enum AlbumAccess {
-      PUBLIC
-      PRIVATE
-  }
   enum AlbumType {
       SIMPLE
       AGGREGATE
+  }
+  enum AlbumContributions {
+      PUBLIC
+      PRIVATE
   }
   enum AlbumCreation {
       AUTOMATIC
       USER
       STATIC
+  }
+  enum AlbumVisibility {
+      PRIVATE
+      UNLISTED
+      VISIBLE
   }
   type Album {
       id: ID
@@ -24,8 +29,9 @@ module.exports = gql`
       lastEditionDate: String
       status: Status
       albumType: AlbumType
-      albumAccess: AlbumAccess
+      albumContributions: AlbumContributions
       albumCreation: AlbumCreation
+      albumVisibility: AlbumVisibility
       media: [Media]
       actions: ActionsList
   }
@@ -33,7 +39,8 @@ module.exports = gql`
   input AlbumCreationInput {
       title: String
       description: String
-      albumAccess: AlbumAccess
+      albumContributions: AlbumContributions
+      albumVisibility: AlbumVisibility
   }
   extend type Query {
       album(id: ID!, countItems: Int): Album!
