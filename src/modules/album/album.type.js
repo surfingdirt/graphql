@@ -20,20 +20,21 @@ module.exports = gql`
       VISIBLE
   }
   type Album {
-      id: ID
-      title: String
-      description: String
-      date: String
-      submitter: User!
-      lastEditor: User
-      lastEditionDate: String
-      status: Status
-      albumType: AlbumType
+      actions: ActionsList
       albumContributions: AlbumContributions
       albumCreation: AlbumCreation
+      albumType: AlbumType
       albumVisibility: AlbumVisibility
+      date: String
+      description: String
+      id: ID
+      itemCount: Int
+      lastEditionDate: String
+      lastEditor: User
       media: [Media]
-      actions: ActionsList
+      status: Status
+      submitter: User!
+      title: String
   }
   
   input AlbumCreationInput {
