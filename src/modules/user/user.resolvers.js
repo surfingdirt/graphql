@@ -51,10 +51,18 @@ module.exports = {
       return user;
     },
 
-    updateUser: async (parent, args, { token, dataSources: { userAPI } }) => {
+    updateUser: async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
       const { userId, input } = args;
       const user = await userAPI.updateUser(userId, input, token);
-      return user;
+
+      const avatarThumbs = user.avatar
+        ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
+        : null;
+      const coverThumbs = user.cover
+        ? buildThumbsAndImages(await imageAPI.getImage(user.cover, token), true).images
+        : null;
+
+      return Object.assign({}, user, { avatar: avatarThumbs, cover: coverThumbs });
     },
 
     updateAvatar: async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
