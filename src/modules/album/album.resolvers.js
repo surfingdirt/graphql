@@ -7,6 +7,9 @@ const getFullMedia = async (m) => {
 
 const DEFAULT_ALBUM_PREVIEW_ITEM_COUNT = 5;
 const DEFAULT_ALBUM_ITEM_COUNT = 20;
+const DEFAULT_ALBUM_COUNT = 10;
+const DEFAULT_ALBUM_SORT = null;
+const DEFAULT_ALBUM_DIR = 'desc';
 
 module.exports = {
   AlbumQueryResolvers: {
@@ -24,7 +27,10 @@ module.exports = {
       const fullAlbums = [];
 
       const countItems = args.countItems || DEFAULT_ALBUM_PREVIEW_ITEM_COUNT;
-      const albums = await albumAPI.listAlbums(args.userId, token, countItems);
+      const count = args.count || DEFAULT_ALBUM_COUNT;
+      const sort = args.sort || DEFAULT_ALBUM_SORT;
+      const dir = args.dir || DEFAULT_ALBUM_DIR;
+      const albums = await albumAPI.listAlbums(args.userId, token, countItems, count, sort, dir);
       albums.forEach((album) => {
         const fullMediaList = album.media.map(async (m) => {
           const fullMedia = await getFullMedia(m);

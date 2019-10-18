@@ -28,10 +28,10 @@ module.exports = class AlbumApi extends BaseAPI {
     return response;
   }
 
-  async listAlbums(userId, token, countItems) {
+  async listAlbums(userId, token, countItems, count, sort, dir) {
     this.setToken(token);
     const params = {
-      countItems,
+      countItems, count, sort, dir,
     }
     let response;
     if (userId) {
