@@ -45,7 +45,7 @@ module.exports = gql`
   }
   extend type Query {
       album(id: ID!, countItems: Int): Album!
-      listAlbums(userId: ID, countItems: Int, count: Int, sort: String, dir: String): [Album]
+      listAlbums(userId: ID, countItems: Int, count: Int, start: Int, sort: String, dir: String): [Album]
   }
   extend type Mutation {
       createAlbum(input: AlbumCreationInput!): Album!
