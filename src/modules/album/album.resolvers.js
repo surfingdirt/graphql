@@ -31,7 +31,8 @@ module.exports = {
       const start = args.start || 0;
       const sort = args.sort || DEFAULT_ALBUM_SORT;
       const dir = args.dir || DEFAULT_ALBUM_DIR;
-      const albums = await albumAPI.listAlbums(args.userId, token, countItems, count, start, sort, dir);
+      const skipAlbums = args.skipAlbums || [];
+      const albums = await albumAPI.listAlbums(args.userId, token, countItems, count, start, sort, dir, skipAlbums);
       albums.forEach((album) => {
         const fullMediaList = album.media.map(async (m) => {
           const fullMedia = await getFullMedia(m);

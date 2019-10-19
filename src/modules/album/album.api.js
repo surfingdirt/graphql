@@ -28,10 +28,10 @@ module.exports = class AlbumApi extends BaseAPI {
     return response;
   }
 
-  async listAlbums(userId, token, countItems, count, start, sort, dir) {
+  async listAlbums(userId, token, countItems, count, start, sort, dir, skipAlbums) {
     this.setToken(token);
     const params = {
-      countItems, count, start, sort, dir,
+      countItems, count, start, sort, dir, 'skipAlbums[]': skipAlbums,
     }
     let response;
     if (userId) {
@@ -40,7 +40,6 @@ module.exports = class AlbumApi extends BaseAPI {
       response = await this.get(`${this.path}`, params);
     }
 
-    const filteredAlbums = response.filter(({id}) => id !== config.galleryAlbumId);
-    return filteredAlbums;
+    return response;
   }
 };
