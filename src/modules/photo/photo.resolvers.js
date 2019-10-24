@@ -14,7 +14,7 @@ module.exports = {
       return Object.assign(
         {},
         photo,
-        { submitter },
+        { submitter, mediaType: MediaType.PHOTO },
         buildThumbsAndImages(photo, true),
       );
     },

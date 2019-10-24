@@ -12,6 +12,7 @@ module.exports = gql`
       lastEditionDate: String
       lastEditor: User
       mediaSubType: MediaSubType!
+      mediaType: MediaType!
       status: String
       submitter: User!
       title: String

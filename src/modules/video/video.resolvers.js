@@ -24,7 +24,7 @@ module.exports = {
       return Object.assign(
         {},
         video,
-        { submitter },
+        { submitter, mediaType: MediaType.VIDEO },
         buildThumbsAndImages(video, false)
       );
     }
