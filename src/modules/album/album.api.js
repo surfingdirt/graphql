@@ -12,9 +12,9 @@ module.exports = class AlbumApi extends BaseAPI {
 
   async getAlbum(id, token, countItems) {
     this.setToken(token);
-    const params = {
+    const params = this.getParams({
       countItems,
-    }
+    });
     const response = await this.get(`${this.path}/${id}`, params);
     return response;
   }
@@ -30,9 +30,9 @@ module.exports = class AlbumApi extends BaseAPI {
 
   async listAlbums(userId, token, countItems, count, start, sort, dir, skipAlbums) {
     this.setToken(token);
-    const params = {
+    const params = this.getParams({
       countItems, count, start, sort, dir, 'skipAlbums[]': skipAlbums,
-    }
+    });
     let response;
     if (userId) {
       response = await this.get(`/user/${userId}/albums`, params);

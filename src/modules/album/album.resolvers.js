@@ -1,8 +1,16 @@
 const { AlbumContributions, AlbumVisibility, MediaType } = require('../../constants');
 const { buildThumbsAndImages } = require('../../utils/thumbs');
+const { getVendorUrl, getEmbedUrl } = require('../../utils/videoUtils');
 
 const getFullMedia = async (m) => {
-  return Object.assign({}, m, buildThumbsAndImages(m, m.mediaType == MediaType.PHOTO));
+  let videoProps = {};
+  if (m.mediaType === MediaType.VIDEO) {
+    videoProps = {
+      embedUrl: getEmbedUrl(m),
+      vendorUrl: getVendorUrl(m),
+    };
+  }
+  return Object.assign({}, m, buildThumbsAndImages(m, m.mediaType == MediaType.PHOTO), videoProps);
 };
 
 const DEFAULT_ALBUM_PREVIEW_ITEM_COUNT = 5;
@@ -32,7 +40,16 @@ module.exports = {
       const sort = args.sort || DEFAULT_ALBUM_SORT;
       const dir = args.dir || DEFAULT_ALBUM_DIR;
       const skipAlbums = args.skipAlbums || [];
-      const albums = await albumAPI.listAlbums(args.userId, token, countItems, count, start, sort, dir, skipAlbums);
+      const albums = await albumAPI.listAlbums(
+        args.userId,
+        token,
+        countItems,
+        count,
+        start,
+        sort,
+        dir,
+        skipAlbums,
+      );
       albums.forEach((album) => {
         const fullMediaList = album.media.map(async (m) => {
           const fullMedia = await getFullMedia(m);
@@ -85,7 +102,7 @@ module.exports = {
         ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
         : null;
 
-      return Object.assign({}, user, { avatar: avatarThumbs, });
+      return Object.assign({}, user, { avatar: avatarThumbs });
     },
   },
   AlbumMutationResolvers: {
@@ -95,5 +112,5 @@ module.exports = {
       const album = await albumAPI.createAlbum(input, token);
       return album;
     },
-  }
+  },
 };

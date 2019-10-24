@@ -25,6 +25,7 @@ module.exports = gql`
       actions: ActionsList
       date: String
       description: String
+      embedUrl: String
       height: Int
       id: ID!
       lastEditionDate: String
@@ -37,6 +38,7 @@ module.exports = gql`
       thumbs: [Image]
       images: [Image]
       users: [User]
+      vendorUrl: String
       vendorKey: String
       width: Int
   }
