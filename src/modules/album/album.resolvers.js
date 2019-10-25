@@ -1,8 +1,9 @@
 const { AlbumContributions, AlbumVisibility, MediaType } = require('../../constants');
 const { buildThumbsAndImages } = require('../../utils/thumbs');
+const { submitterResolver } = require('../../utils/users');
 const { getVendorUrl, getEmbedUrl } = require('../../utils/videoUtils');
 
-const getFullMedia = async (m) => {
+const getFullMedia = (m) => {
   let videoProps = {};
   if (m.mediaType === MediaType.VIDEO) {
     videoProps = {
@@ -24,10 +25,7 @@ module.exports = {
     album: async (parent, args, { token, dataSources: { albumAPI } }) => {
       const countItems = args.countItems || DEFAULT_ALBUM_ITEM_COUNT;
       const album = await albumAPI.getAlbum(args.id, token, countItems);
-      const fullMedia = album.media.map((m) => {
-        return getFullMedia(m);
-      });
-
+      const fullMedia = album.media.map((m) => getFullMedia(m));
       return Object.assign({}, album, { media: fullMedia });
     },
 
@@ -51,13 +49,10 @@ module.exports = {
         skipAlbums,
       );
       albums.forEach((album) => {
-        const fullMediaList = album.media.map(async (m) => {
-          const fullMedia = await getFullMedia(m);
-          return fullMedia;
-        });
+        const fullMediaList = album.media.map((m) => getFullMedia(m));
         fullAlbums.push(Object.assign({}, album, { media: fullMediaList }));
       });
-
+console.log(fullAlbums);
       return fullAlbums;
     },
   },
@@ -93,16 +88,8 @@ module.exports = {
       return await userAPI.getUser(parent.lastEditor.id, token);
     },
 
-    async submitter(parent, args, { token, dataSources: { imageAPI, userAPI } }) {
-      if (!parent.submitter.id) {
-        return null;
-      }
-      const user = await userAPI.getUser(parent.submitter.id, token);
-      const avatarThumbs = user.avatar
-        ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
-        : null;
-
-      return Object.assign({}, user, { avatar: avatarThumbs });
+    submitter(parent, args, { token, dataSources: { imageAPI, userAPI } }) {
+      return submitterResolver(parent, args, { token, dataSources: { imageAPI, userAPI } });
     },
   },
   AlbumMutationResolvers: {

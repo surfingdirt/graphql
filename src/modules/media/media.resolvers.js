@@ -1,3 +1,5 @@
+const { submitterResolver } = require('../../utils/users');
+
 const StorageType = {
   LOCAL: "0"
 };
@@ -63,6 +65,10 @@ module.exports = {
         return null;
       }
       return await userAPI.getUser(parent.lastEditor.id, token);
+    },
+
+    submitter(parent, args, { token, dataSources: { imageAPI, userAPI } }) {
+      return submitterResolver(parent, args, { token, dataSources: { imageAPI, userAPI } });
     },
 
     async users(
