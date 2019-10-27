@@ -44,7 +44,8 @@ module.exports = gql`
       albumVisibility: AlbumVisibility
   }
   extend type Query {
-      album(id: ID!, countItems: Int): Album!
+      album(id: ID!, countItems: Int, startItem: Int): Album!
+      listMedia(albumId: ID!, countItems: Int, startItem: Int): [Media]
       listAlbums(userId: ID, countItems: Int, count: Int, start: Int, sort: String, dir: String, skipAlbums: [String]): [Album]
   }
   extend type Mutation {

@@ -24,9 +24,18 @@ module.exports = {
   AlbumQueryResolvers: {
     album: async (parent, args, { token, dataSources: { albumAPI } }) => {
       const countItems = args.countItems || DEFAULT_ALBUM_ITEM_COUNT;
-      const album = await albumAPI.getAlbum(args.id, token, countItems);
+      const startItem = args.startItem || 0;
+      const album = await albumAPI.getAlbum(args.id, token, countItems, startItem);
       const fullMedia = album.media.map((m) => getFullMedia(m));
       return Object.assign({}, album, { media: fullMedia });
+    },
+
+    listMedia: async (parent, args, { token, dataSources: { albumAPI } }) => {
+      const countItems = args.countItems || DEFAULT_ALBUM_ITEM_COUNT;
+      const startItem = args.startItem || 0;
+      const album = await albumAPI.getAlbum(args.albumId, token, countItems, startItem);
+      const fullMedia = album.media.map((m) => getFullMedia(m));
+      return fullMedia;
     },
 
     listAlbums: async (parent, args, { token, dataSources: { albumAPI } }) => {
@@ -52,7 +61,6 @@ module.exports = {
         const fullMediaList = album.media.map((m) => getFullMedia(m));
         fullAlbums.push(Object.assign({}, album, { media: fullMediaList }));
       });
-console.log(fullAlbums);
       return fullAlbums;
     },
   },

@@ -1,6 +1,6 @@
-const config = require("../../../config");
-const { BaseAPI } = require("../base");
-const { ALBUM } = require("../../controllers");
+const config = require('../../../config');
+const { BaseAPI } = require('../base');
+const { ALBUM } = require('../../controllers');
 
 module.exports = class AlbumApi extends BaseAPI {
   constructor() {
@@ -10,10 +10,11 @@ module.exports = class AlbumApi extends BaseAPI {
     this.getAlbum = this.getAlbum.bind(this);
   }
 
-  async getAlbum(id, token, countItems) {
+  async getAlbum(id, token, countItems, startItem) {
     this.setToken(token);
     const params = this.getParams({
       countItems,
+      startItem,
     });
     const response = await this.get(`${this.path}/${id}`, params);
     return response;
@@ -31,7 +32,12 @@ module.exports = class AlbumApi extends BaseAPI {
   async listAlbums(userId, token, countItems, count, start, sort, dir, skipAlbums) {
     this.setToken(token);
     const params = this.getParams({
-      countItems, count, start, sort, dir, 'skipAlbums[]': skipAlbums,
+      countItems,
+      count,
+      start,
+      sort,
+      dir,
+      'skipAlbums[]': skipAlbums,
     });
     let response;
     if (userId) {
