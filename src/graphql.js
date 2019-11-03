@@ -1,7 +1,22 @@
 const { ApolloServer } = require('apollo-server-express');
 
 const { BaseTypes, BaseQueryResolvers } = require('./modules/base');
-const { Album, AlbumAPI, AlbumFieldResolvers, AlbumMutationResolvers, AlbumQueryResolvers } = require('./modules/album');
+
+const {
+  Album,
+  AlbumAPI,
+  AlbumFieldResolvers,
+  AlbumMutationResolvers,
+  AlbumQueryResolvers,
+} = require('./modules/album');
+
+const {
+  Comment,
+  CommentAPI,
+  CommentFieldResolvers,
+  CommentMutationResolvers,
+  CommentQueryResolvers,
+} = require('./modules/comment');
 
 const { Auth, AuthAPI, AuthMutationResolvers } = require('./modules/auth');
 
@@ -36,7 +51,7 @@ const {
 /******************************************************************************
  * TYPEDEFS
  *****************************************************************************/
-const typeDefs = [BaseTypes, Album, Auth, Image, Media, Photo, Video, User];
+const typeDefs = [BaseTypes, Album, Auth, Comment, Image, Media, Photo, Video, User];
 
 /******************************************************************************
  * RESOLVERS
@@ -45,6 +60,7 @@ const resolvers = {
   Query: {
     ...BaseQueryResolvers,
     ...AlbumQueryResolvers,
+    ...CommentQueryResolvers,
     ...PhotoQueryResolvers,
     ...VideoQueryResolvers,
     ...UserQueryResolvers,
@@ -53,12 +69,15 @@ const resolvers = {
   Mutation: {
     ...AlbumMutationResolvers,
     ...AuthMutationResolvers,
+    ...CommentMutationResolvers,
     ...PhotoMutationResolvers,
     ...VideoMutationResolvers,
     ...UserMutationResolvers,
   },
 
   Album: { ...AlbumFieldResolvers },
+
+  Comment: { ...CommentFieldResolvers },
 
   ...MediaTypeResolvers,
   ...PhotoTypeResolvers,
@@ -76,6 +95,7 @@ const resolvers = {
  *****************************************************************************/
 const dataSources = () => ({
   albumAPI: new AlbumAPI(),
+  commentAPI: new CommentAPI(),
   authAPI: new AuthAPI(),
   imageAPI: new ImageAPI(),
   mediaAPI: new MediaAPI(),
