@@ -1,7 +1,21 @@
-const { MediaType, StorageType } = require('../../constants');
+const { DataType, MediaType, StorageType } = require('../../constants');
 const { storeImageOnLocalAPI } = require('../../utils/RestAPI');
 const { buildThumbsAndImages } = require('../../utils/thumbs');
 const { submitterResolver } = require('../../utils/users');
+
+const createComment = async (args, token, commentAPI, parentType) => {
+  const { input } = args;
+  const creationPayload = {
+    content: input.content,
+    itemId: input.parentId,
+    itemType: parentType,
+    status: input.status,
+    tone: input.tone,
+  };
+
+  const comment = await commentAPI.createComment(creationPayload, token);
+  return comment;
+};
 
 module.exports = {
   CommentTypeResolvers: {},
@@ -16,19 +30,16 @@ module.exports = {
     },
   },
   CommentMutationResolvers: {
-    createComment: async (parent, args, { token, dataSources: { mediaAPI } }) => {
-      const { input, file } = args;
+    createAlbumComment: async (parent, args, { token, dataSources: { commentAPI } }) => {
+      return createComment(args, token, commentAPI, DataType.ALBUM);
+    },
 
-      const imageData = await storeImageOnLocalAPI(file, token, true);
+    createPhotoComment: async (parent, args, { token, dataSources: { commentAPI } }) => {
+      return createComment(args, token, commentAPI, DataType.PHOTO);
+    },
 
-      const creationPayload = Object.assign({}, input, {
-        imageId: imageData.key,
-        mediaType: MediaType.PHOTO,
-        storageType: StorageType.LOCAL,
-      });
-
-      const photo = await mediaAPI.createMedia(creationPayload, token);
-      return Object.assign({}, photo, buildThumbsAndImages(photo, true));
+    createVideoComment: async (parent, args, { token, dataSources: { commentAPI } }) => {
+      return createComment(args, token, commentAPI, DataType.VIDEO);
     },
 
     updateComment: async (parent, args, { token, dataSources: { mediaAPI } }) => {

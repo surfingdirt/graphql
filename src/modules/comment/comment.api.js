@@ -11,7 +11,7 @@ module.exports = class CommentAPI extends BaseAPI {
 
   async listComments(parentId, parentType, token) {
     this.setToken(token);
-    const response = await this.get(`${parentType}/${parentId}/comments?XDEBUG_START_SESSION=PHPSTORM`);
+    const response = await this.get(`${parentType}/${parentId}/comments`);
     return response;
   }
 

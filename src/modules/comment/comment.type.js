@@ -16,7 +16,6 @@ module.exports = gql`
   input CommentCreationInput {
       content: String!
       parentId: ID!
-      parentType: String!
       status: String
       tone: String
   }
@@ -30,7 +29,10 @@ module.exports = gql`
       comment(id: ID!): Comment!
   }
   extend type Mutation {
-      createComment(input: CommentCreationInput!): Comment!
-      updateComment(id: ID, input: CommentUpdateInput!): Comment!
+      createAlbumComment(input: CommentCreationInput!): Comment!
+      createPhotoComment(input: CommentCreationInput!): Comment!
+      createVideoComment(input: CommentCreationInput!): Comment!
+      deleteComment(id: ID!): Boolean
+      updateComment(id: ID!, input: CommentUpdateInput!): Comment!
   }
 `;

@@ -10,6 +10,12 @@ module.exports = {
     VISIBLE: "visible",
   },
 
+  DataType: {
+    ALBUM: "mediaalbum",
+    PHOTO: "photo",
+    VIDEO: "video",
+  },
+
   MediaType: {
     PHOTO: "photo",
     VIDEO: "video"
