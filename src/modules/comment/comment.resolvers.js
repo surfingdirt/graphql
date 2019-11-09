@@ -42,19 +42,20 @@ module.exports = {
       return createComment(args, token, commentAPI, DataType.VIDEO);
     },
 
-    updateComment: async (parent, args, { token, dataSources: { mediaAPI } }) => {
-      const { id, input, file } = args;
+    updateComment: async (parent, args, { token, dataSources: { commentAPI } }) => {
+      const { id, input } = args;
 
       let updatePayload = Object.assign({}, input);
-      if (file) {
-        const imageData = await storeImageOnLocalAPI(file, token);
-        updatePayload = Object.assign({}, input, {
-          imageId: imageData.key,
-        });
-      }
 
-      const photo = await mediaAPI.updateMedia(id, updatePayload, token);
-      return Object.assign({}, photo, buildThumbsAndImages(photo, true));
+      const comment = await commentAPI.updateComment(id, updatePayload, token);
+      return comment;
+    },
+
+    deleteComment: async (parent, args, { token, dataSources: { commentAPI } }) => {
+      const { id } = args;
+
+      const response = await commentAPI.deleteComment(id, token);
+      return response.status;
     },
   },
   CommentFieldResolvers: {

@@ -38,4 +38,10 @@ module.exports = class CommentAPI extends BaseAPI {
     const response = await this.put(`${this.path}/${id}`, body);
     return response;
   }
+
+  async deleteComment(id, token) {
+    this.setToken(token);
+    const response = await this.delete(`${this.path}/${id}`);
+    return response;
+  }
 };
