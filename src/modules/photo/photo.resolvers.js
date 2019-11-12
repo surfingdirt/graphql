@@ -1,20 +1,18 @@
 const { MediaType, StorageType } = require('../../constants');
 const { storeImageOnLocalAPI } = require('../../utils/RestAPI');
 const { buildThumbsAndImages } = require('../../utils/thumbs');
+const { submitterResolver } = require('../../utils/users');
 
 module.exports = {
   PhotoTypeResolvers: {},
   PhotoQueryResolvers: {
-    photo: async (parent, args, { token, dataSources: { mediaAPI, userAPI } }) => {
+    photo: async (parent, args, { token, dataSources: { mediaAPI } }) => {
       const photo = await mediaAPI.getMedia(args.id, token);
-      const submitter = photo.submitter.id
-        ? await userAPI.getUser(photo.submitter.id, token)
-        : null;
 
       return Object.assign(
         {},
         photo,
-        { submitter, mediaType: MediaType.PHOTO },
+        { mediaType: MediaType.PHOTO },
         buildThumbsAndImages(photo, true),
       );
     },
@@ -56,6 +54,10 @@ module.exports = {
         return null;
       }
       return await albumAPI.getAlbum(parent.album.id, token);
+    },
+
+    submitter(parent, args, { token, dataSources: { imageAPI, userAPI } }) {
+      return submitterResolver(parent, args, { token, dataSources: { imageAPI, userAPI } });
     },
 
     async lastEditor(parent, args, { token, dataSources: { userAPI } }) {

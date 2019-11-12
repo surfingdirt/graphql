@@ -1,4 +1,4 @@
-const { ApolloError } = require("apollo-server-express");
+const { submitterResolver } = require('../../utils/users');
 
 const {
   MediaType,
@@ -15,17 +15,14 @@ module.exports = {
     video: async (
       parent,
       args,
-      { token, dataSources: { mediaAPI, userAPI } }
+      { token, dataSources: { mediaAPI } }
     ) => {
       const video = await mediaAPI.getMedia(args.id, token);
-      const submitter = video.submitter.id
-        ? await userAPI.getUser(video.submitter.id, token)
-        : null;
 
       return Object.assign(
         {},
         video,
-        { submitter, mediaType: MediaType.VIDEO },
+        { mediaType: MediaType.VIDEO },
         buildThumbsAndImages(video, false)
       );
     }
@@ -110,6 +107,10 @@ module.exports = {
         users.push(await userAPI.getUser(userId, token));
       }
       return users;
+    },
+
+    submitter(parent, args, { token, dataSources: { imageAPI, userAPI } }) {
+      return submitterResolver(parent, args, { token, dataSources: { imageAPI, userAPI } });
     },
 
     vendorUrl(parent) {
