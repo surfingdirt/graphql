@@ -2,6 +2,7 @@ const { gql } = require("apollo-server-express");
 
 module.exports = gql`
   type Comment {
+      actions: ActionsList
       content: String!
       date: String
       id: ID!
