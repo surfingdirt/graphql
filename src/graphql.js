@@ -22,22 +22,16 @@ const { Auth, AuthAPI, AuthMutationResolvers } = require('./modules/auth');
 
 const { Image, ImageAPI } = require('./modules/image');
 
-const { Media, MediaAPI, MediaTypeResolvers, MediaFieldResolvers } = require('./modules/media');
+const { Media, MediaAPI, MediaTypeResolvers, MediaQueryResolvers, MediaFieldResolvers } = require('./modules/media');
 
 const {
   Photo,
-  PhotoTypeResolvers,
-  PhotoQueryResolvers,
   PhotoMutationResolvers,
-  PhotoFieldResolvers,
 } = require('./modules/photo');
 
 const {
   Video,
-  VideoTypeResolvers,
-  VideoQueryResolvers,
   VideoMutationResolvers,
-  VideoFieldResolvers,
 } = require('./modules/video');
 
 const {
@@ -61,8 +55,7 @@ const resolvers = {
     ...BaseQueryResolvers,
     ...AlbumQueryResolvers,
     ...CommentQueryResolvers,
-    ...PhotoQueryResolvers,
-    ...VideoQueryResolvers,
+    ...MediaQueryResolvers,
     ...UserQueryResolvers,
   },
 
@@ -80,12 +73,8 @@ const resolvers = {
   Comment: { ...CommentFieldResolvers },
 
   ...MediaTypeResolvers,
-  ...PhotoTypeResolvers,
-  ...VideoTypeResolvers,
 
   Media: { ...MediaFieldResolvers },
-  Photo: { ...PhotoFieldResolvers },
-  Video: { ...VideoFieldResolvers },
 
   User: { ...UserFieldResolvers },
 };

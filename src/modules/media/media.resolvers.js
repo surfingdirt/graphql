@@ -1,4 +1,7 @@
+const { MediaType } = require('../../constants');
+const { buildThumbsAndImages } = require('../../utils/thumbs');
 const { submitterResolver } = require('../../utils/users');
+const { getVendorUrl, getEmbedUrl } = require('../../utils/videoUtils');
 
 const StorageType = {
   LOCAL: "0"
@@ -15,6 +18,9 @@ const ImageType = {
   GIF: "gif",
   WEBP: "webp"
 };
+
+const isVideo = (parent) => parent.mediaType === MediaType.VIDEO;
+const isPhoto = (parent) => parent.mediaType === MediaType.PHOTO;
 
 module.exports = {
   MediaTypeResolvers: {
@@ -38,6 +44,17 @@ module.exports = {
     ImageSize,
     ImageType
   },
+  MediaQueryResolvers: {
+    media: async (parent, args, { token, dataSources: { mediaAPI } }) => {
+      const media = await mediaAPI.getMedia(args.id, token);
+
+      return Object.assign(
+        {},
+        media,
+        buildThumbsAndImages(media, isPhoto(media)),
+      );
+    },
+  },
   MediaFieldResolvers: {
     async album(
       parent,
@@ -51,6 +68,14 @@ module.exports = {
         return null;
       }
       return await albumAPI.getAlbum(parent.album.id, token);
+    },
+
+    embedUrl(parent) {
+      if (!isVideo(parent)) {
+        return null;
+      }
+
+      return getEmbedUrl(parent);
     },
 
     async lastEditor(
@@ -84,6 +109,14 @@ module.exports = {
         users.push(await userAPI.getUser(userId, token));
       }
       return users;
-    }
+    },
+
+    vendorUrl(parent) {
+      if (!isVideo(parent)) {
+        return null;
+      }
+
+      return getVendorUrl(parent);
+    },
   }
 };

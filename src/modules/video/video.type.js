@@ -1,27 +1,6 @@
 const { gql } = require("apollo-server-express");
 
 module.exports = gql`
-  type Video {
-      album: Album
-      actions: ActionsList
-      date: String
-      description: String
-      embedUrl: String
-      height: Int
-      id: ID!
-      lastEditionDate: String
-      lastEditor: User
-      mediaSubType: MediaSubType!
-      mediaType: MediaType!
-      status: String
-      submitter: User!
-      title: String
-      thumbs: [Image]
-      users: [User]
-      vendorKey: String
-      vendorUrl: String
-      width: Int
-  }
   input VideoCreationInput {
       title: String
       description: String
@@ -39,12 +18,9 @@ module.exports = gql`
       imageId: String
       mediaSubType: MediaSubType
   }
-  extend type Query {
-      video(id: ID!): Video!
-  }
   extend type Mutation {
-      createVideo(input: VideoCreationInput!): Video!
-      updateVideo(id: ID, input: VideoUpdateInput!): Video!
+      createVideo(input: VideoCreationInput!): Media!
+      updateVideo(id: ID, input: VideoUpdateInput!): Media!
   }
   
 `;

@@ -1,25 +1,6 @@
 const { gql } = require("apollo-server-express");
 
 module.exports = gql`
-  type Photo {
-      album: Album
-      actions: ActionsList
-      date: String
-      description: String
-      height: Int
-      id: ID!
-      lastEditionDate: String
-      lastEditor: User
-      mediaSubType: MediaSubType!
-      mediaType: MediaType!
-      status: String
-      submitter: User!
-      title: String
-      thumbs: [Image]
-      images: [Image]
-      users: [User]
-      width: Int
-  }
   input PhotoCreationInput {
       title: String
       description: String
@@ -32,11 +13,9 @@ module.exports = gql`
       description: String
       status: String
   }
-  extend type Query {
-      photo(id: ID!): Photo!
-  }
   extend type Mutation {
-      createPhoto(input: PhotoCreationInput!, file: Upload!): Photo!
-      updatePhoto(id: ID, input: PhotoUpdateInput!, file: Upload): Photo!
+      createPhoto(input: PhotoCreationInput!, file: Upload!): Media!
+      updatePhoto(id: ID, input: PhotoUpdateInput!, file: Upload): Media!
   }
+
 `;

@@ -39,7 +39,9 @@ module.exports = gql`
       images: [Image]
       users: [User]
       vendorUrl: String
-      vendorKey: String
       width: Int
+  }
+  extend type Query {
+      media(id: ID!): Media
   }
 `;

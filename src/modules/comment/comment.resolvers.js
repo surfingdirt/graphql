@@ -18,7 +18,6 @@ const createComment = async (args, token, commentAPI, parentType) => {
 };
 
 module.exports = {
-  CommentTypeResolvers: {},
   CommentQueryResolvers: {
     listComments: async (parent, args, { token, dataSources: { commentAPI } }) => {
       const comments = await commentAPI.listComments(args.parentId, args.parentType, token);
