@@ -10,13 +10,16 @@ module.exports = gql`
         width: Int
     }
   input VideoCreationInput {
-      title: String
-      description: String
       albumId: ID!
-      vendorKey: String
+      description: String
+      height: Int
       imageId: String
       mediaSubType: MediaSubType!
       status: String
+      thumbUrl: String
+      title: String
+      vendorKey: String!
+      width: Int
   }
   input VideoUpdateInput {
       title: String
