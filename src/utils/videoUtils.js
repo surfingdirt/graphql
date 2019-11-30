@@ -215,9 +215,12 @@ const getVideoInfo = async (url) => {
     description,
     height,
     iframeUrl,
+    mediaSubType,
     thumbUrl,
     title,
-    width,
+    url,
+    vendorKey,
+    width
   };
 };
 

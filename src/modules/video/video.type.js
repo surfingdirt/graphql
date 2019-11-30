@@ -5,8 +5,11 @@ module.exports = gql`
         description: String
         height: Int
         iframeUrl: String
+        mediaSubType: MediaSubType!
         thumbUrl: String
         title: String
+        url: String!
+        vendorKey: String!
         width: Int
     }
   input VideoCreationInput {
