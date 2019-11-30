@@ -1,5 +1,6 @@
 const { MediaType, StorageType } = require('../../constants');
 const { buildThumbsAndImages } = require('../../utils/thumbs');
+const { getVideoInfo } = require('../../utils/videoUtils');
 
 module.exports = {
   VideoMutationResolvers: {
@@ -22,6 +23,12 @@ module.exports = {
 
       const video = await mediaAPI.updateMedia(id, updatePayload, token);
       return Object.assign({}, video, buildThumbsAndImages(video, false));
+    },
+  },
+  VideoQueryResolvers: {
+    getVideoInfo: async (parent, args, { token, dataSources: { videoAPI } }) => {
+      const { url } = args;
+      return getVideoInfo(url);
     },
   },
 };

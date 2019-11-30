@@ -32,6 +32,7 @@ const {
 const {
   Video,
   VideoMutationResolvers,
+  VideoQueryResolvers,
 } = require('./modules/video');
 
 const {
@@ -57,6 +58,7 @@ const resolvers = {
     ...CommentQueryResolvers,
     ...MediaQueryResolvers,
     ...UserQueryResolvers,
+    ...VideoQueryResolvers,
   },
 
   Mutation: {
@@ -64,8 +66,8 @@ const resolvers = {
     ...AuthMutationResolvers,
     ...CommentMutationResolvers,
     ...PhotoMutationResolvers,
-    ...VideoMutationResolvers,
     ...UserMutationResolvers,
+    ...VideoMutationResolvers,
   },
 
   Album: { ...AlbumFieldResolvers },

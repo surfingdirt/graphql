@@ -1,6 +1,14 @@
 const { gql } = require("apollo-server-express");
 
 module.exports = gql`
+    type VideoInfo {
+        description: String
+        height: Int
+        iframeUrl: String
+        thumbUrl: String
+        title: String
+        width: Int
+    }
   input VideoCreationInput {
       title: String
       description: String
@@ -22,5 +30,7 @@ module.exports = gql`
       createVideo(input: VideoCreationInput!): Media!
       updateVideo(id: ID, input: VideoUpdateInput!): Media!
   }
-  
+  extend type Query {
+      getVideoInfo(url: String!): VideoInfo!
+  }
 `;
