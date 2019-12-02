@@ -104,22 +104,22 @@ const extractKeyAndSubType = (url) => {
     },
 
     {
-      regex: /www\.youtube\.com\/watch\?v=([0-9a-zA-Z]{11})/,
+      regex: /www\.youtube\.com\/watch\?v=([0-9a-zA-Z_-]{11})/,
       mediaSubType: YOUTUBE,
       vendorKeyIndex: 1,
     },
     {
-      regex: /www\.youtube\.com\/embed\/([0-9a-zA-Z]{11})/,
+      regex: /www\.youtube\.com\/embed\/([0-9a-zA-Z_-]{11})/,
       mediaSubType: YOUTUBE,
       vendorKeyIndex: 1,
     },
     {
-      regex: /youtu\.be\/([0-9a-zA-Z]{11})/,
+      regex: /youtu\.be\/([0-9a-zA-Z_-]{11})/,
       mediaSubType: YOUTUBE,
       vendorKeyIndex: 1,
     },
     {
-      regex: /m\.youtube\.com\/details\?v=([0-9a-zA-Z]{11})/,
+      regex: /m\.youtube\.com\/details\?v=([0-9a-zA-Z_-]{11})/,
       mediaSubType: YOUTUBE,
       vendorKeyIndex: 1,
     },
