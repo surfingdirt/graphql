@@ -28,15 +28,15 @@ module.exports = gql`
       embedUrl: String
       height: Int
       id: ID!
+      images: [Image]
       lastEditionDate: String
       lastEditor: User
       mediaSubType: MediaSubType!
       mediaType: MediaType!
       status: String
       submitter: User!
-      title: String
       thumbs: [Image]
-      images: [Image]
+      title: String
       users: [User]
       vendorUrl: String
       width: Int
