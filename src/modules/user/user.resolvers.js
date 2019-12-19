@@ -118,6 +118,18 @@ module.exports = {
       const status = await userAPI.confirmEmail(userId, input);
       return status;
     },
+
+    forgotPassword: async (parent, args, { dataSources: { userAPI } }) => {
+      const { input } = args;
+      const status = await userAPI.forgotPassword(input);
+      return status;
+    },
+
+    activateNewPassword: async (parent, args, { dataSources: { userAPI } }) => {
+      const { userId, input } = args;
+      const status = await userAPI.activateNewPassword(userId, input);
+      return status;
+    },
   },
 
   UserFieldResolvers: {

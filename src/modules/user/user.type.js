@@ -57,6 +57,12 @@ module.exports = gql`
   input UserConfirmationInput {
       aK: String
   }
+  input ForgotPasswordInput {
+      username: String!
+  }
+  input NewPasswordActivationInput {
+      activationKey: String!
+  }
   type userConfirmationStatus {
       status: Boolean
       alreadyDone: Boolean
@@ -72,5 +78,7 @@ module.exports = gql`
       updateAvatar(file: Upload!): Me
       updateCover(file: Upload!): Me
       confirmEmail(userId: ID, input: UserConfirmationInput!): userConfirmationStatus!
+      forgotPassword(input: ForgotPasswordInput): Boolean
+      activateNewPassword(userId: ID, input: NewPasswordActivationInput!): Boolean
   }
 `;

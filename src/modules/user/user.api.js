@@ -50,4 +50,16 @@ module.exports = class UserApi extends BaseAPI {
     );
     return response;
   }
+
+  async forgotPassword(input) {
+    const body = { username: input.username };
+    const response = await this.post(`${this.path}/lost-password/`, body);
+    return response;
+  }
+
+  async activateNewPassword(userId, input) {
+    const body = { aK: input.activationKey };
+    const response = await this.post(`${this.path}/${userId}/activate-new-password/`, body);
+    return response;
+  }
 };
