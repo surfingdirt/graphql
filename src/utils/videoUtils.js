@@ -186,7 +186,7 @@ const getVideoInfo = async (url) => {
 
   if (mediaSubType === FACEBOOK) {
     const imageMetaEl = metas.find((e) => {
-      return e.getAttribute('property') === TWITTER_IMAGE_META;
+      return e.getAttribute('name') === TWITTER_IMAGE_META;
     });
     thumbUrl = imageMetaEl.getAttribute('content');
   }
@@ -201,16 +201,6 @@ const getVideoInfo = async (url) => {
   });
   const width = widthMetaEl ? widthMetaEl.getAttribute('content') : null;
 
-  // console.log({
-  //   description,
-  //   height,
-  //   iframeUrl,
-  //   parsedUrl,
-  //   thumbUrl,
-  //   title,
-  //   width,
-  // });
-  //
   return {
     description,
     height,
