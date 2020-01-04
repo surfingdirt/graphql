@@ -74,11 +74,11 @@ module.exports = gql`
   }
   extend type Mutation {
       createUser(input: UserCreationInput!): User!
-      updateUser(userId: ID, input: UserUpdateInput!): User!
+      updateUser(userId: ID!, input: UserUpdateInput!): User!
       updateAvatar(file: Upload!): Me
       updateCover(file: Upload!): Me
       confirmEmail(userId: ID, input: UserConfirmationInput!): userConfirmationStatus!
       forgotPassword(input: ForgotPasswordInput): Boolean
-      activateNewPassword(userId: ID, input: NewPasswordActivationInput!): Boolean
+      activateNewPassword(userId: ID!, input: NewPasswordActivationInput!): Boolean
   }
 `;
