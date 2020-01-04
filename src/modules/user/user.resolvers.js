@@ -127,8 +127,15 @@ module.exports = {
 
     activateNewPassword: async (parent, args, { dataSources: { userAPI } }) => {
       const { userId, input } = args;
-      const status = await userAPI.activateNewPassword(userId, input);
-      return status;
+      try {
+        const response = await userAPI.activateNewPassword(userId, input);
+      } catch (e) {
+        if (e.extensions && e.extensions.code === 13001) {
+          return false;
+        }
+        throw e;
+      }
+      return true;
     },
   },
 
