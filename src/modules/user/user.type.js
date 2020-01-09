@@ -6,8 +6,9 @@ module.exports = gql`
       cover: [Image]
       email: String
       firstName: String
-      lang: String
+      locale: String
       status: String
+      timezone: String
       userId: ID
       username: String
   }
@@ -21,10 +22,11 @@ module.exports = gql`
       date: String
       email: String
       firstName: String
-      lang: String
+      locale: String
       lastName: String
       site: String
       status: String
+      timezone: String
       userId: ID
       username: String
   }
@@ -35,11 +37,12 @@ module.exports = gql`
       date: String
       email: String!
       firstName: String
-      lang: String
+      locale: String
       lastName: String
-      userP: String!
       site: String
+      timezone: String
       username: String!
+      userP: String!
   }
   input UserUpdateInput {
       bio: String
@@ -48,11 +51,12 @@ module.exports = gql`
       date: String
       email: String
       firstName: String
-      lang: String
+      locale: String
       lastName: String
       password: String
       site: String
       status: String
+      timezone: String
   }
   input UserConfirmationInput {
       aK: String
