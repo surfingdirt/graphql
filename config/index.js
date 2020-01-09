@@ -2,8 +2,8 @@ const env = process.env.NODE_ENV || 'local';
 
 const conf = {
   local: {
-    apiUrl: 'http://api.ridedb.wrk',
-    storageLocalDomain: 'http://api.ridedb.wrk',
+    apiUrl: 'http://dev.ridedb.wrk',
+    storageLocalDomain: 'http://dev.ridedb.wrk',
     storageLocalPath: 'files',
     port: 4000,
     tmpFolder: '/tmp',
