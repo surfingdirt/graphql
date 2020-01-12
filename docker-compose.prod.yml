@@ -1,0 +1,8 @@
+# ./docker-compose.yml
+
+version: '3'
+
+services:
+  graphql:
+    environment:
+            - NODE_ENV=beta
