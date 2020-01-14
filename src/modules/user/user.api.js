@@ -62,4 +62,14 @@ module.exports = class UserApi extends BaseAPI {
     const response = await this.post(`${this.path}/${userId}/activate-new-password/`, body);
     return response;
   }
+
+  async emailExists(email) {
+    const response = await this.get(`${this.path}/email-exists?email=${email}`);
+    return response;
+  }
+
+  async usernameExists(username) {
+    const response = await this.get(`${this.path}/username-exists?username=${username}`);
+    return response;
+  }
 };

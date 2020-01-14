@@ -42,6 +42,14 @@ module.exports = {
 
       return fullUsers;
     },
+
+    emailExists: (parent, args, { dataSources: {userAPI } }) => {
+      return userAPI.emailExists(args.email);
+    },
+
+    usernameExists: (parent, args, { dataSources: {userAPI } }) => {
+      return userAPI.usernameExists(args.username);
+    },
   },
 
   UserMutationResolvers: {

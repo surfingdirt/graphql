@@ -75,6 +75,8 @@ module.exports = gql`
       user(userId: ID!): User!
       me: Me!
       listUsers: [User]
+      emailExists(email: String!): Boolean
+      usernameExists(username: String!): Boolean
   }
   extend type Mutation {
       createUser(input: UserCreationInput!): User!
