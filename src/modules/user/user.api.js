@@ -63,7 +63,8 @@ module.exports = class UserApi extends BaseAPI {
     return response;
   }
 
-  async emailExists(email) {
+  async emailExists(token, email) {
+    this.setToken(token);
     const response = await this.get(`${this.path}/email-exists?email=${email}`);
     return response;
   }

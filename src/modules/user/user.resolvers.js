@@ -43,8 +43,8 @@ module.exports = {
       return fullUsers;
     },
 
-    emailExists: (parent, args, { dataSources: {userAPI } }) => {
-      return userAPI.emailExists(args.email);
+    emailExists: (parent, { email }, { token, dataSources: {userAPI } }) => {
+      return userAPI.emailExists(token, email);
     },
 
     usernameExists: (parent, args, { dataSources: {userAPI } }) => {

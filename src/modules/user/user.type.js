@@ -53,7 +53,9 @@ module.exports = gql`
       firstName: String
       locale: String
       lastName: String
-      password: String
+      userP: String
+      userPC: String
+      userPO: String
       site: String
       status: String
       timezone: String
