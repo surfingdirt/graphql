@@ -60,6 +60,23 @@ module.exports = gql`
       status: String
       timezone: String
   }
+  input SettingsUpdateInput {
+      bio: String
+      city: String
+      confirmPassword: String
+      date: String
+      email: String
+      firstName: String
+      locale: String
+      lastName: String
+      userP: String
+      userPC: String
+      userPO: String
+      site: String
+      status: String
+      timezone: String
+      userId: ID!
+  }
   input UserConfirmationInput {
       aK: String
   }
@@ -83,6 +100,7 @@ module.exports = gql`
   extend type Mutation {
       createUser(input: UserCreationInput!): User!
       updateUser(userId: ID!, input: UserUpdateInput!): User!
+      updateSettings(input: SettingsUpdateInput!): User!
       updateAvatar(file: Upload!): Me
       updateCover(file: Upload!): Me
       confirmEmail(userId: ID, input: UserConfirmationInput!): userConfirmationStatus!

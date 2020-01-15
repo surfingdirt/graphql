@@ -1,6 +1,20 @@
 const { storeImageOnLocalAPI } = require('../../utils/RestAPI');
 const { buildThumbsAndImages } = require('../../utils/thumbs');
 
+const _updateUser = async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
+  const { userId, input } = args;
+  const user = await userAPI.updateUser(userId, input, token);
+
+  const avatarThumbs = user.avatar
+    ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
+    : null;
+  const coverThumbs = user.cover
+    ? buildThumbsAndImages(await imageAPI.getImage(user.cover, token), true).images
+    : null;
+
+  return Object.assign({}, user, { avatar: avatarThumbs, cover: coverThumbs });
+};
+
 module.exports = {
   UserQueryResolvers: {
     me: async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
@@ -59,18 +73,11 @@ module.exports = {
       return user;
     },
 
-    updateUser: async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
-      const { userId, input } = args;
-      const user = await userAPI.updateUser(userId, input, token);
+    updateUser: _updateUser,
 
-      const avatarThumbs = user.avatar
-        ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
-        : null;
-      const coverThumbs = user.cover
-        ? buildThumbsAndImages(await imageAPI.getImage(user.cover, token), true).images
-        : null;
-
-      return Object.assign({}, user, { avatar: avatarThumbs, cover: coverThumbs });
+    updateSettings: (parent, args, context) => {
+      const { input : { userId, ...input } } = args;
+      return _updateUser(parent, {input, userId}, context);
     },
 
     updateAvatar: async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
