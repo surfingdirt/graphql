@@ -4,7 +4,9 @@ version: '3'
 
 services:
   graphql:
-    image: surfingdirt/graphql:24
+    environment:
+            - NODE_ENV=beta
+    image: surfingdirt/graphql:25
     container_name: graphql
     volumes:
       - /home/mikael/www/beta/graphql/:/var/www/html/
