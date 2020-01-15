@@ -6,7 +6,7 @@ services:
   graphql:
     environment:
             - NODE_ENV=beta
-    image: surfingdirt/graphql:25
+    image: surfingdirt/graphql:26
     container_name: graphql
     volumes:
       - /home/mikael/www/beta/graphql/:/var/www/html/
