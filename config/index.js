@@ -12,7 +12,7 @@ const conf = {
   },
   beta: {
     apiUrl: 'https://beta-api.surfingdirt.com',
-    storageLocalDomain: 'https://beta-api.surfingdirt.com',
+    storageLocalDomain: 'https://apibetasurfingdirt.b-cdn.net',
     storageLocalPath: 'files',
     port: 4000,
     tmpFolder: '/tmp',
@@ -21,7 +21,7 @@ const conf = {
   },
   production: {
     apiUrl: 'https://api.surfingdirt.com',
-    storageLocalDomain: 'https://api.surfingdirt.com',
+    storageLocalDomain: 'https://apisurfingdirt.b-cdn.net',
     storageLocalPath: 'files',
     port: 4000,
     tmpFolder: '/tmp',
