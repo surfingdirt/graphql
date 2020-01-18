@@ -1,13 +1,13 @@
-# ./docker-compose.yml
+# ./docker-compose.beta.yml
 
 version: '3'
 
 services:
-  graphql:
+  graphql_beta:
     environment:
             - NODE_ENV=beta
     image: surfingdirt/graphql:27
-    container_name: graphql
+    container_name: graphql_beta
     volumes:
       - /home/mikael/www/beta/graphql/:/var/www/html/
     ports:
