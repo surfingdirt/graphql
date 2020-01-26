@@ -80,7 +80,12 @@ module.exports = class BaseAPI extends RESTDataSource {
       headers['Authorization'] = this.token;
     }
     if (this.parentSpan) {
-      headers[TRACE_ID_HEADER] = this.parentSpan.id.traceId;
+      const trace = this.parentSpan.id;
+      headers['x-b3-flags'] = trace.isDebug();
+      headers['x-b3-sampled'] = trace.sampled.value ? 1 : 0;
+      headers['x-b3-parentspanid'] = trace.parentSpanId.value;
+      headers['x-b3-spanid'] = trace.spanId;
+      headers['x-b3-traceid'] = trace.traceId;
     }
 
     return Object.assign({}, init, { headers });
