@@ -110,10 +110,10 @@ const graphqlBuilder = () =>
       return err;
     },
     context: ({ req }) => {
-      console.log('++++++++++++++++++++++++++++++++++');
+      console.log('--------------------------------------------------------------------------------');
       console.log('Request body:');
-      console.log(JSON.stringify(req.body, null, 2));
-      console.log('++++++++++++++++++++++++++++++++++');
+      console.log(req.body);
+      console.log('--------------------------------------------------------------------------------');
       const token = req.headers.authorization || '';
       return { token };
     },
