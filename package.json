@@ -1,10 +1,10 @@
 {
-  "name": "untitled",
+  "name": "GraphQL server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/server.js > ouput.log 2> err.log"
+    "start": "node src/index.js > ouput.log 2> err.log"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +23,10 @@
     "metascraper-image": "^5.8.7",
     "metascraper-title": "^5.8.7",
     "request": "^2.88.0",
-    "request-promise": "^4.2.4"
+    "request-promise": "^4.2.4",
+    "zipkin": "^0.19.1",
+    "zipkin-instrumentation-express": "^0.19.1",
+    "zipkin-transport-http": "^0.19.1"
   },
   "devDependencies": {
     "eslint": "4.19.1",

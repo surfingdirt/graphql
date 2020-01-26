@@ -1,7 +1,8 @@
 const { RESTDataSource } = require("apollo-datasource-rest");
 const { ApolloError } = require("apollo-server-express");
 
-const { apiUrl } = require("../../../config");
+const { apiUrl, tracing } = require("../../../config");
+const tracer = require("../../tracer");
 
 const BACKEND_DEBUG_KEY = "XDEBUG_SESSION_START";
 const BACKEND_DEBUG_VALUE = "PHP_STORM";
@@ -11,6 +12,10 @@ const CONNECTION_REFUSED_CODE = 17001;
 
 const API_ERROR = 'apiError';
 const BAD_INPUT_MESSAGE = 'badInput';
+
+const { enabled: tracingEnabled} = tracing;
+
+const maybeTrace = (name, operation) => tracingEnabled ? tracer.local(name, operation) : operation();
 
 module.exports = class BaseAPI extends RESTDataSource {
   constructor() {
@@ -61,7 +66,7 @@ module.exports = class BaseAPI extends RESTDataSource {
     return new ApolloError(BAD_INPUT_MESSAGE, code, { errors });
   }
 
-  async get(path, params, init) {
+  get(path, params, init) {
     try {
       const actualParams = this.getParams(params);
       if (this.token) {
@@ -69,9 +74,7 @@ module.exports = class BaseAPI extends RESTDataSource {
           headers: { Authorization: this.token }
         });
       }
-
-      const response = await super.get(path, actualParams, init);
-      return response;
+      return maybeTrace(`GET ${path}`, () => super.get(path, actualParams, init));
     } catch (e) {
       const parsedError = this.parseError(e);
       throw parsedError;
@@ -88,8 +91,7 @@ module.exports = class BaseAPI extends RESTDataSource {
           headers: { Authorization: this.token }
         });
       }
-      const response = await super.post(fullPath, body, init);
-      return response;
+      return maybeTrace(`POST ${fullPath}`, () => super.post(fullPath, body, init));
     } catch (e) {
       const parsedError = this.parseError(e);
       throw parsedError;
@@ -106,8 +108,7 @@ module.exports = class BaseAPI extends RESTDataSource {
           headers: { Authorization: this.token }
         });
       }
-      const response = await super.put(fullPath, body, init);
-      return response;
+      return maybeTrace(`PUT ${fullPath}`, () => super.put(fullPath, body, init));
     } catch (e) {
       const parsedError = this.parseError(e);
       throw parsedError;
@@ -122,8 +123,7 @@ module.exports = class BaseAPI extends RESTDataSource {
           headers: { Authorization: this.token }
         });
       }
-      const response = await super.delete(path, actualParams, init);
-      return response;
+      return maybeTrace(`DELETE ${path}`, () => super.delete(path, actualParams, init));
     } catch (e) {
       const {
         message,
