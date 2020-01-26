@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "apollo-datasource-rest": "^0.3.2",
+    "apollo-opentracing": "^1.4.2",
     "apollo-server-express": "^2.9.16",
     "express": "^4.16.4",
     "got": "^9.6.0",
@@ -22,10 +23,12 @@
     "metascraper-iframe": "^5.8.9",
     "metascraper-image": "^5.8.7",
     "metascraper-title": "^5.8.7",
+    "opentracing": "^0.14.4",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "zipkin": "^0.19.1",
     "zipkin-instrumentation-express": "^0.19.1",
+    "zipkin-javascript-opentracing": "^2.0.1",
     "zipkin-transport-http": "^0.19.1"
   },
   "devDependencies": {

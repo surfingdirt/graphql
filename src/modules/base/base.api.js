@@ -12,6 +12,8 @@ const CONNECTION_REFUSED_CODE = 17001;
 const API_ERROR = 'apiError';
 const BAD_INPUT_MESSAGE = 'badInput';
 
+const TRACE_ID_HEADER = 'traceId';
+
 const { enabled: tracingEnabled} = tracing;
 
 module.exports = class BaseAPI extends RESTDataSource {
@@ -21,14 +23,22 @@ module.exports = class BaseAPI extends RESTDataSource {
     this.token = null;
     this.debugBackend = false;
     this.tracer = tracer;
+    this.parentSpan = null;
   }
 
   setDebugBackend(debugBackend) {
     this.debugBackend = debugBackend;
+    return this;
   }
 
   setToken(token) {
     this.token = token;
+    return this;
+  }
+
+  setParentSpan(span) {
+    this.parentSpan = span;
+    return this;
   }
 
   getParams(params = {}) {
@@ -64,20 +74,43 @@ module.exports = class BaseAPI extends RESTDataSource {
     return new ApolloError(BAD_INPUT_MESSAGE, code, { errors });
   }
 
+  buildInit(init) {
+    const headers = {};
+    if (this.token) {
+      headers['Authorization'] = this.token;
+    }
+    if (this.parentSpan) {
+      headers[TRACE_ID_HEADER] = this.parentSpan.id.traceId;
+    }
+
+    return Object.assign({}, init, { headers });
+  }
+
   maybeTrace(name, operation) {
-    return tracingEnabled ? this.tracer.local(name, operation) : operation();
+    if (!tracingEnabled || !this.parentSpan) {
+      return operation();
+    }
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        const span = this.tracer.startSpan(name, {childOf: this.parentSpan});
+        const result = await operation();
+        span.finish();
+
+        // Make sure the next request will only be traced if it explicitly calls setSpan
+        this.parentSpan = null;
+
+        resolve(result);
+      } catch (e) {
+        reject(e);
+      }
+    });
   }
 
   get(path, params, init) {
     try {
       const actualParams = this.getParams(params);
-      if (this.token) {
-        // TODO: build these headers in a function that may inject trace id header
-        init = Object.assign({}, init, {
-          headers: { Authorization: this.token }
-        });
-      }
-      return this.maybeTrace(`GET ${path}`, () => super.get(path, actualParams, init));
+      return this.maybeTrace(`GET ${path}`, () => super.get(path, actualParams, this.buildInit(init)));
     } catch (e) {
       const parsedError = this.parseError(e);
       throw parsedError;

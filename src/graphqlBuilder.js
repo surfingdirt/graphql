@@ -1,4 +1,5 @@
 const { ApolloServer } = require('apollo-server-express');
+const OpentracingExtension = require("apollo-opentracing").default;
 
 const { Album, AlbumAPI, getAlbumResolvers } = require('./modules/album');
 const { Auth, AuthAPI, getAuthResolvers } = require('./modules/auth');
@@ -10,7 +11,7 @@ const { Photo, getPhotoResolvers, } = require('./modules/photo');
 const { Video, getVideoResolvers, } = require('./modules/video');
 const { User, UserAPI, getUserResolvers, } = require('./modules/user');
 
-const graphqlBuilder = (tracer) => {
+const graphqlBuilder = (localTracer, serverTracer) => {
   /******************************************************************************
    * TYPEDEFS
    *****************************************************************************/
@@ -19,14 +20,14 @@ const graphqlBuilder = (tracer) => {
   /******************************************************************************
    * RESOLVERS
    *****************************************************************************/
-  const { AlbumFieldResolvers, AlbumQueryResolvers, AlbumMutationResolvers } = getAlbumResolvers(tracer);
-  const { AuthMutationResolvers } = getAuthResolvers(tracer);
-  const { BaseQueryResolvers } = getBaseResolvers(tracer);
-  const { CommentFieldResolvers, CommentMutationResolvers, CommentQueryResolvers } = getCommentResolvers(tracer);
-  const { MediaFieldResolvers, MediaQueryResolvers, MediaTypeResolvers } = getMediaResolvers(tracer);
-  const { PhotoMutationResolvers } = getPhotoResolvers(tracer);
-  const { VideoMutationResolvers, VideoQueryResolvers, } = getVideoResolvers(tracer);
-  const { UserFieldResolvers, UserMutationResolvers, UserQueryResolvers, } = getUserResolvers(tracer);
+  const { AlbumFieldResolvers, AlbumQueryResolvers, AlbumMutationResolvers } = getAlbumResolvers(localTracer);
+  const { AuthMutationResolvers } = getAuthResolvers(localTracer);
+  const { BaseQueryResolvers } = getBaseResolvers(localTracer);
+  const { CommentFieldResolvers, CommentMutationResolvers, CommentQueryResolvers } = getCommentResolvers(localTracer);
+  const { MediaFieldResolvers, MediaQueryResolvers, MediaTypeResolvers } = getMediaResolvers(localTracer);
+  const { PhotoMutationResolvers } = getPhotoResolvers(localTracer);
+  const { VideoMutationResolvers, VideoQueryResolvers, } = getVideoResolvers(localTracer);
+  const { UserFieldResolvers, UserMutationResolvers, UserQueryResolvers, } = getUserResolvers(localTracer);
 
   const resolvers = {
     Query: {
@@ -62,12 +63,12 @@ const graphqlBuilder = (tracer) => {
    * DATA SOURCES
    *****************************************************************************/
   const dataSources = () => ({
-    albumAPI: new AlbumAPI(tracer),
-    commentAPI: new CommentAPI(tracer),
-    authAPI: new AuthAPI(tracer),
-    imageAPI: new ImageAPI(tracer),
-    mediaAPI: new MediaAPI(tracer),
-    userAPI: new UserAPI(tracer),
+    albumAPI: new AlbumAPI(localTracer),
+    commentAPI: new CommentAPI(localTracer),
+    authAPI: new AuthAPI(localTracer),
+    imageAPI: new ImageAPI(localTracer),
+    mediaAPI: new MediaAPI(localTracer),
+    userAPI: new UserAPI(localTracer),
   });
 
   /******************************************************************************
@@ -77,6 +78,10 @@ const graphqlBuilder = (tracer) => {
     typeDefs,
     resolvers,
     dataSources,
+    extensions: [() => new OpentracingExtension({
+      server: serverTracer,
+      local: localTracer,
+    })],
     formatError: (err) => {
       console.log('==================================');
       console.log('Error:');
@@ -90,7 +95,6 @@ const graphqlBuilder = (tracer) => {
       console.log(req.body);
       console.log('--------------------------------------------------------------------------------');
 
-      // TODO: start a span here and possibly link it to a parent span
       const token = req.headers.authorization || '';
       return { token };
     },

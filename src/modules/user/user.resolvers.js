@@ -61,8 +61,8 @@ const getUserResolvers = (tracer) => ({
       return userAPI.emailExists(token, email);
     },
 
-    usernameExists: (parent, args, { dataSources: {userAPI } }) => {
-      return userAPI.usernameExists(args.username);
+    usernameExists: (parent, args, { dataSources: {userAPI } }, { span }) => {
+      return userAPI.setParentSpan(span).usernameExists(args.username);
     },
   },
 
