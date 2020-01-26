@@ -94,9 +94,9 @@ const dataSources = () => ({
 });
 
 /******************************************************************************
- * SERVER
+ * GRAPHQL SERVER
  *****************************************************************************/
-const buildServer = () =>
+const graphqlBuilder = () =>
   new ApolloServer({
     typeDefs,
     resolvers,
@@ -118,6 +118,4 @@ const buildServer = () =>
     },
   });
 
-module.exports = {
-  buildServer,
-};
+module.exports = graphqlBuilder;
