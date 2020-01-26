@@ -22,7 +22,7 @@ const ImageType = {
 const isVideo = (parent) => parent.mediaType === MediaType.VIDEO;
 const isPhoto = (parent) => parent.mediaType === MediaType.PHOTO;
 
-module.exports = {
+const getMediaResolvers = (tracer) => ({
   MediaTypeResolvers: {
     MediaType: {
       PHOTO: "photo",
@@ -119,4 +119,6 @@ module.exports = {
       return getVendorUrl(parent);
     },
   }
-};
+});
+
+module.exports = getMediaResolvers;

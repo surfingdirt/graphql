@@ -2,7 +2,7 @@ const { MediaType, StorageType } = require('../../constants');
 const { storeImageOnLocalAPI } = require('../../utils/RestAPI');
 const { buildThumbsAndImages } = require('../../utils/thumbs');
 
-module.exports = {
+const getPhotoResolvers = (tracer) => ({
   PhotoMutationResolvers: {
     createPhoto: async (parent, args, { token, dataSources: { mediaAPI } }) => {
       const { input, file } = args;
@@ -34,4 +34,6 @@ module.exports = {
       return Object.assign({}, photo, buildThumbsAndImages(photo, true));
     },
   },
-};
+});
+
+module.exports = getPhotoResolvers;

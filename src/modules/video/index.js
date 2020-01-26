@@ -1,11 +1,7 @@
 const Video = require("./video.type");
-const {
-  VideoMutationResolvers,
-  VideoQueryResolvers,
-} = require("./video.resolvers");
+const getVideoResolvers = require("./video.resolvers");
 
 module.exports = {
   Video,
-  VideoMutationResolvers,
-  VideoQueryResolvers,
+  getVideoResolvers,
 };

@@ -20,7 +20,7 @@ const DEFAULT_ALBUM_COUNT = 10;
 const DEFAULT_ALBUM_SORT = null;
 const DEFAULT_ALBUM_DIR = 'desc';
 
-module.exports = {
+const getAlbumResolvers = (tracer) => ({
   AlbumQueryResolvers: {
     album: async (parent, args, { token, dataSources: { albumAPI } }) => {
       const countItems = args.countItems || DEFAULT_ALBUM_ITEM_COUNT;
@@ -108,4 +108,6 @@ module.exports = {
       return album;
     },
   },
-};
+});
+
+module.exports = getAlbumResolvers;

@@ -1,5 +1,6 @@
 const express = require('express');
 
+const tracer = require("./tracer");
 const aliveRoute = require('./alive/alive.route');
 const graphqlBuilder = require('./graphqlBuilder');
 
@@ -18,7 +19,7 @@ server.get('/*', (req, res, next) => {
 
 aliveRoute(server);
 
-const graphqlServer = graphqlBuilder();
+const graphqlServer = graphqlBuilder(tracer);
 graphqlServer.applyMiddleware({ app: server, path: '/' });
 
 module.exports = {

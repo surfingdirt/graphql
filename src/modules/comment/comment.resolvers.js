@@ -1,6 +1,4 @@
-const { DataType, MediaType, StorageType } = require('../../constants');
-const { storeImageOnLocalAPI } = require('../../utils/RestAPI');
-const { buildThumbsAndImages } = require('../../utils/thumbs');
+const { DataType } = require('../../constants');
 const { submitterResolver } = require('../../utils/users');
 
 const createComment = async (args, token, commentAPI, parentType) => {
@@ -17,7 +15,7 @@ const createComment = async (args, token, commentAPI, parentType) => {
   return comment;
 };
 
-module.exports = {
+const getCommentResolvers = (tracer) => ({
   CommentQueryResolvers: {
     listComments: async (parent, args, { token, dataSources: { commentAPI } }) => {
       const comments = await commentAPI.listComments(args.parentId, args.parentType, token);
@@ -69,4 +67,6 @@ module.exports = {
       return submitterResolver(parent, args, { token, dataSources: { imageAPI, userAPI } });
     },
   },
-};
+});
+
+module.exports = getCommentResolvers;

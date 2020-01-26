@@ -72,6 +72,7 @@ module.exports = class BaseAPI extends RESTDataSource {
     try {
       const actualParams = this.getParams(params);
       if (this.token) {
+        // TODO: build these headers in a function that may inject trace id header
         init = Object.assign({}, init, {
           headers: { Authorization: this.token }
         });

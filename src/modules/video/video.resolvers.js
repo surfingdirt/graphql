@@ -2,7 +2,7 @@ const { MediaType, StorageType } = require('../../constants');
 const { buildThumbsAndImages } = require('../../utils/thumbs');
 const { getVideoInfo } = require('../../utils/videoUtils');
 
-module.exports = {
+const getVideoResolvers = (tracer) => ({
   VideoMutationResolvers: {
     createVideo: async (parent, args, { token, dataSources: { mediaAPI } }) => {
       const { input } = args;
@@ -31,4 +31,7 @@ module.exports = {
       return getVideoInfo(url);
     },
   },
-};
+});
+
+module.exports = getVideoResolvers;
+

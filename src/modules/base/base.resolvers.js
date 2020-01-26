@@ -1,5 +1,7 @@
 const alive = () => 'Server is alive';
 
-module.exports = {
+const getBaseResolvers = (tracer) => ({
   alive,
-};
+});
+
+module.exports = getBaseResolvers;

@@ -15,7 +15,7 @@ const _updateUser = async (parent, args, { token, dataSources: { imageAPI, userA
   return Object.assign({}, user, { avatar: avatarThumbs, cover: coverThumbs });
 };
 
-module.exports = {
+const getUserResolvers = (tracer) => ({
   UserQueryResolvers: {
     me: async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
       const user = await userAPI.getMe(token);
@@ -162,4 +162,6 @@ module.exports = {
       return await albumAPI.getAlbum(parent.album.id, token);
     },
   },
-};
+});
+
+module.exports = getUserResolvers;

@@ -13,7 +13,9 @@ const logout = async (parent, args, { token, dataSources: { authAPI } }) => {
   return true;
 };
 
-module.exports = {
+const getAuthResolvers = (tracer) => ({
   login,
   logout,
-};
+});
+
+module.exports = getAuthResolvers;

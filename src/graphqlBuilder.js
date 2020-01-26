@@ -1,104 +1,79 @@
 const { ApolloServer } = require('apollo-server-express');
 
-const { BaseTypes, BaseQueryResolvers } = require('./modules/base');
-const tracer = require("./tracer");
-
-const {
-  Album,
-  AlbumAPI,
-  AlbumFieldResolvers,
-  AlbumMutationResolvers,
-  AlbumQueryResolvers,
-} = require('./modules/album');
-
-const {
-  Comment,
-  CommentAPI,
-  CommentFieldResolvers,
-  CommentMutationResolvers,
-  CommentQueryResolvers,
-} = require('./modules/comment');
-
-const { Auth, AuthAPI, AuthMutationResolvers } = require('./modules/auth');
-
+const { Album, AlbumAPI, getAlbumResolvers } = require('./modules/album');
+const { Auth, AuthAPI, getAuthResolvers } = require('./modules/auth');
+const { BaseTypes, getBaseResolvers } = require('./modules/base');
+const { Comment, CommentAPI, getCommentResolvers, } = require('./modules/comment');
+const { Media, MediaAPI, getMediaResolvers } = require('./modules/media');
 const { Image, ImageAPI } = require('./modules/image');
+const { Photo, getPhotoResolvers, } = require('./modules/photo');
+const { Video, getVideoResolvers, } = require('./modules/video');
+const { User, UserAPI, getUserResolvers, } = require('./modules/user');
 
-const { Media, MediaAPI, MediaTypeResolvers, MediaQueryResolvers, MediaFieldResolvers } = require('./modules/media');
+const graphqlBuilder = (tracer) => {
+  /******************************************************************************
+   * TYPEDEFS
+   *****************************************************************************/
+  const typeDefs = [BaseTypes, Album, Auth, Comment, Image, Media, Photo, Video, User];
 
-const {
-  Photo,
-  PhotoMutationResolvers,
-} = require('./modules/photo');
+  /******************************************************************************
+   * RESOLVERS
+   *****************************************************************************/
+  const { AlbumFieldResolvers, AlbumQueryResolvers, AlbumMutationResolvers } = getAlbumResolvers(tracer);
+  const { AuthMutationResolvers } = getAuthResolvers(tracer);
+  const { BaseQueryResolvers } = getBaseResolvers(tracer);
+  const { CommentFieldResolvers, CommentMutationResolvers, CommentQueryResolvers } = getCommentResolvers(tracer);
+  const { MediaFieldResolvers, MediaQueryResolvers, MediaTypeResolvers } = getMediaResolvers(tracer);
+  const { PhotoMutationResolvers } = getPhotoResolvers(tracer);
+  const { VideoMutationResolvers, VideoQueryResolvers, } = getVideoResolvers(tracer);
+  const { UserFieldResolvers, UserMutationResolvers, UserQueryResolvers, } = getUserResolvers(tracer);
 
-const {
-  Video,
-  VideoMutationResolvers,
-  VideoQueryResolvers,
-} = require('./modules/video');
+  const resolvers = {
+    Query: {
+      ...BaseQueryResolvers,
+      ...AlbumQueryResolvers,
+      ...CommentQueryResolvers,
+      ...MediaQueryResolvers,
+      ...UserQueryResolvers,
+      ...VideoQueryResolvers,
+    },
 
-const {
-  User,
-  UserAPI,
-  UserFieldResolvers,
-  UserMutationResolvers,
-  UserQueryResolvers,
-} = require('./modules/user');
+    Mutation: {
+      ...AlbumMutationResolvers,
+      ...AuthMutationResolvers,
+      ...CommentMutationResolvers,
+      ...PhotoMutationResolvers,
+      ...UserMutationResolvers,
+      ...VideoMutationResolvers,
+    },
 
-/******************************************************************************
- * TYPEDEFS
- *****************************************************************************/
-const typeDefs = [BaseTypes, Album, Auth, Comment, Image, Media, Photo, Video, User];
+    Album: { ...AlbumFieldResolvers },
 
-/******************************************************************************
- * RESOLVERS
- *****************************************************************************/
-const resolvers = {
-  Query: {
-    ...BaseQueryResolvers,
-    ...AlbumQueryResolvers,
-    ...CommentQueryResolvers,
-    ...MediaQueryResolvers,
-    ...UserQueryResolvers,
-    ...VideoQueryResolvers,
-  },
+    Comment: { ...CommentFieldResolvers },
 
-  Mutation: {
-    ...AlbumMutationResolvers,
-    ...AuthMutationResolvers,
-    ...CommentMutationResolvers,
-    ...PhotoMutationResolvers,
-    ...UserMutationResolvers,
-    ...VideoMutationResolvers,
-  },
+    ...MediaTypeResolvers,
 
-  Album: { ...AlbumFieldResolvers },
+    Media: { ...MediaFieldResolvers },
 
-  Comment: { ...CommentFieldResolvers },
+    User: { ...UserFieldResolvers },
+  };
 
-  ...MediaTypeResolvers,
+  /******************************************************************************
+   * DATA SOURCES
+   *****************************************************************************/
+  const dataSources = () => ({
+    albumAPI: new AlbumAPI(tracer),
+    commentAPI: new CommentAPI(tracer),
+    authAPI: new AuthAPI(tracer),
+    imageAPI: new ImageAPI(tracer),
+    mediaAPI: new MediaAPI(tracer),
+    userAPI: new UserAPI(tracer),
+  });
 
-  Media: { ...MediaFieldResolvers },
-
-  User: { ...UserFieldResolvers },
-};
-
-/******************************************************************************
- * DATA SOURCES
- *****************************************************************************/
-const dataSources = () => ({
-  albumAPI: new AlbumAPI(tracer),
-  commentAPI: new CommentAPI(tracer),
-  authAPI: new AuthAPI(tracer),
-  imageAPI: new ImageAPI(tracer),
-  mediaAPI: new MediaAPI(tracer),
-  userAPI: new UserAPI(tracer),
-});
-
-/******************************************************************************
- * GRAPHQL SERVER
- *****************************************************************************/
-const graphqlBuilder = () =>
-  new ApolloServer({
+  /******************************************************************************
+   * GRAPHQL SERVER
+   *****************************************************************************/
+  return new ApolloServer({
     typeDefs,
     resolvers,
     dataSources,
@@ -114,9 +89,11 @@ const graphqlBuilder = () =>
       console.log('Request body:');
       console.log(req.body);
       console.log('--------------------------------------------------------------------------------');
+
+      // TODO: start a span here and possibly link it to a parent span
       const token = req.headers.authorization || '';
       return { token };
     },
   });
-
+};
 module.exports = graphqlBuilder;
