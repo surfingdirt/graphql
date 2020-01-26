@@ -1,10 +1,11 @@
 const config = require('../../../config');
 const { BaseAPI } = require('../base');
 const { ALBUM } = require('../../controllers');
+const tracer = require("../../tracer");
 
 module.exports = class AlbumApi extends BaseAPI {
-  constructor() {
-    super();
+  constructor(tracer) {
+    super(tracer);
 
     this.path = ALBUM;
     this.getAlbum = this.getAlbum.bind(this);

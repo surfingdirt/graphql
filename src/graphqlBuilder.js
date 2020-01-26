@@ -1,6 +1,7 @@
 const { ApolloServer } = require('apollo-server-express');
 
 const { BaseTypes, BaseQueryResolvers } = require('./modules/base');
+const tracer = require("./tracer");
 
 const {
   Album,
@@ -85,12 +86,12 @@ const resolvers = {
  * DATA SOURCES
  *****************************************************************************/
 const dataSources = () => ({
-  albumAPI: new AlbumAPI(),
-  commentAPI: new CommentAPI(),
-  authAPI: new AuthAPI(),
-  imageAPI: new ImageAPI(),
-  mediaAPI: new MediaAPI(),
-  userAPI: new UserAPI(),
+  albumAPI: new AlbumAPI(tracer),
+  commentAPI: new CommentAPI(tracer),
+  authAPI: new AuthAPI(tracer),
+  imageAPI: new ImageAPI(tracer),
+  mediaAPI: new MediaAPI(tracer),
+  userAPI: new UserAPI(tracer),
 });
 
 /******************************************************************************

@@ -4,8 +4,8 @@ const { BaseAPI } = require("../base");
 const { TOKEN } = require("../../controllers");
 
 module.exports = class AuthAPI extends BaseAPI {
-  constructor() {
-    super();
+  constructor(tracer) {
+    super(tracer);
 
     this.path = TOKEN;
     this.login = this.login.bind(this);

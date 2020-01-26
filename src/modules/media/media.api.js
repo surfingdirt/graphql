@@ -2,8 +2,8 @@ const { BaseAPI } = require("../base");
 const { MEDIA } = require("../../controllers");
 
 module.exports = class MediaApi extends BaseAPI {
-  constructor() {
-    super();
+  constructor(tracer) {
+    super(tracer);
 
     this.path = MEDIA;
     this.getMedia = this.getMedia.bind(this);

@@ -2,8 +2,8 @@ const { BaseAPI } = require('../base');
 const { USER } = require('../../controllers');
 
 module.exports = class UserApi extends BaseAPI {
-  constructor() {
-    super();
+  constructor(tracer) {
+    super(tracer);
 
     this.path = USER;
     this.getUser = this.getUser.bind(this);

@@ -2,8 +2,8 @@ const { BaseAPI } = require("../base");
 const { COMMENT } = require("../../controllers");
 
 module.exports = class CommentAPI extends BaseAPI {
-  constructor() {
-    super();
+  constructor(tracer) {
+    super(tracer);
 
     this.path = COMMENT;
     this.getComment = this.getComment.bind(this);

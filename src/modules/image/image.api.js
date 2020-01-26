@@ -2,8 +2,8 @@ const { BaseAPI } = require("../base");
 const { IMAGE } = require("../../controllers");
 
 module.exports = class ImageApi extends BaseAPI {
-  constructor() {
-    super();
+  constructor(tracer) {
+    super(tracer);
 
     this.path = IMAGE;
     this.getImage = this.getImage.bind(this);
