@@ -127,12 +127,7 @@ module.exports = class BaseAPI extends RESTDataSource {
       const params = this.getParams();
       const urlParams = new URLSearchParams(params).toString();
       const fullPath = urlParams ? `${path}?${urlParams}` : path;
-      if (this.token) {
-        init = Object.assign({}, init, {
-          headers: { Authorization: this.token }
-        });
-      }
-      return this.maybeTrace(`POST ${fullPath}`, () => super.post(fullPath, body, init));
+      return this.maybeTrace(`POST ${fullPath}`, () => super.post(fullPath, body, this.buildInit(init)));
     } catch (e) {
       const parsedError = this.parseError(e);
       throw parsedError;
@@ -144,12 +139,7 @@ module.exports = class BaseAPI extends RESTDataSource {
       const params = this.getParams();
       const urlParams = new URLSearchParams(params).toString();
       const fullPath = urlParams ? `${path}?${urlParams}` : path;
-      if (this.token) {
-        init = Object.assign({}, init, {
-          headers: { Authorization: this.token }
-        });
-      }
-      return this.maybeTrace(`PUT ${fullPath}`, () => super.put(fullPath, body, init));
+      return this.maybeTrace(`PUT ${fullPath}`, () => super.put(fullPath, body, this.buildInit(init)));
     } catch (e) {
       const parsedError = this.parseError(e);
       throw parsedError;
@@ -159,12 +149,7 @@ module.exports = class BaseAPI extends RESTDataSource {
   async delete(path, params, init) {
     try {
       const actualParams = this.getParams(params);
-      if (this.token) {
-        init = Object.assign({}, init, {
-          headers: { Authorization: this.token }
-        });
-      }
-      return this.maybeTrace(`DELETE ${path}`, () => super.delete(path, actualParams, init));
+      return this.maybeTrace(`DELETE ${path}`, () => super.delete(path, actualParams, this.buildInit(init)));
     } catch (e) {
       const {
         message,
