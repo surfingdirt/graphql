@@ -17,12 +17,12 @@ const createComment = async (args, token, commentAPI, parentType) => {
 
 const getCommentResolvers = (tracer) => ({
   CommentQueryResolvers: {
-    listComments: async (parent, args, { token, dataSources: { commentAPI } }) => {
-      const comments = await commentAPI.listComments(args.parentId, args.parentType, token);
+    listComments: async (parent, args, { token, dataSources: { commentAPI } }, { span }) => {
+      const comments = await commentAPI.setParentSpan(span).listComments(args.parentId, args.parentType, token);
       return comments;
     },
-    comment: async (parent, args, { token, dataSources: { commentAPI } }) => {
-      const comment = await commentAPI.getComment(args.id, token);
+    comment: async (parent, args, { token, dataSources: { commentAPI } }, { span }) => {
+      const comment = await commentAPI.setParentSpan(span).getComment(args.id, token);
       return comment;
     },
   },

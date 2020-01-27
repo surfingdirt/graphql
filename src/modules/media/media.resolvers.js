@@ -45,8 +45,8 @@ const getMediaResolvers = (tracer) => ({
     ImageType
   },
   MediaQueryResolvers: {
-    media: async (parent, args, { token, dataSources: { mediaAPI } }) => {
-      const media = await mediaAPI.getMedia(args.id, token);
+    media: async (parent, args, { token, dataSources: { mediaAPI } }, { span }) => {
+      const media = await mediaAPI.setParentSpan(span).getMedia(args.id, token);
 
       return Object.assign(
         {},

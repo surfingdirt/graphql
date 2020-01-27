@@ -22,23 +22,23 @@ const DEFAULT_ALBUM_DIR = 'desc';
 
 const getAlbumResolvers = (tracer) => ({
   AlbumQueryResolvers: {
-    album: async (parent, args, { token, dataSources: { albumAPI } }) => {
+    album: async (parent, args, { token, dataSources: { albumAPI } }, { span }) => {
       const countItems = args.countItems || DEFAULT_ALBUM_ITEM_COUNT;
       const startItem = args.startItem || 0;
-      const album = await albumAPI.getAlbum(args.id, token, countItems, startItem);
+      const album = await albumAPI.setParentSpan(span).getAlbum(args.id, token, countItems, startItem);
       const fullMedia = album.media.map((m) => getFullMedia(m));
       return Object.assign({}, album, { media: fullMedia });
     },
 
-    listMedia: async (parent, args, { token, dataSources: { albumAPI } }) => {
+    listMedia: async (parent, args, { token, dataSources: { albumAPI } }, { span }) => {
       const countItems = args.countItems || DEFAULT_ALBUM_ITEM_COUNT;
       const startItem = args.startItem || 0;
-      const album = await albumAPI.getAlbum(args.albumId, token, countItems, startItem);
+      const album = await albumAPI.setParentSpan(span).getAlbum(args.albumId, token, countItems, startItem);
       const fullMedia = album.media.map((m) => getFullMedia(m));
       return fullMedia;
     },
 
-    listAlbums: async (parent, args, { token, dataSources: { albumAPI } }) => {
+    listAlbums: async (parent, args, { token, dataSources: { albumAPI } }, { span }) => {
       const fullAlbums = [];
 
       const countItems = args.countItems || DEFAULT_ALBUM_PREVIEW_ITEM_COUNT;
@@ -47,7 +47,7 @@ const getAlbumResolvers = (tracer) => ({
       const sort = args.sort || DEFAULT_ALBUM_SORT;
       const dir = args.dir || DEFAULT_ALBUM_DIR;
       const skipAlbums = args.skipAlbums || [];
-      const albums = await albumAPI.listAlbums(
+      const albums = await albumAPI.setParentSpan(span).listAlbums(
         args.userId,
         token,
         countItems,

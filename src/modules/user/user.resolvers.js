@@ -1,15 +1,15 @@
 const { storeImageOnLocalAPI } = require('../../utils/RestAPI');
 const { buildThumbsAndImages } = require('../../utils/thumbs');
 
-const _updateUser = async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
+const _updateUser = async (parent, args, { token, dataSources: { imageAPI, userAPI } }, { span }) => {
   const { userId, input } = args;
   const user = await userAPI.updateUser(userId, input, token);
 
   const avatarThumbs = user.avatar
-    ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
+    ? buildThumbsAndImages(await imageAPI.setParentSpan(span).getImage(user.avatar, token), true).thumbs
     : null;
   const coverThumbs = user.cover
-    ? buildThumbsAndImages(await imageAPI.getImage(user.cover, token), true).images
+    ? buildThumbsAndImages(await imageAPI.setParentSpan(span).getImage(user.cover, token), true).images
     : null;
 
   return Object.assign({}, user, { avatar: avatarThumbs, cover: coverThumbs });
@@ -17,38 +17,38 @@ const _updateUser = async (parent, args, { token, dataSources: { imageAPI, userA
 
 const getUserResolvers = (tracer) => ({
   UserQueryResolvers: {
-    me: async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
-      const user = await userAPI.getMe(token);
+    me: async (parent, args, { token, dataSources: { imageAPI, userAPI } }, { span }) => {
+      const user = await userAPI.setParentSpan(span).getMe(token);
       const avatarThumbs = user.avatar
-        ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
+        ? buildThumbsAndImages(await imageAPI.setParentSpan(span).getImage(user.avatar, token), true).thumbs
         : null;
       const coverThumbs = user.cover
-        ? buildThumbsAndImages(await imageAPI.getImage(user.cover, token), true).images
+        ? buildThumbsAndImages(await imageAPI.setParentSpan(span).getImage(user.cover, token), true).images
         : null;
 
       return Object.assign({}, user, { avatar: avatarThumbs, cover: coverThumbs });
     },
 
-    user: async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
-      const user = await userAPI.getUser(args.userId, token);
+    user: async (parent, args, { token, dataSources: { imageAPI, userAPI } }, { span }) => {
+      const user = await userAPI.setParentSpan(span).getUser(args.userId, token);
       const avatarThumbs = user.avatar
-        ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
+        ? buildThumbsAndImages(await imageAPI.setParentSpan(span).getImage(user.avatar, token), true).thumbs
         : null;
       const coverThumbs = user.cover
-        ? buildThumbsAndImages(await imageAPI.getImage(user.cover, token), true).images
+        ? buildThumbsAndImages(await imageAPI.setParentSpan(span).getImage(user.cover, token), true).images
         : null;
 
       return Object.assign({}, user, { avatar: avatarThumbs, cover: coverThumbs });
     },
 
-    listUsers: async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
-      const users = await userAPI.listUsers(token);
+    listUsers: async (parent, args, { token, dataSources: { imageAPI, userAPI } }, { span }) => {
+      const users = await userAPI.setParentSpan(span).listUsers(token);
       const fullUsers = users.map(async (user) => {
         const avatarThumbs = user.avatar
-          ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
+          ? buildThumbsAndImages(await imageAPI.setParentSpan(span).getImage(user.avatar, token), true).thumbs
           : null;
         const coverThumbs = user.cover
-          ? buildThumbsAndImages(await imageAPI.getImage(user.cover, token), true).images
+          ? buildThumbsAndImages(await imageAPI.setParentSpan(span).getImage(user.cover, token), true).images
           : null;
 
         return Object.assign({}, user, { avatar: avatarThumbs, cover: coverThumbs });
@@ -62,7 +62,7 @@ const getUserResolvers = (tracer) => ({
     },
 
     usernameExists: (parent, args, { dataSources: {userAPI } }, { span }) => {
-      return userAPI.setParentSpan(span).usernameExists(args.username);
+      return userAPI.setParentSpan(span).setDebugBackend(true).usernameExists(args.username);
     },
   },
 
