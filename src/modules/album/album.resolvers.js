@@ -89,22 +89,22 @@ const getAlbumResolvers = (tracer) => ({
       }
     },
 
-    async lastEditor(parent, args, { token, dataSources: { userAPI } }) {
+    async lastEditor(parent, args, { token, dataSources: { userAPI } }, { span }) {
       if (!parent.lastEditor.id) {
         return null;
       }
-      return await userAPI.getUser(parent.lastEditor.id, token);
+      return await userAPI.setParentSpan(span).getUser(parent.lastEditor.id, token);
     },
 
-    submitter(parent, args, { token, dataSources: { imageAPI, userAPI } }) {
-      return submitterResolver(parent, args, { token, dataSources: { imageAPI, userAPI } });
+    submitter(parent, args, { token, dataSources: { imageAPI, userAPI } }, { span }) {
+      return submitterResolver(parent, args, { token, dataSources: { imageAPI, userAPI } }, span);
     },
   },
   AlbumMutationResolvers: {
-    async createAlbum(parent, args, { token, dataSources: { albumAPI } }) {
+    async createAlbum(parent, args, { token, dataSources: { albumAPI } }, { span }) {
       const { input } = args;
 
-      const album = await albumAPI.createAlbum(input, token);
+      const album = await albumAPI.setParentSpan(span).createAlbum(input, token);
       return album;
     },
   },

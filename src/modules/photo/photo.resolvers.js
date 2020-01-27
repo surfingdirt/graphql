@@ -4,7 +4,7 @@ const { buildThumbsAndImages } = require('../../utils/thumbs');
 
 const getPhotoResolvers = (tracer) => ({
   PhotoMutationResolvers: {
-    createPhoto: async (parent, args, { token, dataSources: { mediaAPI } }) => {
+    createPhoto: async (parent, args, { token, dataSources: { mediaAPI } }, { span }) => {
       const { input, file } = args;
 
       const imageData = await storeImageOnLocalAPI(file, token, true);
@@ -15,11 +15,11 @@ const getPhotoResolvers = (tracer) => ({
         storageType: StorageType.LOCAL,
       });
 
-      const photo = await mediaAPI.createMedia(creationPayload, token);
+      const photo = await mediaAPI.setParentSpan(span).createMedia(creationPayload, token);
       return Object.assign({}, photo, buildThumbsAndImages(photo, true));
     },
 
-    updatePhoto: async (parent, args, { token, dataSources: { mediaAPI } }) => {
+    updatePhoto: async (parent, args, { token, dataSources: { mediaAPI } }, { span }) => {
       const { id, input, file } = args;
 
       let updatePayload = Object.assign({}, input);
@@ -30,7 +30,7 @@ const getPhotoResolvers = (tracer) => ({
         });
       }
 
-      const photo = await mediaAPI.updateMedia(id, updatePayload, token);
+      const photo = await mediaAPI.setParentSpan(span).updateMedia(id, updatePayload, token);
       return Object.assign({}, photo, buildThumbsAndImages(photo, true));
     },
   },

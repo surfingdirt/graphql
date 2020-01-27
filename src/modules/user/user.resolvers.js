@@ -3,7 +3,7 @@ const { buildThumbsAndImages } = require('../../utils/thumbs');
 
 const _updateUser = async (parent, args, { token, dataSources: { imageAPI, userAPI } }, { span }) => {
   const { userId, input } = args;
-  const user = await userAPI.updateUser(userId, input, token);
+  const user = await userAPI.setParentSpan(span).updateUser(userId, input, token);
 
   const avatarThumbs = user.avatar
     ? buildThumbsAndImages(await imageAPI.setParentSpan(span).getImage(user.avatar, token), true).thumbs
@@ -62,26 +62,26 @@ const getUserResolvers = (tracer) => ({
     },
 
     usernameExists: (parent, args, { dataSources: {userAPI } }, { span }) => {
-      return userAPI.setParentSpan(span).setDebugBackend(true).usernameExists(args.username);
+      return userAPI.setParentSpan(span).usernameExists(args.username);
     },
   },
 
   UserMutationResolvers: {
-    createUser: async (parent, args, { token, dataSources: { userAPI } }) => {
+    createUser: async (parent, args, { token, dataSources: { userAPI } }, { span }) => {
       const { input } = args;
-      const user = await userAPI.createUser(input, token);
+      const user = await userAPI.setParentSpan(span).createUser(input, token);
       return user;
     },
 
     updateUser: _updateUser,
 
-    updateSettings: (parent, args, context) => {
+    updateSettings: (parent, args, context, { span }) => {
       const { input : { userId, ...input } } = args;
-      return _updateUser(parent, {input, userId}, context);
+      return _updateUser(parent, {input, userId}, context, { span } );
     },
 
-    updateAvatar: async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
-      const { userId } = await userAPI.getMe(token);
+    updateAvatar: async (parent, args, { token, dataSources: { imageAPI, userAPI } }, { span }) => {
+      const { userId } = await userAPI.setParentSpan(span).getMe(token);
 
       const { file } = args;
 
@@ -91,21 +91,21 @@ const getUserResolvers = (tracer) => ({
 
       const imageData = await storeImageOnLocalAPI(file, token, true);
 
-      const user = await userAPI.updateUser(userId, { avatar: imageData.key }, token);
+      const user = await userAPI.setParentSpan(span).updateUser(userId, { avatar: imageData.key }, token);
 
       const avatarThumbs = user.avatar
-        ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
+        ? buildThumbsAndImages(await imageAPI.setParentSpan(span).getImage(user.avatar, token), true).thumbs
         : null;
 
       const coverThumbs = user.cover
-        ? buildThumbsAndImages(await imageAPI.getImage(user.cover, token), true).images
+        ? buildThumbsAndImages(await imageAPI.setParentSpan(span).getImage(user.cover, token), true).images
         : null;
 
       return Object.assign({}, user, { avatar: avatarThumbs, cover: coverThumbs });
     },
 
-    updateCover: async (parent, args, { token, dataSources: { imageAPI, userAPI } }) => {
-      const { userId } = await userAPI.getMe(token);
+    updateCover: async (parent, args, { token, dataSources: { imageAPI, userAPI } }, { span }) => {
+      const { userId } = await userAPI.setParentSpan(span).getMe(token);
 
       const { file } = args;
 
@@ -115,35 +115,35 @@ const getUserResolvers = (tracer) => ({
 
       const imageData = await storeImageOnLocalAPI(file, token, true);
 
-      const user = await userAPI.updateUser(userId, { cover: imageData.key }, token);
+      const user = await userAPI.setParentSpan(span).updateUser(userId, { cover: imageData.key }, token);
 
       const avatarThumbs = user.avatar
-        ? buildThumbsAndImages(await imageAPI.getImage(user.avatar, token), true).thumbs
+        ? buildThumbsAndImages(await imageAPI.setParentSpan(span).getImage(user.avatar, token), true).thumbs
         : null;
 
       const coverThumbs = user.cover
-        ? buildThumbsAndImages(await imageAPI.getImage(user.cover, token), true).images
+        ? buildThumbsAndImages(await imageAPI.setParentSpan(span).getImage(user.cover, token), true).images
         : null;
 
       return Object.assign({}, user, { avatar: avatarThumbs, cover: coverThumbs });
     },
 
-    confirmEmail: async (parent, args, { dataSources: { userAPI } }) => {
+    confirmEmail: async (parent, args, { dataSources: { userAPI } }, { span }) => {
       const { userId, input } = args;
-      const status = await userAPI.confirmEmail(userId, input);
+      const status = await userAPI.setParentSpan(span).confirmEmail(userId, input);
       return status;
     },
 
-    forgotPassword: async (parent, args, { dataSources: { userAPI } }) => {
+    forgotPassword: async (parent, args, { dataSources: { userAPI } }, { span }) => {
       const { input } = args;
-      const status = await userAPI.forgotPassword(input);
+      const status = await userAPI.setParentSpan(span).forgotPassword(input);
       return status;
     },
 
-    activateNewPassword: async (parent, args, { dataSources: { userAPI } }) => {
+    activateNewPassword: async (parent, args, { dataSources: { userAPI } }, { span }) => {
       const { userId, input } = args;
       try {
-        const response = await userAPI.activateNewPassword(userId, input);
+        const response = await userAPI.setParentSpan(span).activateNewPassword(userId, input);
       } catch (e) {
         if (e.extensions && e.extensions.code === 13001) {
           return false;
@@ -155,11 +155,11 @@ const getUserResolvers = (tracer) => ({
   },
 
   UserFieldResolvers: {
-    async album(parent, args, { token, dataSources: { albumAPI } }) {
+    async album(parent, args, { token, dataSources: { albumAPI } }, { span }) {
       if (!parent.album || !parent.album.id) {
         return null;
       }
-      return await albumAPI.getAlbum(parent.album.id, token);
+      return await albumAPI.setParentSpan(span).getAlbum(parent.album.id, token);
     },
   },
 });

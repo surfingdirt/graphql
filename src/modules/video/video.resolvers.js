@@ -4,7 +4,7 @@ const { getVideoInfo } = require('../../utils/videoUtils');
 
 const getVideoResolvers = (tracer) => ({
   VideoMutationResolvers: {
-    createVideo: async (parent, args, { token, dataSources: { mediaAPI } }) => {
+    createVideo: async (parent, args, { token, dataSources: { mediaAPI } }, { span }) => {
       const { input } = args;
 
       const creationPayload = Object.assign({}, input, {
@@ -12,16 +12,16 @@ const getVideoResolvers = (tracer) => ({
         storageType: StorageType.LOCAL,
       });
 
-      const video = await mediaAPI.createMedia(creationPayload, token);
+      const video = await mediaAPI.setParentSpan(span).createMedia(creationPayload, token);
       return Object.assign({}, video, buildThumbsAndImages(video, false));
     },
 
-    updateVideo: async (parent, args, { token, dataSources: { mediaAPI } }) => {
+    updateVideo: async (parent, args, { token, dataSources: { mediaAPI } }, { span }) => {
       const { id, input } = args;
 
       const updatePayload = Object.assign({}, input);
 
-      const video = await mediaAPI.updateMedia(id, updatePayload, token);
+      const video = await mediaAPI.setParentSpan(span).updateMedia(id, updatePayload, token);
       return Object.assign({}, video, buildThumbsAndImages(video, false));
     },
   },

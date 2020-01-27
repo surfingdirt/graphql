@@ -1,15 +1,11 @@
-const login = (parent, args, context) => {
-  const {
-    input: { username, userP },
-  } = args;
-  const {
-    dataSources: { authAPI },
-  } = context;
-  return authAPI.login(username, userP);
+const login = async (parent, args, { dataSources: { authAPI } }, { span } ) => {
+  const { input: { username, userP } } = args;
+  const response = await authAPI.setParentSpan(span).login(username, userP);
+  return response;
 };
 
-const logout = async (parent, args, { token, dataSources: { authAPI } }) => {
-  await authAPI.logout(token);
+const logout = async (parent, args, { token, dataSources: { authAPI } }, { span }) => {
+  await authAPI.setParentSpan(span).logout(token);
   return true;
 };
 

@@ -56,18 +56,11 @@ const getMediaResolvers = (tracer) => ({
     },
   },
   MediaFieldResolvers: {
-    async album(
-      parent,
-      args,
-      {
-        token,
-        dataSources: { albumAPI }
-      }
-    ) {
+    async album(parent, args, { token, dataSources: { albumAPI } }, { span }) {
       if (!parent.album || !parent.album.id) {
         return null;
       }
-      return await albumAPI.getAlbum(parent.album.id, token);
+      return await albumAPI.setParentSpan(span).getAlbum(parent.album.id, token);
     },
 
     embedUrl(parent) {
@@ -78,35 +71,21 @@ const getMediaResolvers = (tracer) => ({
       return getEmbedUrl(parent);
     },
 
-    async lastEditor(
-      parent,
-      args,
-      {
-        token,
-        dataSources: { userAPI }
-      }
-    ) {
+    async lastEditor(parent, args, { token, dataSources: { userAPI } }, { span }) {
       if (!parent.lastEditor || !parent.lastEditor.id) {
         return null;
       }
-      return await userAPI.getUser(parent.lastEditor.id, token);
+      return await userAPI.setParentSpan(span).getUser(parent.lastEditor.id, token);
     },
 
-    submitter(parent, args, { token, dataSources: { imageAPI, userAPI } }) {
-      return submitterResolver(parent, args, { token, dataSources: { imageAPI, userAPI } });
+    submitter(parent, args, { token, dataSources: { imageAPI, userAPI } }, { span }) {
+      return submitterResolver(parent, args, { token, dataSources: { imageAPI, userAPI } }, span);
     },
 
-    async users(
-      parent,
-      args,
-      {
-        token,
-        dataSources: { userAPI }
-      }
-    ) {
+    async users(parent, args, { token, dataSources: { userAPI } }, { span }) {
       const users = [];
       for (let userId of parent.users) {
-        users.push(await userAPI.getUser(userId, token));
+        users.push(await userAPI.setParentSpan(span).getUser(userId, token));
       }
       return users;
     },
