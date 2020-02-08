@@ -1,6 +1,8 @@
 const { ApolloServer } = require('apollo-server-express');
 const OpentracingExtension = require("apollo-opentracing").default;
 
+const config = require('../config');
+
 const { Album, AlbumAPI, getAlbumResolvers } = require('./modules/album');
 const { Auth, AuthAPI, getAuthResolvers } = require('./modules/auth');
 const { BaseTypes, getBaseResolvers } = require('./modules/base');
@@ -11,7 +13,32 @@ const { Photo, getPhotoResolvers, } = require('./modules/photo');
 const { Video, getVideoResolvers, } = require('./modules/video');
 const { User, UserAPI, getUserResolvers, } = require('./modules/user');
 
+const HEADER_TRACE_ID = 'x-b3-traceid';
+const HEADER_TRACE_FIELDS = 'x-b3-custom-tracefields';
+
+const { alwaysDisabled, traceAll } = config.tracing;
+
+const shouldTraceRequest = (info) => {
+  const traceId = info.request.headers.get(HEADER_TRACE_ID);
+  return traceAll.requests || !!traceId;
+};
+
+const shouldTraceFieldResolver = (parent, args, context, info) => {
+  const { traceId, traceFields } = context;
+  return traceAll.fields || (traceId && traceFields);
+};
+
 const graphqlBuilder = (localTracer, serverTracer) => {
+  const extensions = [];
+  if (!alwaysDisabled) {
+    extensions.push(() => new OpentracingExtension({
+      server: serverTracer,
+      local: localTracer,
+      shouldTraceRequest,
+      shouldTraceFieldResolver,
+    }));
+  }
+
   /******************************************************************************
    * TYPEDEFS
    *****************************************************************************/
@@ -78,10 +105,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
     typeDefs,
     resolvers,
     dataSources,
-    extensions: [() => new OpentracingExtension({
-      server: serverTracer,
-      local: localTracer,
-    })],
+    extensions,
     formatError: (err) => {
       console.log('==================================');
       console.log('Error:');
@@ -96,7 +120,11 @@ const graphqlBuilder = (localTracer, serverTracer) => {
       console.log('--------------------------------------------------------------------------------');
 
       const token = req.headers.authorization || '';
-      return { token };
+
+      const traceId = req.headers[HEADER_TRACE_ID];
+      const traceFields = req.headers[HEADER_TRACE_FIELDS];
+
+      return { token, traceFields, traceId };
     },
   });
 };

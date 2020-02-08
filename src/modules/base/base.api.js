@@ -14,7 +14,7 @@ const BAD_INPUT_MESSAGE = 'badInput';
 
 const TRACE_ID_HEADER = 'traceId';
 
-const { enabled: tracingEnabled} = tracing;
+const { alwaysDisabled: tracingAlwaysDisabled, enabled: tracingEnabled} = tracing;
 
 module.exports = class BaseAPI extends RESTDataSource {
   constructor(tracer) {
@@ -92,22 +92,36 @@ module.exports = class BaseAPI extends RESTDataSource {
   }
 
   maybeTrace(name, operation) {
-    if (!tracingEnabled || !this.parentSpan) {
+    if (tracingAlwaysDisabled) {
+      // Tracing is forbidden
       return operation();
     }
 
+    if (!this.parentSpan && !this.tracingRequested) {
+      // Tracing if header
+      return operation();
+    }
+
+    const tracingOptions = !!this.parentSpan ? {childOf: this.parentSpan} : {};
+
     return new Promise(async (resolve, reject) => {
+      const span = this.tracer.startSpan(name, tracingOptions);
+      const result = await operation();
+
       try {
-        const span = this.tracer.startSpan(name, {childOf: this.parentSpan});
-        const result = await operation();
         span.finish();
 
         // Make sure the next request will only be traced if it explicitly calls setSpan
         this.parentSpan = null;
-
         resolve(result);
+
       } catch (e) {
-        reject(e);
+        span.log({
+          error: true,
+          errorMessage: e
+        });
+        span.finish();
+        this.parentSpan = null;
       }
     });
   }

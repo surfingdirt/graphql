@@ -2,17 +2,21 @@ const env = process.env.NODE_ENV || 'local';
 
 const conf = {
   local: {
-    apiUrl: 'http://dev.ridedb.wrk',
-    storageLocalDomain: 'http://dev.ridedb.wrk',
+    apiUrl: 'http://localhost:80',
+    storageLocalDomain: 'http://localhost:80',
     storageLocalPath: 'files',
     port: 4000,
     tmpFolder: '/tmp',
     backendSupportsWebP: false,
     galleryAlbumId: 'a3833b1c-1db0-4a93-9efc-b6659400ce9f',
     tracing: {
-      enabled: true,
-      localServiceName: 'graphql-dev',
+      alwaysDisabled: false,
       endpoint: 'http://localhost:9411/api/v2/spans',
+      localServiceName: 'graphql-dev',
+      traceAll: {
+        fields: false,
+        requests: false,
+      },
     },
   },
   beta: {
@@ -24,9 +28,13 @@ const conf = {
     backendSupportsWebP: false,
     galleryAlbumId: 'a3833b1c-1db0-4a93-9efc-b6659400ce9f',
     tracing: {
-      enabled: false,
-      localServiceName: 'graphql-beta',
+      alwaysDisabled: false,
       endpoint: 'http://localhost:9411/api/v2/spans',
+      localServiceName: 'graphql-beta',
+      traceAll: {
+        fields: false,
+        requests: false,
+      },
     },
   },
   production: {
@@ -38,9 +46,13 @@ const conf = {
     backendSupportsWebP: false,
     galleryAlbumId: 'a3833b1c-1db0-4a93-9efc-b6659400ce9f',
     tracing: {
-      enabled: false,
-      localServiceName: 'graphql-prod',
+      alwaysDisabled: false,
       endpoint: 'http://localhost:9411/api/v2/spans',
+      localServiceName: 'graphql-prod',
+      traceAll: {
+        fields: false,
+        requests: false,
+      },
     },
   },
 };
