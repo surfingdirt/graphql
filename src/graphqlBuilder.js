@@ -14,17 +14,19 @@ const { Video, getVideoResolvers, } = require('./modules/video');
 const { User, UserAPI, getUserResolvers, } = require('./modules/user');
 
 const HEADER_TRACE_ID = 'x-b3-traceid';
+const HEADER_PARENT_SPAN_ID = 'x-b3-parentspanid';
 const HEADER_TRACE_FIELDS = 'x-b3-custom-tracefields';
 
 const { alwaysDisabled, traceAll } = config.tracing;
 
 const shouldTraceRequest = (info) => {
   const traceId = info.request.headers.get(HEADER_TRACE_ID);
+console.log({traceId});
   return traceAll.requests || !!traceId;
 };
 
 const shouldTraceFieldResolver = (parent, args, context, info) => {
-  const { traceId, traceFields } = context;
+  const { tracing: { traceId, traceFields } } = context;
   return traceAll.fields || (traceId && traceFields);
 };
 
@@ -121,10 +123,13 @@ const graphqlBuilder = (localTracer, serverTracer) => {
 
       const token = req.headers.authorization || '';
 
-      const traceId = req.headers[HEADER_TRACE_ID];
-      const traceFields = req.headers[HEADER_TRACE_FIELDS];
+      const tracing = {
+        traceId: req.headers[HEADER_TRACE_ID],
+        parentSpanId: req.headers[HEADER_PARENT_SPAN_ID],
+        traceFields: req.headers[HEADER_TRACE_FIELDS],
+      };
 
-      return { token, traceFields, traceId };
+      return { token, tracing };
     },
   });
 };

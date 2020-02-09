@@ -1,5 +1,6 @@
 const { RESTDataSource } = require("apollo-datasource-rest");
 const { ApolloError } = require("apollo-server-express");
+const { FORMAT_HTTP_HEADERS } = require("opentracing");
 
 const { apiUrl, tracing } = require("../../../config");
 
@@ -12,9 +13,7 @@ const CONNECTION_REFUSED_CODE = 17001;
 const API_ERROR = 'apiError';
 const BAD_INPUT_MESSAGE = 'badInput';
 
-const TRACE_ID_HEADER = 'traceId';
-
-const { alwaysDisabled: tracingAlwaysDisabled, enabled: tracingEnabled} = tracing;
+const { alwaysDisabled: tracingAlwaysDisabled } = tracing;
 
 module.exports = class BaseAPI extends RESTDataSource {
   constructor(tracer) {
@@ -24,6 +23,11 @@ module.exports = class BaseAPI extends RESTDataSource {
     this.debugBackend = false;
     this.tracer = tracer;
     this.parentSpan = null;
+    this.tracing = {
+      traceId: null,
+      parentSpanId: null,
+      traceFields: false,
+    };
   }
 
   setDebugBackend(debugBackend) {
@@ -38,6 +42,12 @@ module.exports = class BaseAPI extends RESTDataSource {
 
   setParentSpan(span) {
     this.parentSpan = span;
+    return this;
+  }
+
+  setTracing(span, tracing) {
+    this.parentSpan = span;
+    this.tracing = tracing;
     return this;
   }
 
@@ -80,12 +90,7 @@ module.exports = class BaseAPI extends RESTDataSource {
       headers['Authorization'] = this.token;
     }
     if (this.parentSpan) {
-      const trace = this.parentSpan.id;
-      headers['x-b3-flags'] = trace.isDebug();
-      headers['x-b3-sampled'] = trace.sampled.value ? 1 : 0;
-      headers['x-b3-parentspanid'] = trace.parentSpanId.value;
-      headers['x-b3-spanid'] = trace.spanId;
-      headers['x-b3-traceid'] = trace.traceId;
+      this.tracer.inject(this.parentSpan, FORMAT_HTTP_HEADERS, headers);
     }
 
     return Object.assign({}, init, { headers });
@@ -97,12 +102,11 @@ module.exports = class BaseAPI extends RESTDataSource {
       return operation();
     }
 
-    if (!this.parentSpan && !this.tracingRequested) {
-      // Tracing if header
+    if (!this.parentSpan) {
       return operation();
     }
 
-    const tracingOptions = !!this.parentSpan ? {childOf: this.parentSpan} : {};
+    const tracingOptions = !!this.parentSpan ? { childOf: this.parentSpan } : {};
 
     return new Promise(async (resolve, reject) => {
       const span = this.tracer.startSpan(name, tracingOptions);
