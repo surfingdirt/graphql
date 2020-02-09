@@ -21,7 +21,6 @@ const { alwaysDisabled, traceAll } = config.tracing;
 
 const shouldTraceRequest = (info) => {
   const traceId = info.request.headers.get(HEADER_TRACE_ID);
-console.log({traceId});
   return traceAll.requests || !!traceId;
 };
 
