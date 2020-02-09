@@ -8,7 +8,7 @@ const { endpoint, localServiceName } = config.tracing;
 const recorder = new BatchRecorder({
   logger: new HttpLogger({
     endpoint,
-    jsonEncoder: JSON_V2
+    jsonEncoder: JSON_V2,
   })
 });
 
@@ -21,7 +21,7 @@ const localTracer = new ZipkinJavascriptOpentracing({
 const serverTracer = new ZipkinJavascriptOpentracing({
   serviceName: localServiceName,
   recorder,
-  kind: "client",
+  kind: "server",
 });
 
 module.exports = { localTracer, serverTracer };
