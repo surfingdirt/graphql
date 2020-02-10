@@ -1,5 +1,6 @@
 const { ApolloServer } = require('apollo-server-express');
 const OpentracingExtension = require("apollo-opentracing").default;
+const languageParser = require("accept-language-parser");
 
 const config = require('../config');
 
@@ -121,6 +122,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
       console.log('--------------------------------------------------------------------------------');
 
       const token = req.headers.authorization || '';
+      const locale = languageParser.parse(req.headers['accept-language'] || '');
 
       const tracing = {
         traceId: req.headers[HEADER_TRACE_ID],
@@ -128,7 +130,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
         traceFields: req.headers[HEADER_TRACE_FIELDS],
       };
 
-      return { token, tracing };
+      return { locale, token, tracing };
     },
   });
 };

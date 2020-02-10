@@ -1,5 +1,6 @@
 const { DataType } = require('../../constants');
 const { submitterResolver } = require('../../utils/users');
+const { findContentVersionForLocale } = require('../../utils/language');
 
 const createComment = async (args, token, commentAPI, parentType, span) => {
   const { input } = args;
@@ -17,8 +18,8 @@ const createComment = async (args, token, commentAPI, parentType, span) => {
 
 const getCommentResolvers = (tracer) => ({
   CommentQueryResolvers: {
-    listComments: async (parent, args, { token, dataSources: { commentAPI } }, { span }) => {
-      const comments = await commentAPI.setParentSpan(span).listComments(args.parentId, args.parentType, token);
+    listComments: async (parent, args, { locale, token, dataSources: { commentAPI } }, { span }) => {
+      const comments = await commentAPI.setParentSpan(span).listComments(args.parentId, args.parentType, token, locale);
       return comments;
     },
     comment: async (parent, args, { token, dataSources: { commentAPI } }, { span }) => {
@@ -66,6 +67,12 @@ const getCommentResolvers = (tracer) => ({
     submitter(parent, args, { token, dataSources: { imageAPI, userAPI } }, { span }) {
       return submitterResolver(parent, args, { token, dataSources: { imageAPI, userAPI } }, span);
     },
+
+    content(parent, args, { locale }) {
+      const translated = findContentVersionForLocale(parent.content, locale);
+      console.log({parent, locale, translated});
+      return translated;
+    }
   },
 });
 
