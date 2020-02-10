@@ -2,6 +2,7 @@ const { AlbumContributions, AlbumVisibility, MediaType } = require('../../consta
 const { buildThumbsAndImages } = require('../../utils/thumbs');
 const { submitterResolver } = require('../../utils/users');
 const { getVendorUrl, getEmbedUrl } = require('../../utils/videoUtils');
+const { findContentVersionForLocale } = require('../../utils/language');
 
 const getFullMedia = (m) => {
   let videoProps = {};
@@ -98,6 +99,16 @@ const getAlbumResolvers = (tracer) => ({
 
     submitter(parent, args, { token, dataSources: { imageAPI, userAPI } }, { span }) {
       return submitterResolver(parent, args, { token, dataSources: { imageAPI, userAPI } }, span);
+    },
+
+    description(parent, args, { locale }) {
+      const translated = findContentVersionForLocale(parent.description, locale);
+      return translated;
+    },
+
+    title(parent, args, { locale }) {
+      const translated = findContentVersionForLocale(parent.title, locale);
+      return translated;
     },
   },
   AlbumMutationResolvers: {

@@ -70,7 +70,6 @@ const getCommentResolvers = (tracer) => ({
 
     content(parent, args, { locale }) {
       const translated = findContentVersionForLocale(parent.content, locale);
-      console.log({parent, locale, translated});
       return translated;
     }
   },

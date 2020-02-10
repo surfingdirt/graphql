@@ -2,6 +2,7 @@ const { MediaType } = require('../../constants');
 const { buildThumbsAndImages } = require('../../utils/thumbs');
 const { submitterResolver } = require('../../utils/users');
 const { getVendorUrl, getEmbedUrl } = require('../../utils/videoUtils');
+const { findContentVersionForLocale } = require('../../utils/language');
 
 const StorageType = {
   LOCAL: "0"
@@ -56,6 +57,16 @@ const getMediaResolvers = (tracer) => ({
     },
   },
   MediaFieldResolvers: {
+    description(parent, args, { locale }) {
+      const translated = findContentVersionForLocale(parent.description, locale);
+      return translated;
+    },
+
+    title(parent, args, { locale }) {
+      const translated = findContentVersionForLocale(parent.title, locale);
+      return translated;
+    },
+
     async album(parent, args, { token, dataSources: { albumAPI } }, { span }) {
       if (!parent.album || !parent.album.id) {
         return null;
