@@ -2,8 +2,8 @@ const { gql } = require("apollo-server-express");
 
 module.exports = gql`
   input PhotoCreationInput {
-      title: String
-      description: String
+      title: TranslatedTextInput
+      description: TranslatedTextInput
       albumId: ID!
       mediaSubType: MediaSubType!
       status: String

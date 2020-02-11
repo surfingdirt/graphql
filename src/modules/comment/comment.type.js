@@ -3,7 +3,7 @@ const { gql } = require("apollo-server-express");
 module.exports = gql`
   type Comment {
       actions: ActionsList
-      content: String!
+      content: TranslatedText!
       date: String
       id: ID!
       lastEditionDate: String
@@ -15,13 +15,13 @@ module.exports = gql`
       tone: String
   }
   input CommentCreationInput {
-      content: String!
+      content: TranslatedTextInput!
       parentId: ID!
       status: String
       tone: String
   }
   input CommentUpdateInput {
-      content: String!
+      content: TranslatedTextInput!
       status: String
       tone: String
   }

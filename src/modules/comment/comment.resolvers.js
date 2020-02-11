@@ -1,6 +1,6 @@
 const { DataType } = require('../../constants');
-const { submitterResolver } = require('../../utils/users');
 const { findContentVersionForLocale } = require('../../utils/language');
+const { submitterResolver } = require('../../utils/users');
 
 const createComment = async (args, token, commentAPI, parentType, span) => {
   const { input } = args;

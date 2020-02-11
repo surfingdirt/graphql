@@ -2,7 +2,7 @@ const { gql } = require("apollo-server-express");
 module.exports = gql`
   type Me {
       avatar: [Image]
-      bio: String
+      bio: TranslatedText
       cover: [Image]
       email: String
       firstName: String
@@ -16,7 +16,7 @@ module.exports = gql`
       actions: ActionsList
       album: Album
       avatar: [Image]
-      bio: String
+      bio: TranslatedText
       city: String
       cover: [Image]
       date: String
@@ -31,7 +31,7 @@ module.exports = gql`
       username: String
   }
   input UserCreationInput {
-      bio: String
+      bio: TranslatedTextInput
       city: String
       userPC: String!
       date: String
@@ -45,7 +45,7 @@ module.exports = gql`
       userP: String!
   }
   input UserUpdateInput {
-      bio: String
+      bio: TranslatedTextInput
       city: String
       confirmPassword: String
       date: String
@@ -61,7 +61,7 @@ module.exports = gql`
       timezone: String
   }
   input SettingsUpdateInput {
-      bio: String
+      bio: TranslatedTextInput
       city: String
       confirmPassword: String
       date: String

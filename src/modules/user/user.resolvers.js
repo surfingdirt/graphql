@@ -1,4 +1,5 @@
 const { storeImageOnLocalAPI } = require('../../utils/RestAPI');
+const { findContentVersionForLocale } = require('../../utils/language');
 const { buildThumbsAndImages } = require('../../utils/thumbs');
 
 const _updateUser = async (parent, args, { token, dataSources: { imageAPI, userAPI } }, { span }) => {
@@ -161,6 +162,11 @@ const getUserResolvers = (tracer) => ({
       }
       return await albumAPI.setParentSpan(span).getAlbum(parent.album.id, token);
     },
+
+    bio(parent, args, { locale }) {
+      const translated = findContentVersionForLocale(parent.bio, locale);
+      return translated;
+    }
   },
 });
 

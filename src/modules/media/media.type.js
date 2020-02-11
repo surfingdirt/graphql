@@ -24,7 +24,7 @@ module.exports = gql`
       album: Album
       actions: ActionsList
       date: String
-      description: String
+      description: TranslatedText
       embedUrl: String
       height: Int
       id: ID!
@@ -36,7 +36,7 @@ module.exports = gql`
       status: String
       submitter: User!
       thumbs: [Image]
-      title: String
+      title: TranslatedText
       users: [User]
       vendorUrl: String
       width: Int

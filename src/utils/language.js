@@ -3,18 +3,27 @@ const DEFAULT_LOCALE = 'en-US';
 module.exports = {
   findContentVersionForLocale: (sourceParts, localeOptions) => {
     if (sourceParts === null) {
-      return '';
+      return {
+        locale: '',
+        text: '',
+      };
     }
 
     if (typeof sourceParts === 'string') {
-      return sourceParts;
+      return {
+        locale: DEFAULT_LOCALE,
+        text: sourceParts,
+      };
     }
 
     // User preference first
     for (let i = 0; i < localeOptions.length; i++) {
       const currentLocale = `${localeOptions[i].code}-${localeOptions[i].region}`;
         if (typeof sourceParts[currentLocale] !== 'undefined') {
-          return sourceParts[currentLocale];
+          return {
+            locale: currentLocale,
+            text: sourceParts[currentLocale],
+          };
         }
     }
 
@@ -25,16 +34,25 @@ module.exports = {
         return locale.indexOf(currentCode) === 0;
       });
       if (found) {
-        return found[1];
+        return {
+          locale: found[0],
+          text: found[1],
+        };
       }
     }
 
     // Default locale
     if (typeof sourceParts[DEFAULT_LOCALE] !== 'undefined') {
-      return sourceParts[DEFAULT_LOCALE];
+      return {
+        locale: DEFAULT_LOCALE,
+        text: sourceParts[DEFAULT_LOCALE],
+      };
     }
 
     // No luck
-    return '';
+    return {
+      locale: '',
+      text: '',
+    };
   },
 };

@@ -26,7 +26,7 @@ module.exports = gql`
       albumType: AlbumType
       albumVisibility: AlbumVisibility
       date: String
-      description: String
+      description: TranslatedText
       id: ID
       itemCount: Int
       lastEditionDate: String
@@ -34,12 +34,12 @@ module.exports = gql`
       media: [Media]
       status: Status
       submitter: User!
-      title: String
+      title: TranslatedText
   }
   
   input AlbumCreationInput {
-      title: String
-      description: String
+      title: TranslatedTextInput
+      description: TranslatedTextInput
       albumContributions: AlbumContributions
       albumVisibility: AlbumVisibility
   }
