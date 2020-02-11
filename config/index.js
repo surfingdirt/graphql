@@ -29,7 +29,7 @@ const conf = {
     galleryAlbumId: 'a3833b1c-1db0-4a93-9efc-b6659400ce9f',
     tracing: {
       alwaysDisabled: false,
-      endpoint: 'http://localhost:9411/api/v2/spans',
+      endpoint: 'https://beta-z.surfingdirt.com/api/v2/spans',
       localServiceName: 'graphql-beta',
       traceAll: {
         fields: false,
@@ -47,7 +47,7 @@ const conf = {
     galleryAlbumId: 'a3833b1c-1db0-4a93-9efc-b6659400ce9f',
     tracing: {
       alwaysDisabled: false,
-      endpoint: 'http://localhost:9411/api/v2/spans',
+      endpoint: 'https://z.surfingdirt.com/api/v2/spans',
       localServiceName: 'graphql-prod',
       traceAll: {
         fields: false,
