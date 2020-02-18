@@ -16,37 +16,34 @@ module.exports = {
       };
     }
 
-    // User preference first
+    // Full locale match based on user preferences
     for (let i = 0; i < localeOptions.length; i++) {
       const currentLocale = `${localeOptions[i].code}-${localeOptions[i].region}`;
-        if (typeof sourceParts[currentLocale] !== 'undefined') {
-          return {
-            locale: currentLocale,
-            text: sourceParts[currentLocale],
-          };
-        }
+      const match = sourceParts.find(({ locale }) => locale === currentLocale);
+      if (match) {
+        return match;
+      }
     }
 
-    // Same code?
+    // No match on full locale - try with the same language code only
     for (let i = 0; i < localeOptions.length; i++) {
       const currentCode = `${localeOptions[i].code}-`;
-      const found = Object.entries(sourceParts).find(([locale]) => {
-        return locale.indexOf(currentCode) === 0;
-      });
-      if (found) {
-        return {
-          locale: found[0],
-          text: found[1],
-        };
+      const match = sourceParts.find(({ locale }) => locale.indexOf(currentCode) === 0);
+      if (match) {
+        return match;
       }
     }
 
     // Default locale
-    if (typeof sourceParts[DEFAULT_LOCALE] !== 'undefined') {
-      return {
-        locale: DEFAULT_LOCALE,
-        text: sourceParts[DEFAULT_LOCALE],
-      };
+    const match = sourceParts.find(({ locale }) => locale === DEFAULT_LOCALE);
+    if (match) {
+      return match;
+    }
+
+    // Is there... anything... we can send back?
+    if (sourceParts.length >= 0) {
+      // Grab the first available translation
+      return sourceParts[0];
     }
 
     // No luck
