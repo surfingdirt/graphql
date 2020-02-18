@@ -9,8 +9,8 @@ module.exports = gql`
       status: String
   }
   input PhotoUpdateInput {
-      title: String
-      description: String
+      title: TranslatedTextInput
+      description: TranslatedTextInput
       status: String
   }
   extend type Mutation {
