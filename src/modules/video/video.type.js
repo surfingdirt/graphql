@@ -2,12 +2,12 @@ const { gql } = require("apollo-server-express");
 
 module.exports = gql`
   type VideoInfo {
-      description: TranslatedText
+      description: String
       height: Int
       iframeUrl: String
       mediaSubType: MediaSubType!
       thumbUrl: String
-      title: TranslatedText
+      title: String
       url: String!
       vendorKey: String!
       width: Int

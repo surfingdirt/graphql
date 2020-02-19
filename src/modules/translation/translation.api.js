@@ -6,7 +6,6 @@ module.exports = class CommentAPI extends BaseAPI {
     super(tracer);
 
     this.path = TRANSLATION;
-    this.getComment = this.getComment.bind(this);
   }
 
   // TODO: implement actual auto-translation
