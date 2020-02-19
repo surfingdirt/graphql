@@ -16,12 +16,4 @@ module.exports = gql`
       delete: Boolean
       edit: Boolean
   }
-  type TranslatedText {
-      locale: String
-      text: String
-  }
-  input TranslatedTextInput {
-      locale: String
-      text: String
-  }
 `;

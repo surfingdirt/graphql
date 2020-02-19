@@ -5,5 +5,6 @@ module.exports = {
   IMAGE: 'image',
   MEDIA: 'media',
   TOKEN: 'token',
+  TRANSLATION: 'tokens',
   USER: 'user',
 }
