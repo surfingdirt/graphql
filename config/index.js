@@ -2,8 +2,8 @@ const env = process.env.NODE_ENV || 'local';
 
 const conf = {
   local: {
-    apiUrl: 'http://localhost:80',
-    storageLocalDomain: 'http://localhost:80',
+    apiUrl: 'http://localhost:8007',
+    storageLocalDomain: 'http://localhost:8007',
     storageLocalPath: 'files',
     port: 4000,
     tmpFolder: '/tmp',
