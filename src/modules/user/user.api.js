@@ -1,5 +1,6 @@
 const { BaseAPI } = require('../base');
 const { USER } = require('../../controllers');
+const { formatTranslatedFields } = require("../../utils/translate");
 
 module.exports = class UserApi extends BaseAPI {
   constructor(tracer) {
@@ -24,16 +25,15 @@ module.exports = class UserApi extends BaseAPI {
   async createUser(input, token) {
     // Should not be necessary, but the presence of a token indicates a problem, so keep it.
     this.setToken(token);
-    // node-fetch or apollo is a little picky, so need to do this, in order
-    // to have body.constructor === Object:
-    const body = { ...input };
+    const body = formatTranslatedFields('bio', input);
     const response = await this.post(this.path, body);
     return response;
   }
 
   async updateUser(userId, input, token) {
     this.setToken(token);
-    const response = await this.put(`${this.path}/${userId}`, input);
+    const body = formatTranslatedFields('bio', input);
+    const response = await this.put(`${this.path}/${userId}`, body);
     return response;
   }
 

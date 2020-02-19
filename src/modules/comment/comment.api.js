@@ -1,5 +1,6 @@
 const { BaseAPI } = require("../base");
 const { COMMENT } = require("../../controllers");
+const { formatTranslatedFields } = require("../../utils/translate");
 
 module.exports = class CommentAPI extends BaseAPI {
   constructor(tracer) {
@@ -24,17 +25,15 @@ module.exports = class CommentAPI extends BaseAPI {
   async createComment(input, token) {
     this.setToken(token);
     // node-fetch or apollo is a little picky, so need to do this, in order
-    // to have body.constructor === Object:
-    const body = { ...input };
+    // to have body.constructor === Object: const body = { ...input };
+    const body = formatTranslatedFields('content', input);
     const response = await this.post(this.path, body);
     return response;
   }
 
   async updateComment(id, input, token) {
     this.setToken(token);
-    // node-fetch or apollo is a little picky, so need to do this, in order
-    // to have body.constructor === Object:
-    const body = { ...input };
+    const body = formatTranslatedFields('content', input);
     const response = await this.put(`${this.path}/${id}`, body);
     return response;
   }

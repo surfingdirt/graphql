@@ -2,6 +2,7 @@ const config = require('../../../config');
 const { BaseAPI } = require('../base');
 const { ALBUM } = require('../../controllers');
 const tracer = require("../../tracer");
+const { formatTranslatedFields } = require("../../utils/translate");
 
 module.exports = class AlbumApi extends BaseAPI {
   constructor(tracer) {
@@ -23,9 +24,7 @@ module.exports = class AlbumApi extends BaseAPI {
 
   async createAlbum(input, token) {
     this.setToken(token);
-    // node-fetch or apollo is a little picky, so need to do this, in order
-    // to have body.constructor === Object:
-    const body = { ...input };
+    const body = formatTranslatedFields(['description', 'title'], input);
     const response = await this.post(this.path, body);
     return response;
   }

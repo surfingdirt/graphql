@@ -1,5 +1,6 @@
 const { BaseAPI } = require("../base");
 const { MEDIA } = require("../../controllers");
+const { formatTranslatedFields } = require("../../utils/translate");
 
 module.exports = class MediaApi extends BaseAPI {
   constructor(tracer) {
@@ -17,18 +18,14 @@ module.exports = class MediaApi extends BaseAPI {
 
   async createMedia(input, token) {
     this.setToken(token);
-    // node-fetch or apollo is a little picky, so need to do this, in order
-    // to have body.constructor === Object:
-    const body = { ...input };
+    const body = formatTranslatedFields(['description', 'title'], input);
     const response = await this.post(this.path, body);
     return response;
   }
 
   async updateMedia(id, input, token) {
     this.setToken(token);
-    // node-fetch or apollo is a little picky, so need to do this, in order
-    // to have body.constructor === Object:
-    const body = { ...input };
+    const body = formatTranslatedFields(['description', 'title'], input);
     const response = await this.put(`${this.path}/${id}`, body);
     return response;
   }
