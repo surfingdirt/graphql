@@ -118,6 +118,20 @@ const getAlbumResolvers = (tracer) => ({
       const album = await albumAPI.setParentSpan(span).createAlbum(input, token);
       return album;
     },
+
+    updateAlbum: async (parent, args, { token, dataSources: { albumAPI } }, { span }) => {
+      const { id, input } = args;
+
+      let updatePayload = Object.assign({}, input);
+
+      const response = await albumAPI.setParentSpan(span).updateAlbum(id, updatePayload, token);
+      return response;
+    },
+
+    deleteAlbum: async (parent, args, { token, dataSources: { albumAPI } }, { span }) => {
+      const response = await albumAPI.setParentSpan(span).deleteAlbum(args.id, token);
+      return response;
+    },
   },
 });
 

@@ -54,7 +54,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
   const { AuthMutationResolvers } = getAuthResolvers(localTracer);
   const { BaseQueryResolvers } = getBaseResolvers(localTracer);
   const { CommentFieldResolvers, CommentMutationResolvers, CommentQueryResolvers } = getCommentResolvers(localTracer);
-  const { MediaFieldResolvers, MediaQueryResolvers, MediaTypeResolvers } = getMediaResolvers(localTracer);
+  const { MediaFieldResolvers, MediaMutationResolvers, MediaQueryResolvers, MediaTypeResolvers } = getMediaResolvers(localTracer);
   const { PhotoMutationResolvers } = getPhotoResolvers(localTracer);
   const { TranslationMutationResolvers, } = getTranslationResolvers(localTracer);
   const { UserFieldResolvers, UserMutationResolvers, UserQueryResolvers, } = getUserResolvers(localTracer);
@@ -74,6 +74,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
       ...AlbumMutationResolvers,
       ...AuthMutationResolvers,
       ...CommentMutationResolvers,
+      ...MediaMutationResolvers,
       ...PhotoMutationResolvers,
       ...TranslationMutationResolvers,
       ...UserMutationResolvers,

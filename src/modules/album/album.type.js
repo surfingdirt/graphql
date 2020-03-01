@@ -36,8 +36,13 @@ module.exports = gql`
       submitter: User!
       title: TranslatedText
   }
-  
   input AlbumCreationInput {
+      title: TranslatedTextInput
+      description: TranslatedTextInput
+      albumContributions: AlbumContributions
+      albumVisibility: AlbumVisibility
+  }
+  input AlbumUpdateInput {
       title: TranslatedTextInput
       description: TranslatedTextInput
       albumContributions: AlbumContributions
@@ -50,5 +55,7 @@ module.exports = gql`
   }
   extend type Mutation {
       createAlbum(input: AlbumCreationInput!): Album!
+      updateAlbum(id: ID, input: AlbumUpdateInput!): Album!
+      deleteAlbum(id: ID!): Boolean
   }
 `;

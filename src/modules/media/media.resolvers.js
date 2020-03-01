@@ -56,6 +56,12 @@ const getMediaResolvers = (tracer) => ({
       );
     },
   },
+  MediaMutationResolvers: {
+    deleteMedia: async (parent, args, { token, dataSources: { mediaAPI } }, { span }) => {
+      const response = await mediaAPI.setParentSpan(span).deleteMedia(args.id, token);
+      return response;
+    },
+  },
   MediaFieldResolvers: {
     description(parent, args, { locale }) {
       const translated = findContentVersionForLocale(parent.description, locale);

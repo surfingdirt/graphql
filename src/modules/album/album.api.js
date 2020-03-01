@@ -48,4 +48,18 @@ module.exports = class AlbumApi extends BaseAPI {
 
     return response;
   }
+
+  async updateAlbum(id, input, token) {
+    this.setToken(token);
+    const body = formatTranslatedFields(['description', 'title'], input);
+    const response = await this.put(`${this.path}/${id}`, body);
+    return response;
+  }
+
+  async deleteAlbum(id) {
+    this.setToken(token);
+    const response = await this.delete(`${this.path}/${id}`);
+    return response;
+  }
+
 };

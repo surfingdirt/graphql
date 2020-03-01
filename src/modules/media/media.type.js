@@ -44,4 +44,7 @@ module.exports = gql`
   extend type Query {
       media(id: ID!): Media
   }
+  extend type Mutation {
+      deleteMedia(id: ID!): Boolean
+  }
 `;
