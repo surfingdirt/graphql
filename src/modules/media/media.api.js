@@ -30,7 +30,7 @@ module.exports = class MediaApi extends BaseAPI {
     return response;
   }
 
-  async deleteMedia(id) {
+  async deleteMedia(id, token) {
     this.setToken(token);
     const response = await this.delete(`${this.path}/${id}`);
     return response;

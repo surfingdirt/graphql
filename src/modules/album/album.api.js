@@ -56,7 +56,7 @@ module.exports = class AlbumApi extends BaseAPI {
     return response;
   }
 
-  async deleteAlbum(id) {
+  async deleteAlbum(id, token) {
     this.setToken(token);
     const response = await this.delete(`${this.path}/${id}`);
     return response;

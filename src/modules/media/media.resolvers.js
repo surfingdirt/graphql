@@ -59,7 +59,7 @@ const getMediaResolvers = (tracer) => ({
   MediaMutationResolvers: {
     deleteMedia: async (parent, args, { token, dataSources: { mediaAPI } }, { span }) => {
       const response = await mediaAPI.setParentSpan(span).deleteMedia(args.id, token);
-      return response;
+      return response.status;
     },
   },
   MediaFieldResolvers: {

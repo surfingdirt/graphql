@@ -130,7 +130,7 @@ const getAlbumResolvers = (tracer) => ({
 
     deleteAlbum: async (parent, args, { token, dataSources: { albumAPI } }, { span }) => {
       const response = await albumAPI.setParentSpan(span).deleteAlbum(args.id, token);
-      return response;
+      return response.status;
     },
   },
 });
