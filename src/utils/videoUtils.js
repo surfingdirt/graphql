@@ -184,13 +184,6 @@ const getVideoInfo = async (url) => {
   const dom = new JSDOM(html);
   const metas = Array.from(dom.window.document.querySelectorAll('meta'));
 
-  if (mediaSubType === FACEBOOK) {
-    const imageMetaEl = metas.find((e) => {
-      return e.getAttribute('name') === TWITTER_IMAGE_META;
-    });
-    thumbUrl = imageMetaEl.getAttribute('content');
-  }
-
   const heightMetaEl = metas.find((e) => {
     return e.getAttribute('property') === VIDEO_HEIGHT_META;
   });
