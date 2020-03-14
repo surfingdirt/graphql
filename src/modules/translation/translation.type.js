@@ -10,6 +10,7 @@ module.exports = gql`
   type TranslatedText {
       locale: String
       text: String
+      original: Boolean
   }
   input TranslatedTextInput {
       locale: String

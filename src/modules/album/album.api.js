@@ -51,6 +51,7 @@ module.exports = class AlbumApi extends BaseAPI {
 
   async updateAlbum(id, input, token) {
     this.setToken(token);
+    this.debugBackend = true;
     const body = formatTranslatedFields(['description', 'title'], input);
     const response = await this.put(`${this.path}/${id}`, body);
     return response;
