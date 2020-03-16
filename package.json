@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "runbeta": "docker-compose -p beta -f docker-compose.beta.yml up -d",
+    "stopbeta": "docker-compose -p beta -f docker-compose.beta.yml down",
     "runprod": "docker-compose -p production -f docker-compose.production.yml up -d",
+    "stopprod": "docker-compose -p production -f docker-compose.production.yml down",
     "startdev": "docker-compose -p dev -f docker-compose.dev.yml up -d",
+    "stopdev": "docker-compose -p dev -f docker-compose.dev.yml down",
     "start": "node src/index.js > ouput.log 2> err.log"
   },
   "keywords": [],
