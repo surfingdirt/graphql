@@ -6,7 +6,7 @@ services:
   graphql_production:
     environment:
             - NODE_ENV=production
-    image: surfingdirt/graphql:38
+    image: surfingdirt/graphql:39
     container_name: graphql_production
     volumes:
       - /home/mikael/www/production/graphql/:/var/www/html/
