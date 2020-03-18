@@ -3,6 +3,9 @@ const { TRANSLATION } = require("../../controllers");
 const googleTranslate = require("../../utils/googleTranslate");
 const { ALBUM, COMMENT, MEDIA, USER } = require("../../utils/itemTypes");
 
+// The locale we'll consider as original if nothing else works
+const DEFAULT_LOCALE = 'en-US';
+
 const fieldsPerType = {
   [ALBUM]: ['description', 'title'],
   [COMMENT]: ['content'],
@@ -48,6 +51,9 @@ module.exports = class TranslationAPI extends BaseAPI {
       let original = item[field].find((entry) => !!entry.original);
       if (!original && item[field].length === 1) {
         original = item[field][0];
+      }
+      if (!original && item[field].length > 1) {
+        original = item[field].find((entry) => entry.locale === DEFAULT_LOCALE);
       }
       if (!original) {
         throw new Error(`Could not find original text for field '${field}' of item '${id}'`);

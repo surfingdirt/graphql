@@ -6,7 +6,7 @@ const getTranslationResolvers = (tracer) => ({
     translateAlbum: async (parent, { input: { itemId, locale } }, { dataSources: { albumAPI, translationAPI } }, { span }) => {
       const album = await albumAPI.getAlbum(itemId, null, 0, 0, { cacheOptions: { ttl: 0 } });
       await translationAPI.addAutoTranslation(ALBUM, locale, album);
-      const updatedAlbum = await albumAPI.getComment(itemId, null);
+      const updatedAlbum = await albumAPI.getAlbum(itemId, null);
       return updatedAlbum;
     },
 
