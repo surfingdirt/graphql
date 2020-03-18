@@ -16,9 +16,9 @@ module.exports = class CommentAPI extends BaseAPI {
     return response;
   }
 
-  async getComment(id, token) {
+  async getComment(id, token, options = null) {
     this.setToken(token);
-    const response = await this.get(`${this.path}/${id}`);
+    const response = await this.get(`${this.path}/${id}`, options);
     return response;
   }
 

@@ -1,17 +1,25 @@
 const { TranslationItemType } = require('../../constants');
 
+
+
 const getTranslationResolvers = (tracer) => ({
   TranslationMutationResolvers: {
-    addAutoTranslation: async (parent, args, { dataSources: { translationAPI } }, { span }) => {
+    translateAlbum: async (parent, args, { dataSources: { translationAPI } }, { span }) => {
       const response = await translationAPI.addAutoTranslation();
       return response;
     },
-    updateAutoTranslation: async (parent, args, { dataSources: { translationAPI } }, { span }) => {
-      const response = await translationAPI.updateAutoTranslation();
+    translateComment: async (parent, { input: { itemId, locale } }, { dataSources: { commentAPI, translationAPI } }, { span }) => {
+      const comment = await commentAPI.getComment(itemId, null, { cacheOptions: { ttl: 0 } });
+      await translationAPI.addAutoTranslation('comment', locale, comment);
+      const updatedComment = await commentAPI.getComment(itemId, null);
+      return updatedComment;
+    },
+    translateMedia: async (parent, args, { dataSources: { translationAPI } }, { span }) => {
+      const response = await translationAPI.addAutoTranslation();
       return response;
     },
-    removeAutoTranslation: async (parent, args, { dataSources: { translationAPI } }, { span }) => {
-      const response = await translationAPI.removeAutoTranslation();
+    translateUser: async (parent, args, { dataSources: { translationAPI } }, { span }) => {
+      const response = await translationAPI.addAutoTranslation();
       return response;
     },
   },

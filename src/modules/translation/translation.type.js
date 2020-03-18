@@ -17,14 +17,13 @@ module.exports = gql`
       text: String
   }
   input TranslationChangeInput {
-    itemType: String!
     itemId: ID!
-    fieldName: String!
     locale: String!
   }
   extend type Mutation {
-    addAutoTranslation(input: TranslationChangeInput!): TranslatedText!
-    updateAutoTranslation(input: TranslationChangeInput!): TranslatedText!
-    removeAutoTranslation(input: TranslationChangeInput!): Boolean!
+    translateAlbum(input: TranslationChangeInput!): Album!
+    translateComment(input: TranslationChangeInput!): Comment!
+    translateMedia(input: TranslationChangeInput!): Media!
+    translateUser(input: TranslationChangeInput!): User!
   }
 `;
