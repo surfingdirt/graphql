@@ -19,7 +19,6 @@ const createComment = async (args, token, commentAPI, parentType, span) => {
 const getCommentResolvers = (tracer) => ({
   CommentQueryResolvers: {
     listComments: async (parent, args, { locale, token, dataSources: { commentAPI } }, { span }) => {
-      commentAPI.setDebugBackend(true);
       const comments = await commentAPI.setParentSpan(span).listComments(args.parentId, args.parentType, token, locale);
       return comments;
     },

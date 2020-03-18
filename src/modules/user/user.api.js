@@ -10,9 +10,9 @@ module.exports = class UserApi extends BaseAPI {
     this.getUser = this.getUser.bind(this);
   }
 
-  async getUser(userId, token) {
+  async getUser(userId, token, options = null) {
     this.setToken(token);
-    const response = await this.get(`${this.path}/${userId}`);
+    const response = await this.get(`${this.path}/${userId}`, options);
     return response;
   }
 

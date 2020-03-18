@@ -10,9 +10,9 @@ module.exports = class MediaApi extends BaseAPI {
     this.getMedia = this.getMedia.bind(this);
   }
 
-  async getMedia(id, token) {
+  async getMedia(id, token, options = null) {
     this.setToken(token);
-    const response = await this.get(`${this.path}/${id}`);
+    const response = await this.get(`${this.path}/${id}`, options);
     return response;
   }
 

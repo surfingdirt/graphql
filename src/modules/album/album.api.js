@@ -12,12 +12,17 @@ module.exports = class AlbumApi extends BaseAPI {
     this.getAlbum = this.getAlbum.bind(this);
   }
 
-  async getAlbum(id, token, countItems, startItem) {
+  async getAlbum(id, token, countItems, startItem, options = null) {
     this.setToken(token);
     const params = this.getParams({
       countItems,
       startItem,
     });
+    if (options && Object.entries(options).length > 0) {
+      Object.entries(options).forEach(([key, value]) => {
+        params[key] = value;
+      });
+    }
     const response = await this.get(`${this.path}/${id}`, params);
     return response;
   }
