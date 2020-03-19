@@ -7,7 +7,7 @@ services:
     environment:
             - GOOGLE_APPLICATION_CREDENTIALS
             - NODE_ENV=beta
-    image: surfingdirt/graphql:40
+    image: surfingdirt/graphql:41
     container_name: graphql_beta
     volumes:
       - /home/mikael/www/beta/graphql/:/var/www/html/
