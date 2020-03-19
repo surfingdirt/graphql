@@ -5,6 +5,7 @@ version: '3'
 services:
   graphql_beta:
     environment:
+            - GOOGLE_APPLICATION_CREDENTIALS
             - NODE_ENV=beta
     image: surfingdirt/graphql:40
     container_name: graphql_beta

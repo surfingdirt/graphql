@@ -5,6 +5,7 @@ version: '3'
 services:
   graphql_production:
     environment:
+            - GOOGLE_APPLICATION_CREDENTIALS
             - NODE_ENV=production
     image: surfingdirt/graphql:40
     container_name: graphql_production
