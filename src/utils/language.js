@@ -13,15 +13,20 @@ const _findContentVersionForLocale = (sourceParts, localeOptions) => {
     return {
       locale: DEFAULT_LOCALE,
       text: sourceParts,
-      original: false,
+      original: true,
     };
   }
+
+  const onlyOneLocale = localeOptions.length === 1;
 
   // Full locale match based on user preferences
   for (let i = 0; i < localeOptions.length; i++) {
     const currentLocale = `${localeOptions[i].code}-${localeOptions[i].region}`;
     const match = sourceParts.find(({ locale }) => locale === currentLocale);
     if (match) {
+      if (onlyOneLocale) {
+        match.original = true;
+      }
       return match;
     }
   }
@@ -31,6 +36,9 @@ const _findContentVersionForLocale = (sourceParts, localeOptions) => {
     const currentCode = `${localeOptions[i].code}-`;
     const match = sourceParts.find(({ locale }) => locale.indexOf(currentCode) === 0);
     if (match) {
+      if (onlyOneLocale) {
+        match.original = true;
+      }
       return match;
     }
   }
@@ -38,19 +46,27 @@ const _findContentVersionForLocale = (sourceParts, localeOptions) => {
   // Default locale
   const match = sourceParts.find(({ locale }) => locale === DEFAULT_LOCALE);
   if (match) {
+    if (onlyOneLocale) {
+      match.original = true;
+    }
     return match;
   }
 
   // Is there... anything... we can send back?
   if (sourceParts.length >= 0) {
     // Grab the first available translation
-    return sourceParts[0];
+    const match = sourceParts[0];
+    if (onlyOneLocale) {
+      match.original = true;
+    }
+    return match;
   }
 
   // No luck
   return {
     locale: '',
     text: '',
+    original: false,
   };
 };
 

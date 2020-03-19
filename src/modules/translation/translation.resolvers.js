@@ -1,5 +1,6 @@
-const { TranslationItemType } = require('../../constants');
+const { MediaType } = require('../../constants');
 const { ALBUM, COMMENT, MEDIA, USER } = require("../../utils/itemTypes");
+const { buildThumbsAndImages } = require('../../utils/thumbs');
 
 const getTranslationResolvers = (tracer) => ({
   TranslationMutationResolvers: {
@@ -21,14 +22,31 @@ const getTranslationResolvers = (tracer) => ({
       const media = await mediaAPI.getMedia(itemId, null, { cacheOptions: { ttl: 0 } });
       await translationAPI.addAutoTranslation(MEDIA, locale, media);
       const updatedMedia = await mediaAPI.getMedia(itemId, null);
-      return updatedMedia;
+
+      const isPhoto = (parent) => parent.mediaType === MediaType.PHOTO;
+
+      const response = Object.assign(
+        {},
+        updatedMedia,
+        buildThumbsAndImages(updatedMedia, isPhoto(updatedMedia)),
+      );
+      console.log(response);
+      return response;
     },
 
-    translateUser: async (parent, { input: { itemId, locale } }, { dataSources: { translationAPI, userAPI } }, { span }) => {
+    translateUser: async (parent, { input: { itemId, locale } }, { dataSources: { imageAPI, translationAPI, userAPI } }, { span }) => {
       const user = await userAPI.getUser(itemId, null, { cacheOptions: { ttl: 0 } });
       await translationAPI.addAutoTranslation(USER, locale, user);
       const updatedUser = await userAPI.getUser(itemId, null);
-      return updatedUser;
+
+      const avatarThumbs = updatedUser.avatar
+        ? buildThumbsAndImages(await imageAPI.setParentSpan(span).getImage(updatedUser.avatar, null), true).thumbs
+        : null;
+      const coverThumbs = updatedUser.cover
+        ? buildThumbsAndImages(await imageAPI.setParentSpan(span).getImage(updatedUser.cover, null), true).images
+        : null;
+
+      return Object.assign({}, updatedUser, { avatar: avatarThumbs, cover: coverThumbs });
     },
   },
 });

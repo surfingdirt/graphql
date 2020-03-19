@@ -58,9 +58,10 @@ module.exports = class TranslationAPI extends BaseAPI {
       if (!original) {
         throw new Error(`Could not find original text for field '${field}' of item '${id}'`);
       }
-      // const translatedText = `This is a hardcoded translation for: '${original.text}'`;
       translatedFields.push(field);
       promises.push(googleTranslate(original.text, original.locale, locale));
+      // For local dev:
+      //promises.push(Promise.resolve(`This is a '${locale}' hardcoded translation for: '${original.text}'`));
     });
 
     const translations = await Promise.all(promises);
