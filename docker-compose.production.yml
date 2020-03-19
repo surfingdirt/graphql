@@ -15,4 +15,4 @@ services:
     ports:
       - "8003:4000"
     stdin_open: true
-    tty: true:
+    tty: true
