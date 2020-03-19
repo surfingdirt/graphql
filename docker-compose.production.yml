@@ -5,13 +5,14 @@ version: '3'
 services:
   graphql_production:
     environment:
-            - GOOGLE_APPLICATION_CREDENTIALS
+            - GOOGLE_APPLICATION_CREDENTIALS=/credentials/surfing-dirt-db51816197e6.json
             - NODE_ENV=production
-    image: surfingdirt/graphql:41
+    image: surfingdirt/graphql:42
     container_name: graphql_production
     volumes:
       - /home/mikael/www/production/graphql/:/var/www/html/
+      - /home/mikael/.credentials/:/credentials
     ports:
       - "8003:4000"
     stdin_open: true
-    tty: true
+    tty: true:
