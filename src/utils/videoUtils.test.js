@@ -19,6 +19,7 @@ describe('Extracting key and subtype from url', () => {
 
     expect(extractKeyAndSubType(`https://www.facebook.com/watch?v=${videoId}`)).toEqual(videoData);
     expect(extractKeyAndSubType(`https://www.facebook.com/${username}/videos/${videoId}`)).toEqual(videoData);
+    expect(extractKeyAndSubType(`<iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F${username}%2Fvideos%2F${videoId}%2F&show_text=0&width=560" width="560" height="315" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true"></iframe>`)).toEqual(videoData);
   });
 
   test('Instagram', () => {
@@ -46,3 +47,5 @@ describe('Extracting key and subtype from url', () => {
     expect(extractKeyAndSubType(`https://m.youtube.com/details?v=${videoId}`)).toEqual(videoData);
   });
 });
+
+describe

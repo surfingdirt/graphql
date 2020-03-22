@@ -87,6 +87,12 @@ const extractKeyAndSubType = (url) => {
     },
 
     {
+      regex: /src="https:\/\/www\.facebook\.com\/plugins(.*)videos%2F(\d+)%2F/,
+      mediaSubType: FACEBOOK,
+      vendorKeyIndex: 2,
+    },
+
+    {
       regex: /www\.instagram\.com\/p\/([0-9a-zA-Z-_]+)/,
       mediaSubType: INSTAGRAM,
       vendorKeyIndex: 1,
@@ -162,7 +168,7 @@ const buildEmbedUrl = (mediaSubType, vendorKey) => {
   return url;
 };
 
-const getVideoInfo = async (url) => {
+const getVideoInfo = async (input) => {
   /*
   The strategy here is to use a mix of metascraper and homemade scraping:
   - use the scraper to get as much data as possible (reliable)
@@ -170,15 +176,21 @@ const getVideoInfo = async (url) => {
     - for Facebook videos, grab the image out of the twitter:image meta (sort of fragile)
     - grab dimensions out of OG meta tags for all video types (reliable)
    */
+
+  const { mediaSubType, vendorKey } = extractKeyAndSubType(input);
+  const iframeUrl = buildEmbedUrl(mediaSubType, vendorKey);
+
+  // Extract the url in case someone submitted an embed code:
+  const regex = /<iframe src="([^"]*)"/i;
+  const matches = input.match(regex);
+  const url = matches ? matches[1] : input;
+
   const { body: html, url: parsedUrl } = await got(url);
 
   const { description, image, title } = await scraper({
     html,
     url: parsedUrl,
   });
-
-  const { mediaSubType, vendorKey } = extractKeyAndSubType(url);
-  const iframeUrl = buildEmbedUrl(mediaSubType, vendorKey);
 
   let thumbUrl = image;
   const dom = new JSDOM(html);
@@ -187,12 +199,23 @@ const getVideoInfo = async (url) => {
   const heightMetaEl = metas.find((e) => {
     return e.getAttribute('property') === VIDEO_HEIGHT_META;
   });
-  const height = heightMetaEl ? heightMetaEl.getAttribute('content') : null;
+  let height = heightMetaEl ? heightMetaEl.getAttribute('content') : null;
 
   const widthMetaEl = metas.find((e) => {
     return e.getAttribute('property') === VIDEO_WIDTH_META;
   });
-  const width = widthMetaEl ? widthMetaEl.getAttribute('content') : null;
+  let width = widthMetaEl ? widthMetaEl.getAttribute('content') : null;
+
+  // It may happen that we won't find metas for video dimensions. In that case look for the first video element
+  if (!width || !height) {
+    const videos = Array.from(dom.window.document.querySelectorAll('video'));
+    if (videos.length >= 1) {
+      const videoEl = videos[0];
+      width = videoEl.getAttribute('width');
+      height = videoEl.getAttribute('height');
+    }
+  }
+
 
   return {
     description,
