@@ -47,5 +47,3 @@ describe('Extracting key and subtype from url', () => {
     expect(extractKeyAndSubType(`https://m.youtube.com/details?v=${videoId}`)).toEqual(videoData);
   });
 });
-
-describe
