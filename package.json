@@ -10,7 +10,8 @@
     "stopprod": "docker-compose -p production -f docker-compose.production.yml down",
     "startdev": "docker-compose -p dev -f docker-compose.dev.yml up -d",
     "stopdev": "docker-compose -p dev -f docker-compose.dev.yml down",
-    "start": "node src/index.js > ouput.log 2> err.log"
+    "start": "node src/index.js > ouput.log 2> err.log",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +25,7 @@
     "express": "^4.16.4",
     "got": "^9.6.0",
     "graphql": "^14.2.1",
+    "jest": "^25.1.0",
     "jsdom": "^15.2.1",
     "jsonwebtoken": "^8.5.1",
     "metascraper": "^5.8.9",
