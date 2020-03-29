@@ -27,7 +27,7 @@ module.exports = gql`
       albumVisibility: AlbumVisibility
       date: String
       description: TranslatedText
-      id: ID
+      id: ID!
       itemCount: Int
       lastEditionDate: String
       lastEditor: User

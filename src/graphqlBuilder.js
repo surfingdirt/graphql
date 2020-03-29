@@ -8,8 +8,9 @@ const { Album, AlbumAPI, getAlbumResolvers } = require('./modules/album');
 const { Auth, AuthAPI, getAuthResolvers } = require('./modules/auth');
 const { BaseTypes, getBaseResolvers } = require('./modules/base');
 const { Comment, CommentAPI, getCommentResolvers, } = require('./modules/comment');
-const { Media, MediaAPI, getMediaResolvers } = require('./modules/media');
+const { Feed, FeedAPI, getFeedResolvers } = require('./modules/feed');
 const { Image, ImageAPI } = require('./modules/image');
+const { Media, MediaAPI, getMediaResolvers } = require('./modules/media');
 const { Photo, getPhotoResolvers, } = require('./modules/photo');
 const { Translation, TranslationAPI, getTranslationResolvers, } = require('./modules/translation');
 const { User, UserAPI, getUserResolvers, } = require('./modules/user');
@@ -45,7 +46,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
   /******************************************************************************
    * TYPEDEFS
    *****************************************************************************/
-  const typeDefs = [BaseTypes, Album, Auth, Comment, Image, Media, Photo, Translation, User, Video,];
+  const typeDefs = [BaseTypes, Album, Auth, Comment, Feed, Image, Media, Photo, Translation, User, Video,];
 
   /******************************************************************************
    * RESOLVERS
@@ -54,6 +55,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
   const { AuthMutationResolvers } = getAuthResolvers(localTracer);
   const { BaseQueryResolvers } = getBaseResolvers(localTracer);
   const { CommentFieldResolvers, CommentMutationResolvers, CommentQueryResolvers } = getCommentResolvers(localTracer);
+  const { FeedQueryResolvers, FeedTypeResolvers } = getFeedResolvers(localTracer);
   const { MediaFieldResolvers, MediaMutationResolvers, MediaQueryResolvers, MediaTypeResolvers } = getMediaResolvers(localTracer);
   const { PhotoMutationResolvers } = getPhotoResolvers(localTracer);
   const { TranslationMutationResolvers, } = getTranslationResolvers(localTracer);
@@ -65,6 +67,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
       ...BaseQueryResolvers,
       ...AlbumQueryResolvers,
       ...CommentQueryResolvers,
+      ...FeedQueryResolvers,
       ...MediaQueryResolvers,
       ...UserQueryResolvers,
       ...VideoQueryResolvers,
@@ -85,6 +88,8 @@ const graphqlBuilder = (localTracer, serverTracer) => {
 
     Comment: { ...CommentFieldResolvers },
 
+    ...FeedTypeResolvers,
+
     ...MediaTypeResolvers,
 
     Media: { ...MediaFieldResolvers },
@@ -99,6 +104,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
     albumAPI: new AlbumAPI(localTracer),
     commentAPI: new CommentAPI(localTracer),
     authAPI: new AuthAPI(localTracer),
+    feedAPI: new FeedAPI(localTracer),
     imageAPI: new ImageAPI(localTracer),
     mediaAPI: new MediaAPI(localTracer),
     translationAPI: new TranslationAPI(localTracer),

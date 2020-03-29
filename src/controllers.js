@@ -2,6 +2,7 @@
 module.exports = {
   ALBUM: 'album',
   COMMENT: 'comments',
+  FEED: 'feed',
   IMAGE: 'image',
   MEDIA: 'media',
   TOKEN: 'token',
