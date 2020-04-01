@@ -4,6 +4,7 @@ module.exports = gql`
   union FeedItemContent = Album | Comment | Media | User
   
   type FeedEntry {
+      date: String!
       item: FeedItemContent
       subItems: [FeedSubItem!]
   }

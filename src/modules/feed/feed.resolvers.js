@@ -21,7 +21,14 @@ const getFeedResolvers = (tracer) => ({
             p = Promise.resolve();
         }
         return p.then((item) => {
+          let date = item.date;
+          if (children.length > 0) {
+            date = children.reduce((acc, {date: childDate}) => {
+              return acc > childDate ? acc : childDate;
+            }, '1970-01-01 00:00:00');
+          }
           const result = {
+            date,
             item,
             subItems: children.map(({ itemType, itemId }) => ({ itemType, itemId })),
           }
