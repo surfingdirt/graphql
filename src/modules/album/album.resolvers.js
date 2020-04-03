@@ -1,19 +1,7 @@
 const { AlbumContributions, AlbumVisibility, MediaType } = require('../../constants');
-const { buildThumbsAndImages } = require('../../utils/thumbs');
 const { submitterResolver } = require('../../utils/users');
-const { getVendorUrl, getEmbedUrl } = require('../../utils/videoUtils');
+const { getFullMedia } = require('../../utils/albumUtils');
 const { findContentVersionForLocale } = require('../../utils/language');
-
-const getFullMedia = (m) => {
-  let videoProps = {};
-  if (m.mediaType === MediaType.VIDEO) {
-    videoProps = {
-      embedUrl: getEmbedUrl(m),
-      vendorUrl: getVendorUrl(m),
-    };
-  }
-  return Object.assign({}, m, buildThumbsAndImages(m, m.mediaType == MediaType.PHOTO), videoProps);
-};
 
 const DEFAULT_ALBUM_PREVIEW_ITEM_COUNT = 5;
 const DEFAULT_ALBUM_ITEM_COUNT = 20;
