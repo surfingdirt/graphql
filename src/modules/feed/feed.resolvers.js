@@ -4,9 +4,9 @@ const getFeedResolvers = (tracer) => ({
   FeedQueryResolvers: {
     getPublicFeed: async (parent, args, { token, dataSources }, { span }) => {
       const { feedAPI } = dataSources;
-      const { from, until, items } = await feedAPI.setParentSpan(span).getFeed(token);
-      const feedEntries = await Promise.all(items.map((item) => {
-        return getItemPromise(item,token, dataSources, span);
+      const { from, until, items: rawItems } = await feedAPI.setParentSpan(span).getFeed(token);
+      const feedEntries = await Promise.all(rawItems.map((rawItem) => {
+        return getItemPromise(rawItem,token, dataSources, span);
       }));
       return { from, until, feedEntries };
     },

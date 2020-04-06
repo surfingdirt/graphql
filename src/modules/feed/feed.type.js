@@ -12,6 +12,7 @@ module.exports = gql`
   type FeedSubItem {
       itemType: String!
       itemId: ID!
+      item: FeedItemContent
   }
   
   type Feed {
