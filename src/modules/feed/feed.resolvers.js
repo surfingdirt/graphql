@@ -5,10 +5,10 @@ const getFeedResolvers = (tracer) => ({
     getPublicFeed: async (parent, args, { token, dataSources }, { span }) => {
       const { feedAPI } = dataSources;
       const { from, until, items: rawItems } = await feedAPI.setParentSpan(span).getFeed(token);
-      const feedEntries = await Promise.all(rawItems.map((rawItem) => {
-        return getItemPromise(rawItem,token, dataSources, span);
-      }));
-      return { from, until, feedEntries: feedEntries.filter((entry) => !!entry) };
+      const feedEntries = (
+        await Promise.all(rawItems.map((rawItem) => getItemPromise(rawItem,token, dataSources, span)))
+      ).filter((entry) => !!entry);
+      return { from, until, feedEntries };
     },
   },
   FeedTypeResolvers: {
