@@ -8,7 +8,7 @@ const getFeedResolvers = (tracer) => ({
       const feedEntries = await Promise.all(rawItems.map((rawItem) => {
         return getItemPromise(rawItem,token, dataSources, span);
       }));
-      return { from, until, feedEntries };
+      return { from, until, feedEntries: feedEntries.filter((entry) => !!entry) };
     },
   },
   FeedTypeResolvers: {

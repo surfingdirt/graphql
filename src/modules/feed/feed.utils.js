@@ -2,6 +2,8 @@ const { MediaType } = require('../../constants');
 const { getFullMedia } = require('../../utils/albumUtils');
 const { buildThumbsAndImages } = require('../../utils/thumbs');
 
+const FILTER_OUT_EMPTY_ALBUMS = true;
+
 const START_DATE = '1970-01-01 00:00:00';
 const ALBUM_MEDIA_ITEM_COUNT = 5;
 
@@ -22,7 +24,10 @@ const getItemPromise = async (rawItem, token, dataSources, span) => {
     case ALBUM:
       const album = await albumAPI.getAlbum(itemId, token, ALBUM_MEDIA_ITEM_COUNT, 0);
       const fullMedia = album.media.map((m) => getFullMedia(m));
-      item  = Object.assign({}, album, { media: fullMedia });
+      if (FILTER_OUT_EMPTY_ALBUMS && fullMedia.length === 0) {
+        return null;
+      }
+      item = Object.assign({}, album, {media: fullMedia});
       break;
     case COMMENT:
       item = await commentAPI.getComment(itemId);
