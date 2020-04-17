@@ -36,6 +36,8 @@ module.exports = gql`
       status: String
       submitter: User!
       thumbs: [Image]
+      thumbHeight: Int
+      thumbWidth: Int
       title: TranslatedText
       users: [User]
       vendorUrl: String
