@@ -1,4 +1,5 @@
 const { AlbumContributions, AlbumVisibility, MediaType } = require('../../constants');
+const { getFormattedReactions } = require('../reaction');
 const { submitterResolver } = require('../../utils/users');
 const { getFullMedia } = require('../../utils/albumUtils');
 const { findContentVersionForLocale } = require('../../utils/language');
@@ -92,6 +93,10 @@ const getAlbumResolvers = (tracer) => ({
     description(parent, args, { locale }) {
       const translated = findContentVersionForLocale(parent.description, locale);
       return translated;
+    },
+
+    reactions(parent, args, { token }, { span }) {
+      return getFormattedReactions(parent.reactions);
     },
 
     title(parent, args, { locale }) {

@@ -1,4 +1,5 @@
 const { DataType } = require('../../constants');
+const { getFormattedReactions } = require('../reaction');
 const { findContentVersionForLocale } = require('../../utils/language');
 const { submitterResolver } = require('../../utils/users');
 
@@ -62,6 +63,10 @@ const getCommentResolvers = (tracer) => ({
         return null;
       }
       return await userAPI.setParentSpan(span).getUser(parent.lastEditor.id, token);
+    },
+
+    reactions(parent, args, { token }, { span }) {
+      return getFormattedReactions(parent.reactions);
     },
 
     submitter(parent, args, { token, dataSources: { imageAPI, userAPI } }, { span }) {

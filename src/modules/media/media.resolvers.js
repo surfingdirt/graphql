@@ -1,5 +1,5 @@
-const { getFormattedReactions } = require('../reaction');
 const { MediaType } = require('../../constants');
+const { getFormattedReactions } = require('../reaction');
 const { buildThumbsAndImages } = require('../../utils/thumbs');
 const { submitterResolver } = require('../../utils/users');
 const { getVendorUrl, getEmbedUrl } = require('../../utils/videoUtils');

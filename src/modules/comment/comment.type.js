@@ -10,6 +10,7 @@ module.exports = gql`
       lastEditor: User
       parentId: ID!
       parentType: String!
+      reactions: [ReactionListItem]
       status: String
       submitter: User!
       tone: String

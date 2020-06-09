@@ -32,6 +32,7 @@ module.exports = gql`
       lastEditionDate: String
       lastEditor: User
       media: [Media]
+      reactions: [ReactionListItem]
       status: Status
       submitter: User!
       title: TranslatedText
