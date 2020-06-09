@@ -23,7 +23,7 @@ module.exports = class ReactionAPI extends BaseAPI {
     return response;
   }
 
-  async deleteReaction(id, input, token) {
+  async deleteReaction(id, token) {
     this.setToken(token);
     const response = await this.delete(`${this.path}/${id}`);
     return response;
