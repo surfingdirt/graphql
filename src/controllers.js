@@ -5,6 +5,7 @@ module.exports = {
   FEED: 'feed',
   IMAGE: 'image',
   MEDIA: 'media',
+  REACTION: 'reaction',
   TOKEN: 'token',
   TRANSLATION: 'translations',
   USER: 'user',

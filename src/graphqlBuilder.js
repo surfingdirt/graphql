@@ -12,6 +12,7 @@ const { Feed, FeedAPI, getFeedResolvers } = require('./modules/feed');
 const { Image, ImageAPI } = require('./modules/image');
 const { Media, MediaAPI, getMediaResolvers } = require('./modules/media');
 const { Photo, getPhotoResolvers, } = require('./modules/photo');
+const { Reaction, ReactionAPI, getReactionResolvers, } = require('./modules/reaction');
 const { Translation, TranslationAPI, getTranslationResolvers, } = require('./modules/translation');
 const { User, UserAPI, getUserResolvers, } = require('./modules/user');
 const { Video, getVideoResolvers, } = require('./modules/video');
@@ -46,7 +47,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
   /******************************************************************************
    * TYPEDEFS
    *****************************************************************************/
-  const typeDefs = [BaseTypes, Album, Auth, Comment, Feed, Image, Media, Photo, Translation, User, Video,];
+  const typeDefs = [BaseTypes, Album, Auth, Comment, Feed, Image, Media, Photo, Reaction, Translation, User, Video,];
 
   /******************************************************************************
    * RESOLVERS
@@ -58,6 +59,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
   const { FeedQueryResolvers, FeedTypeResolvers } = getFeedResolvers(localTracer);
   const { MediaFieldResolvers, MediaMutationResolvers, MediaQueryResolvers, MediaTypeResolvers } = getMediaResolvers(localTracer);
   const { PhotoMutationResolvers } = getPhotoResolvers(localTracer);
+  const { ReactionFieldResolvers, ReactionMutationResolvers, ReactionQueryResolvers, ReactionTypeResolvers, } = getReactionResolvers(localTracer);
   const { TranslationMutationResolvers, } = getTranslationResolvers(localTracer);
   const { UserFieldResolvers, UserMutationResolvers, UserQueryResolvers, } = getUserResolvers(localTracer);
   const { VideoMutationResolvers, VideoQueryResolvers, } = getVideoResolvers(localTracer);
@@ -69,6 +71,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
       ...CommentQueryResolvers,
       ...FeedQueryResolvers,
       ...MediaQueryResolvers,
+      ...ReactionQueryResolvers,
       ...UserQueryResolvers,
       ...VideoQueryResolvers,
     },
@@ -79,6 +82,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
       ...CommentMutationResolvers,
       ...MediaMutationResolvers,
       ...PhotoMutationResolvers,
+      ...ReactionMutationResolvers,
       ...TranslationMutationResolvers,
       ...UserMutationResolvers,
       ...VideoMutationResolvers,
@@ -94,6 +98,10 @@ const graphqlBuilder = (localTracer, serverTracer) => {
 
     Media: { ...MediaFieldResolvers },
 
+    ...ReactionTypeResolvers,
+
+    Reaction: { ...ReactionFieldResolvers },
+
     User: { ...UserFieldResolvers },
   };
 
@@ -107,6 +115,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
     feedAPI: new FeedAPI(localTracer),
     imageAPI: new ImageAPI(localTracer),
     mediaAPI: new MediaAPI(localTracer),
+    reactionAPI: new ReactionAPI(localTracer),
     translationAPI: new TranslationAPI(localTracer),
     userAPI: new UserAPI(localTracer),
   });
