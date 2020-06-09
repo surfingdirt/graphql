@@ -7,7 +7,7 @@ services:
     environment:
             - GOOGLE_APPLICATION_CREDENTIALS=/credentials/surfing-dirt-db51816197e6.json
             - NODE_ENV=production
-    image: surfingdirt/graphql:46
+    image: surfingdirt/graphql:47
     container_name: graphql_production
     volumes:
       - /home/mikael/www/production/graphql/:/var/www/html/
