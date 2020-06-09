@@ -1,3 +1,4 @@
+const { getFormattedReactions } = require('../reaction');
 const { MediaType } = require('../../constants');
 const { buildThumbsAndImages } = require('../../utils/thumbs');
 const { submitterResolver } = require('../../utils/users');
@@ -93,6 +94,10 @@ const getMediaResolvers = (tracer) => ({
         return null;
       }
       return await userAPI.setParentSpan(span).getUser(parent.lastEditor.id, token);
+    },
+
+    reactions(parent, args, { token }, { span }) {
+      return getFormattedReactions(parent.reactions);
     },
 
     submitter(parent, args, { token, dataSources: { imageAPI, userAPI } }, { span }) {

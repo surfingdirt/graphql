@@ -9,6 +9,11 @@ module.exports = gql`
       submitter: User!
       date: String
   }
+  type ReactionListItem {
+      type: String!
+      count: Int!
+      userReactionId: String
+  } 
   input ReactionCreationInput {
       itemType: String!
       itemId: ID!

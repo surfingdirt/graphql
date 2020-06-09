@@ -33,6 +33,7 @@ module.exports = gql`
       lastEditor: User
       mediaSubType: MediaSubType!
       mediaType: MediaType!
+      reactions: [ReactionListItem]
       status: String
       submitter: User!
       thumbs: [Image]

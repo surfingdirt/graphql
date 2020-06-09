@@ -6,6 +6,7 @@ module.exports = gql`
       height: Int
       iframeUrl: String
       mediaSubType: MediaSubType!
+      reactions: [ReactionListItem]
       thumbUrl: String
       title: String
       url: String!
