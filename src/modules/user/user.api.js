@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+
 const { BaseAPI } = require('../base');
 const { USER } = require('../../controllers');
 const { formatTranslatedFields } = require("../../utils/translate");
@@ -30,8 +32,18 @@ module.exports = class UserApi extends BaseAPI {
   }
 
   async createUserOAuth(input) {
-    const response = await this.post(this.pathOAuth, input);
-    return response;
+    const { token, user } = await this.post(this.pathOAuth, input);
+    const { uid, exp } = jwt.decode(token);
+
+    return {
+      user,
+      token: {
+        uid,
+        accessToken: token,
+        tokenType: "Bearer",
+        expires: exp,
+      },
+    };
   }
 
   async updateUser(userId, input, token) {
