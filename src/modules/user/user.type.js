@@ -44,6 +44,13 @@ module.exports = gql`
       username: String!
       userP: String!
   }
+  input UserCreationOAuthInput {
+      locale: String
+      photoUrl: String
+      timezone: String
+      token: String
+      username: String!
+  }
   input UserUpdateInput {
       bio: TranslatedTextInput
       city: String
@@ -86,9 +93,13 @@ module.exports = gql`
   input NewPasswordActivationInput {
       activationKey: String!
   }
-  type userConfirmationStatus {
+  type UserConfirmationStatus {
       status: Boolean
       alreadyDone: Boolean
+  }
+  type UserCreationOAuthResponse {
+      user: User!
+      token: AccessToken!
   }
   extend type Query {
       user(userId: ID!): User!
@@ -99,11 +110,12 @@ module.exports = gql`
   }
   extend type Mutation {
       createUser(input: UserCreationInput!): User!
+      createUserOAuth(input: UserCreationOAuthInput!): UserCreationOAuthResponse!
       updateUser(userId: ID!, input: UserUpdateInput!): User!
       updateSettings(input: SettingsUpdateInput!): User!
       updateAvatar(file: Upload!): Me
       updateCover(file: Upload!): Me
-      confirmEmail(userId: ID, input: UserConfirmationInput!): userConfirmationStatus!
+      confirmEmail(userId: ID, input: UserConfirmationInput!): UserConfirmationStatus!
       forgotPassword(input: ForgotPasswordInput): Boolean
       activateNewPassword(userId: ID!, input: NewPasswordActivationInput!): Boolean
   }

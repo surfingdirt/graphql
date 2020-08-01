@@ -1,6 +1,6 @@
 const { storeImageOnLocalAPI } = require('../../utils/RestAPI');
 const { findContentVersionForLocale } = require('../../utils/language');
-const { buildThumbsAndImages } = require('../../utils/thumbs');
+const { buildThumbsAndImages, saveRemoteImageToDisk } = require('../../utils/thumbs');
 
 const _updateUser = async (parent, args, { token, dataSources: { imageAPI, userAPI } }, { span }) => {
   const { userId, input } = args;
@@ -68,10 +68,23 @@ const getUserResolvers = (tracer) => ({
   },
 
   UserMutationResolvers: {
-    createUser: async (parent, args, { token, dataSources: { userAPI } }, { span }) => {
+    createUser: async (parent, args, { dataSources: { userAPI } }, { span }) => {
       const { input } = args;
-      const user = await userAPI.setParentSpan(span).createUser(input, token);
+
+      const user = await userAPI.setParentSpan(span).createUser(input);
       return user;
+    },
+
+    createUserOAuth: async (parent, args, { dataSources: { userAPI } }, { span }) => {
+      const { input } = args;
+
+      const { locale, photoUrl, timezone, token: firebaseToken, username } = input;
+      const userCreationData = {locale, timezone, firebaseToken, username};
+      const api = userAPI.setParentSpan(span);
+      const { user: newUser, token } = await api.createUserOAuth(userCreationData);
+      const updatedUser = await api.updateUser(newUser.userId, { avatarUrl: photoUrl }, token);
+
+      return { user: updatedUser, token };
     },
 
     updateUser: _updateUser,
@@ -90,7 +103,7 @@ const getUserResolvers = (tracer) => ({
         throw new Error('No file specified');
       }
 
-      const imageData = await storeImageOnLocalAPI(file, token, true);
+      const imageData = await storeImageOnLocalAPI(file, token, false);
 
       const user = await userAPI.setParentSpan(span).updateUser(userId, { avatar: imageData.key }, token);
 

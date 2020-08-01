@@ -7,6 +7,7 @@ module.exports = class UserApi extends BaseAPI {
     super(tracer);
 
     this.path = USER;
+    this.pathOAuth = `${USER}/oauth`;
     this.getUser = this.getUser.bind(this);
   }
 
@@ -22,11 +23,14 @@ module.exports = class UserApi extends BaseAPI {
     return response;
   }
 
-  async createUser(input, token) {
-    // Should not be necessary, but the presence of a token indicates a problem, so keep it.
-    this.setToken(token);
+  async createUser(input) {
     const body = formatTranslatedFields('bio', input);
     const response = await this.post(this.path, body);
+    return response;
+  }
+
+  async createUserOAuth(input) {
+    const response = await this.post(this.pathOAuth, input);
     return response;
   }
 
