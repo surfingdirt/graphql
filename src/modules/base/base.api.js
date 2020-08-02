@@ -30,13 +30,13 @@ module.exports = class BaseAPI extends RESTDataSource {
     };
   }
 
-  setDebugBackend(debugBackend) {
+  setDebugBackend(debugBackend = true) {
     this.debugBackend = debugBackend;
     return this;
   }
 
   setToken(token) {
-    this.token = token;
+    this.token = token.indexOf('Bearer ') === 0 ? token : `Bearer ${token}`;
     return this;
   }
 

@@ -81,12 +81,11 @@ const getUserResolvers = (tracer) => ({
       const { locale, photoUrl, timezone, token: firebaseToken, username } = input;
       const userCreationData = {locale, timezone, token: firebaseToken, username};
       const api = userAPI.setParentSpan(span);
-      const { user: newUser, token } = await api.createUserOAuth(userCreationData);
+      api.setDebugBackend();
+      const { user: newUser, token: { accessToken: token } } = await api.createUserOAuth(userCreationData);
 
-      // TODO: introduce photo saving
-      // const updatedUser = await api.updateUser(newUser.userId, { avatarUrl: photoUrl }, token);
-
-      return { user: newUser, token };
+      const updatedUser = await api.updateUser(newUser.userId, { avatarUrl: photoUrl }, token);
+      return { user: updatedUser, token };
     },
 
     updateUser: _updateUser,
