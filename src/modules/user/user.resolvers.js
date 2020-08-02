@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+
 const { storeImageOnLocalAPI } = require('../../utils/RestAPI');
 const { findContentVersionForLocale } = require('../../utils/language');
 const { buildThumbsAndImages, saveRemoteImageToDisk } = require('../../utils/thumbs');
@@ -81,11 +83,19 @@ const getUserResolvers = (tracer) => ({
       const { locale, photoUrl, timezone, token: firebaseToken, username } = input;
       const userCreationData = {locale, timezone, token: firebaseToken, username};
       const api = userAPI.setParentSpan(span);
-      api.setDebugBackend();
       const { user: newUser, token: { accessToken: token } } = await api.createUserOAuth(userCreationData);
 
       const updatedUser = await api.updateUser(newUser.userId, { avatarUrl: photoUrl }, token);
-      return { user: updatedUser, token };
+      const { uid, exp } = jwt.decode(token);
+      return {
+        user: updatedUser,
+        token: {
+          uid,
+          accessToken: token,
+          tokenType: "Bearer",
+          expires: exp,
+        }
+      };
     },
 
     updateUser: _updateUser,

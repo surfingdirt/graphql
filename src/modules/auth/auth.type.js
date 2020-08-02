@@ -6,13 +6,18 @@ module.exports = gql`
     accessToken: String!
     tokenType: String!
     expires: Int!
+    # TODO: rename and add refreshToken here
   }
   input LoginInput {
     username: String
     userP: String
   }
+  input LoginOAuthInput {
+    token: String
+  }
   extend type Mutation {
     login(input: LoginInput!): AccessToken!
+    loginOAuth(input: LoginOAuthInput!): AccessToken!
     logout: Boolean
   }
 `;
