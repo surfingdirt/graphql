@@ -86,7 +86,10 @@ module.exports = class UserApi extends BaseAPI {
   }
 
   async usernameExists(username) {
-    const response = await this.get(`${this.path}/username-exists?username=${username}`);
-    return response;
+    const exists = await this.get(`${this.path}/username-exists?username=${username}`);
+    return {
+      username,
+      exists,
+    }
   }
 };

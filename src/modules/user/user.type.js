@@ -101,12 +101,16 @@ module.exports = gql`
       user: User!
       token: AccessToken!
   }
+  type UsernameExistsResponse {
+      username: String!
+      exists: Boolean!
+  }
   extend type Query {
       user(userId: ID!): User!
       me: Me!
       listUsers: [User]
       emailExists(email: String!): Boolean
-      usernameExists(username: String!): Boolean
+      usernameExists(username: String!): UsernameExistsResponse
   }
   extend type Mutation {
       createUser(input: UserCreationInput!): User!
