@@ -2,7 +2,7 @@ const env = process.env.NODE_ENV || 'local';
 
 const conf = {
   local: {
-    apiUrl: 'https://api.surfingdirt.com', // prod
+    apiUrl: 'http://localhost:8007',
     //apiUrl: 'http://localhost:8008', // test
     // storageLocalDomain: 'http://localhost:8007', // local
     storageLocalDomain: 'https://apisurfingdirt.b-cdn.net',
