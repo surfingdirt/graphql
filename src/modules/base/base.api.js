@@ -36,7 +36,10 @@ module.exports = class BaseAPI extends RESTDataSource {
   }
 
   setToken(token) {
-    this.token = (!token || token.indexOf('Bearer ') === 0) ? '' : `Bearer ${token}`;
+    if (!token) {
+      return this;
+    }
+    this.token = token.indexOf('Bearer ') === 0 ? token : `Bearer ${token}`;
     return this;
   }
 
