@@ -6,6 +6,7 @@ module.exports = {
   IMAGE: 'image',
   MEDIA: 'media',
   REACTION: 'reaction',
+  SURVEY: 'surveys',
   TOKEN: 'token',
   TRANSLATION: 'translations',
   USER: 'user',

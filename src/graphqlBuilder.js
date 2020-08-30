@@ -16,6 +16,7 @@ const { Reaction, ReactionAPI, getReactionResolvers, } = require('./modules/reac
 const { Translation, TranslationAPI, getTranslationResolvers, } = require('./modules/translation');
 const { User, UserAPI, getUserResolvers, } = require('./modules/user');
 const { Video, getVideoResolvers, } = require('./modules/video');
+const { Vote, VoteAPI, getVoteResolvers, } = require('./modules/vote');
 
 const HEADER_TRACE_ID = 'x-b3-traceid';
 const HEADER_PARENT_SPAN_ID = 'x-b3-parentspanid';
@@ -47,7 +48,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
   /******************************************************************************
    * TYPEDEFS
    *****************************************************************************/
-  const typeDefs = [BaseTypes, Album, Auth, Comment, Feed, Image, Media, Photo, Reaction, Translation, User, Video,];
+  const typeDefs = [BaseTypes, Album, Auth, Comment, Feed, Image, Media, Photo, Reaction, Translation, User, Vote, Video,];
 
   /******************************************************************************
    * RESOLVERS
@@ -63,6 +64,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
   const { TranslationMutationResolvers, } = getTranslationResolvers(localTracer);
   const { UserFieldResolvers, UserMutationResolvers, UserQueryResolvers, } = getUserResolvers(localTracer);
   const { VideoMutationResolvers, VideoQueryResolvers, } = getVideoResolvers(localTracer);
+  const { VoteQueryResolvers, VoteMutationResolvers, } = getVoteResolvers(localTracer);
 
   const resolvers = {
     Query: {
@@ -74,6 +76,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
       ...ReactionQueryResolvers,
       ...UserQueryResolvers,
       ...VideoQueryResolvers,
+      ...VoteQueryResolvers,
     },
 
     Mutation: {
@@ -86,6 +89,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
       ...TranslationMutationResolvers,
       ...UserMutationResolvers,
       ...VideoMutationResolvers,
+      ...VoteMutationResolvers,
     },
 
     Album: { ...AlbumFieldResolvers },
@@ -118,6 +122,7 @@ const graphqlBuilder = (localTracer, serverTracer) => {
     reactionAPI: new ReactionAPI(localTracer),
     translationAPI: new TranslationAPI(localTracer),
     userAPI: new UserAPI(localTracer),
+    voteAPI: new VoteAPI(localTracer),
   });
 
   /******************************************************************************
