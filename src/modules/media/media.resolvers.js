@@ -89,6 +89,13 @@ const getMediaResolvers = (tracer) => ({
       return getEmbedUrl(parent);
     },
 
+    vendorKey(parent) {
+      if (!isVideo(parent)) {
+        return null;
+      }
+      return parent.vendorKey;
+    },
+
     async lastEditor(parent, args, { token, dataSources: { userAPI } }, { span }) {
       if (!parent.lastEditor || !parent.lastEditor.id) {
         return null;

@@ -41,6 +41,7 @@ module.exports = gql`
       thumbWidth: Int
       title: TranslatedText
       users: [User]
+      vendorKey: String
       vendorUrl: String
       width: Int
   }
