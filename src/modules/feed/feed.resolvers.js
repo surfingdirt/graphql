@@ -2,13 +2,14 @@ const { getItemPromise } = require('./feed.utils');
 
 const getFeedResolvers = (tracer) => ({
   FeedQueryResolvers: {
-    getPublicFeed: async (parent, args, { token, dataSources }, { span }) => {
+    getPublicFeed: async (parent, { count, offset }, { token, dataSources }, { span }) => {
       const { feedAPI } = dataSources;
-      const { from, until, items: rawItems } = await feedAPI.setParentSpan(span).getFeed(token);
+
+      const { nextOffset, items: rawItems } = await feedAPI.setParentSpan(span).getFeed(token, count, offset);
       const feedEntries = (
-        await Promise.all(rawItems.map((rawItem) => getItemPromise(rawItem,token, dataSources, span)))
+        await Promise.all(rawItems.map((rawItem) => getItemPromise(rawItem, token, dataSources, span)))
       ).filter((entry) => !!entry);
-      return { from, until, feedEntries };
+      return { nextOffset, feedEntries };
     },
   },
   FeedTypeResolvers: {

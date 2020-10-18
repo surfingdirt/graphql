@@ -16,11 +16,11 @@ module.exports = gql`
   }
   
   type Feed {
-      from: String!
-      until: String!
+      nextOffset: Int!
       feedEntries: [FeedEntry!]
   }
+
   extend type Query {
-      getPublicFeed: Feed
+      getPublicFeed(count: Int, offset: Int): Feed
   }
 `;

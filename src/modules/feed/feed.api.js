@@ -9,9 +9,18 @@ module.exports = class FeedAPI extends BaseAPI {
     this.getFeed = this.getFeed.bind(this);
   }
 
-  async getFeed(token, options = null) {
+  async getFeed(token, count, offset, options = null) {
     this.setToken(token);
-    const response = await this.get(`${this.path}`, options);
+    const params = this.getParams({
+      count,
+      offset,
+    });
+    if (options && Object.entries(options).length > 0) {
+      Object.entries(options).forEach(([key, value]) => {
+        params[key] = value;
+      });
+    }
+    const response = await this.get(`${this.path}`, params);
     return response;
   }
 };
