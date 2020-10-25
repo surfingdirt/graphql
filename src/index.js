@@ -1,3 +1,5 @@
+require('dotenv').config({ path: './config/.env' });
+
 const { port } = require('../config');
 const { server, graphqlServer } = require('./server');
 
