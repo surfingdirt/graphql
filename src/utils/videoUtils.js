@@ -11,6 +11,7 @@ const jsdom = require("jsdom");
 const TWITTER_IMAGE_META = "twitter:image";
 const VIDEO_HEIGHT_META = "og:video:height";
 const VIDEO_WIDTH_META = "og:video:width";
+const FACEBOOK_GRAPH_API_URL = 'https://graph.facebook.com/v8.0';
 
 const { VideoType, ErrorCodes } = require('../constants');
 const { DAILYMOTION, FACEBOOK, INSTAGRAM, VIMEO, YOUTUBE } = VideoType;
@@ -168,6 +169,13 @@ const buildEmbedUrl = (mediaSubType, vendorKey) => {
   return url;
 };
 
+const getInstagramVideoThumb = async (videoUrl) => {
+  const url = `${FACEBOOK_GRAPH_API_URL}/instagram_oembed?access_token=${process.env.FACEBOOK_ACCESS_TOKEN}&url=${encodeURI(videoUrl)}`;
+  const { body } = await got(url);
+  const videoInfo = JSON.parse(body);
+  return videoInfo.thumbnail_url;
+};
+
 const getVideoInfo = async (input) => {
   /*
   The strategy here is to use a mix of metascraper and homemade scraping:
@@ -192,7 +200,6 @@ const getVideoInfo = async (input) => {
     url: parsedUrl,
   });
 
-  let thumbUrl = image;
   const dom = new JSDOM(html);
   const metas = Array.from(dom.window.document.querySelectorAll('meta'));
 
@@ -216,6 +223,10 @@ const getVideoInfo = async (input) => {
     }
   }
 
+  let thumbUrl = image;
+  if (mediaSubType === INSTAGRAM) {
+    thumbUrl = await getInstagramVideoThumb(url);
+  }
 
   return {
     description,
