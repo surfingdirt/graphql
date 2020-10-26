@@ -198,20 +198,29 @@ const getVideoInfo = async (input) => {
   const headers = { 'user-agent': CHROME_USER_AGENT };
   const response = await got(url, {headers});
   const { body: html, statusCode, redirectUrls, url: parsedUrl, request: originalRequest } = response;
-  const { description, image, title } = await scraper({
+  let { description, image, title } = await scraper({
     html,
     url: parsedUrl,
   });
 
+
   if (mediaSubType === INSTAGRAM) {
     console.log('getVideoInfo INSTAGRAM');
-    console.log(redirectUrls.length > 0 ? 'Looks like IP ban is in place' : 'No IP ban');
-    console.log('statusCode');
-    console.log(statusCode);
-    console.log('request headers');
-    console.log(JSON.stringify(originalRequest.gotOptions.headers, null, 2));
-    console.log('redirectUrls');
-    console.log(JSON.stringify(redirectUrls, null, 2));
+    const isIPBanned = redirectUrls.length > 0;
+    console.log(isIPBanned ? 'Looks like IP ban is in place' : 'No IP ban');
+    if (isIPBanned) {
+      title = '';
+      description = '';
+
+      console.log('statusCode');
+      console.log(statusCode);
+      console.log('request headers');
+      console.log(JSON.stringify(originalRequest.gotOptions.headers, null, 2));
+      console.log('redirectUrls');
+      console.log(JSON.stringify(redirectUrls, null, 2));
+    }
+
+    image = await getInstagramVideoThumb(url);
   }
 
   const dom = new JSDOM(html);
@@ -237,17 +246,12 @@ const getVideoInfo = async (input) => {
     }
   }
 
-  let thumbUrl = image;
-  if (mediaSubType === INSTAGRAM) {
-    thumbUrl = await getInstagramVideoThumb(url);
-  }
-
   return {
     description,
     height,
     iframeUrl,
     mediaSubType,
-    thumbUrl,
+    thumbUrl: image,
     title,
     url,
     vendorKey,
