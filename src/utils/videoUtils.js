@@ -212,7 +212,7 @@ const getVideoInfo = async (input) => {
     console.log('redirectUrls');
     console.log(JSON.stringify(redirectUrls, null, 2));
     console.log('body');
-    console.log(body);
+    console.log(html);
   }
 
   const dom = new JSDOM(html);
