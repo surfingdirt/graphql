@@ -207,7 +207,7 @@ const getVideoInfo = async (input) => {
     console.log('getVideoInfo INSTAGRAM');
     console.log(redirectUrls.length > 0 ? 'Looks like IP ban is in place' : 'No IP ban');
     console.log('statusCode');
-    console.log(statusCode);vim
+    console.log(statusCode);
     console.log('request headers');
     console.log(JSON.stringify(originalRequest.gotOptions.headers, null, 2));
     console.log('redirectUrls');
