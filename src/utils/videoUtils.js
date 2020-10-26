@@ -197,15 +197,23 @@ const getVideoInfo = async (input) => {
 
   const headers = { 'user-agent': CHROME_USER_AGENT };
   const response = await got(url, {headers});
-  const { body: html, url: parsedUrl, request: originalRequest } = response;
-  if (mediaSubType === INSTAGRAM) {
-    console.log('getVideoInfo INSTAGRAM');
-    console.log(JSON.stringify(originalRequest.gotOptions.headers, null, 2));
-  }
+  const { body: html, statusCode, redirectUrls, url: parsedUrl, request: originalRequest } = response;
   const { description, image, title } = await scraper({
     html,
     url: parsedUrl,
   });
+
+  if (mediaSubType === INSTAGRAM) {
+    console.log('getVideoInfo INSTAGRAM');
+    console.log('statusCode');
+    console.log(statusCode);
+    console.log('request headers');
+    console.log(JSON.stringify(originalRequest.gotOptions.headers, null, 2));
+    console.log('redirectUrls');
+    console.log(JSON.stringify(redirectUrls, null, 2));
+    console.log('body');
+    console.log(body);
+  }
 
   const dom = new JSDOM(html);
   const metas = Array.from(dom.window.document.querySelectorAll('meta'));
