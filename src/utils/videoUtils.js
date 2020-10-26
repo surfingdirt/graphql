@@ -193,8 +193,12 @@ const getVideoInfo = async (input) => {
   const matches = input.match(regex);
   const url = matches ? matches[1] : input;
 
-  const { body: html, url: parsedUrl } = await got(url);
-
+  const response = await got(url);
+  const { body: html, url: parsedUrl, request: originalRequest } = response;
+  if (mediaSubType === INSTAGRAM) {
+    console.log('getVideoInfo INSTAGRAM');
+    console.log(JSON.stringify(originalRequest.gotOptions.headers, null, 2));
+  }
   const { description, image, title } = await scraper({
     html,
     url: parsedUrl,
