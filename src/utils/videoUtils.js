@@ -13,6 +13,8 @@ const VIDEO_HEIGHT_META = "og:video:height";
 const VIDEO_WIDTH_META = "og:video:width";
 const FACEBOOK_GRAPH_API_URL = 'https://graph.facebook.com/v8.0';
 
+const CHROME_USER_AGENT = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1';
+
 const { VideoType, ErrorCodes } = require('../constants');
 const { DAILYMOTION, FACEBOOK, INSTAGRAM, VIMEO, YOUTUBE } = VideoType;
 const { JSDOM } = jsdom;
@@ -193,7 +195,8 @@ const getVideoInfo = async (input) => {
   const matches = input.match(regex);
   const url = matches ? matches[1] : input;
 
-  const response = await got(url);
+  const headers = { 'user-agent': CHROME_USER_AGENT };
+  const response = await got(url, {headers});
   const { body: html, url: parsedUrl, request: originalRequest } = response;
   if (mediaSubType === INSTAGRAM) {
     console.log('getVideoInfo INSTAGRAM');
