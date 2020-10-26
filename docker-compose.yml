@@ -6,9 +6,9 @@ services:
   graphql_beta:
     environment:
             - GOOGLE_APPLICATION_CREDENTIALS=/credentials/surfing-dirt-db51816197e6.json
-            - NODE_ENV=beta
+            - NODE_ENV=local
     image: surfingdirt/graphql:57
-    container_name: graphql_beta
+    container_name: graphql_local
     volumes:
       - /home/mikael/www/beta/graphql/:/var/www/html/
       - /home/mikael/.credentials/:/credentials
