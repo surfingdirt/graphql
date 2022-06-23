@@ -27,7 +27,7 @@
     "got": "^9.6.0",
     "graphql": "^14.2.1",
     "jest": "^25.1.0",
-    "jsdom": "^15.2.1",
+    "jsdom": "^16.5.0",
     "jsonwebtoken": "^8.5.1",
     "metascraper": "^5.8.9",
     "metascraper-description": "^5.8.7",
